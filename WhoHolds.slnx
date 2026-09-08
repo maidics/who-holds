@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/WhoHolds.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WhoHolds.Tests.csproj" />
+  </Folder>
+</Solution>
