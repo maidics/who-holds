@@ -3,4 +3,8 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="TUnit" Version="1.66.27" />
+  </ItemGroup>
 </Project>
