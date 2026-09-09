@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="WhoHolds.Tests" />
+    <InternalsVisibleTo Include="WhoHolds.Core.Tests" />
   </ItemGroup>
 </Project>
