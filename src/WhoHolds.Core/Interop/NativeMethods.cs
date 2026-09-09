@@ -7,5 +7,10 @@ internal static class NativeMethods
     private const string NtDll = "ntdll.dll";
 
     [DllImport(NtDll, EntryPoint = "NtQuerySystemInformation")]
-    internal static extern uint GetNtSystemInfo(int systemInformationClass, IntPtr systemInformation, int systemInformationLength, out int returnLength);
+    internal static extern NtStatus GetNtSystemInfo(
+        int systemInformationClass,
+        IntPtr systemInformation,
+        int systemInformationLength,
+        out int returnLength
+    );
 }
