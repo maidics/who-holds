@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop;
 
@@ -39,6 +40,6 @@ internal sealed class NativeBuffer : IDisposable
         if (_pointer == IntPtr.Zero)
             return $"{nameof(NativeBuffer)}(disposed, {Size:N0} bytes)";
 
-        return $"{nameof(NativeBuffer)}(0x{_pointer:X}, {Size:N0} bytes)";
+        return $"{nameof(NativeBuffer)}(0x{_pointer:X}, {ByteFormat.Humanize(Size)})";
     }
 }
