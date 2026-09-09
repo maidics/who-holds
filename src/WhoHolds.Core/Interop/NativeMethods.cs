@@ -60,7 +60,7 @@ internal static class NativeMethods
     /// while (true)
     /// {
     ///     IntPtr buffer = Marshal.AllocHGlobal(size);
-    ///     var status = GetNtSystemInfo(cls, buffer, size, out int needed);
+    ///     var status = NtQuerySystemInfo(cls, buffer, size, out int needed);
     ///     if (status != NtStatus.InfoLengthMismatch)
     ///         return (status, buffer, needed);   // caller frees
     ///     Marshal.FreeHGlobal(buffer);
@@ -75,7 +75,7 @@ internal static class NativeMethods
     /// </para>
     /// </remarks>
     [DllImport(NtDll, EntryPoint = "NtQuerySystemInformation")]
-    internal static extern NtStatus GetNtSystemInfo(
+    internal static extern NtStatus NtQuerySystemInfo(
         int systemInformationClass,
         IntPtr systemInformation,
         int systemInformationLength,
