@@ -3,6 +3,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>WhoHolds.Core</RootNamespace>
     <AssemblyName>WhoHolds.Core</AssemblyName>
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
