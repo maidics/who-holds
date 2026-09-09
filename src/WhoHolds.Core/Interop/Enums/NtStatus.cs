@@ -1,4 +1,4 @@
-﻿namespace WhoHolds.Core.Interop;
+﻿namespace WhoHolds.Core.Interop.Enums;
 
 /// <summary>
 /// NTSTATUS codes returned by NT native API calls.
