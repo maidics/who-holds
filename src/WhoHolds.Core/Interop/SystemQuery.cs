@@ -6,7 +6,11 @@ namespace WhoHolds.Core.Interop;
 internal static class SystemQuery
 {
     // 1 << 20 shifts the bit position of 1 twenty positions to the left: 2 to the power of 20
-    public static NativeBuffer Query(SystemInformationClass cls, int initialSize = 1 << 20)
+    public static NativeBuffer Query(
+        SystemInformationClass cls,
+        out int returnLength,
+        int initialSize = 1 << 20
+    )
     {
         int size = initialSize;
 
@@ -16,7 +20,10 @@ internal static class SystemQuery
             var status = NativeMethods.NtQuerySystemInfo(cls, buffer.Pointer, size, out int needed);
 
             if (status is NtStatus.Success)
+            {
+                returnLength = needed;
                 return buffer;
+            }
 
             buffer.Dispose();
 
