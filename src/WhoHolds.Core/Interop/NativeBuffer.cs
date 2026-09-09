@@ -33,4 +33,12 @@ internal sealed class NativeBuffer : IDisposable
             _pointer = IntPtr.Zero;
         }
     }
+
+    public override string ToString()
+    {
+        if (_pointer == IntPtr.Zero)
+            return $"{nameof(NativeBuffer)}(disposed, {Size:N0} bytes)";
+
+        return $"{nameof(NativeBuffer)}(0x{_pointer:X}, {Size:N0} bytes)";
+    }
 }
