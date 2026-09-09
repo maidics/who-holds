@@ -76,7 +76,7 @@ internal static class NativeMethods
     /// </remarks>
     [DllImport(NtDll, EntryPoint = "NtQuerySystemInformation")]
     internal static extern NtStatus NtQuerySystemInfo(
-        int systemInformationClass,
+        SystemInformationClass systemInformationClass,
         IntPtr systemInformation,
         int systemInformationLength,
         out int returnLength
