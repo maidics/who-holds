@@ -10,7 +10,7 @@ internal static class SystemQuery
     {
         int size = initialSize;
 
-        for (int attempt = 0; attempt < 8; attempt++) //TODO: add
+        for (int attempt = 0; attempt < 8; attempt++) //TODO: make this configurable or take it from cli?
         {
             var buffer = new NativeBuffer(size);
             var status = NativeMethods.NtQuerySystemInfo(cls, buffer.Pointer, size, out int needed);
