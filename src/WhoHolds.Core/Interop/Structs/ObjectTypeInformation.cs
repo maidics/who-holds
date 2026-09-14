@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using WhoHolds.Core.Interop.Interfaces;
 
 namespace WhoHolds.Core.Interop.Structs;
 
@@ -28,21 +29,6 @@ struct ObjectTypeInformation
     public uint PoolType,
         DefaultPagedPoolCharge,
         DefaultNonPagedPoolCharge;
-}
 
-[StructLayout(LayoutKind.Sequential)]
-struct UnicodeString
-{
-    public ushort Length,
-        MaximumLength;
-    public IntPtr Buffer;
-}
-
-[StructLayout(LayoutKind.Sequential)]
-struct GenericMapping
-{
-    public uint R,
-        W,
-        E,
-        A;
+    public static int GetSize() => Marshal.SizeOf<ObjectTypeInformation>();
 }
