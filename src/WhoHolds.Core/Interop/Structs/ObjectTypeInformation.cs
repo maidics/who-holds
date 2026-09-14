@@ -4,7 +4,7 @@ using WhoHolds.Core.Interop.Interfaces;
 namespace WhoHolds.Core.Interop.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-struct ObjectTypeInformation
+internal struct ObjectTypeInformation : INtStruct
 {
     public UnicodeString TypeName;
     public uint TotalNumberOfObjects,

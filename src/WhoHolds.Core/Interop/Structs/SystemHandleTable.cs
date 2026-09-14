@@ -9,8 +9,8 @@ internal readonly ref struct SystemHandleTable
     public readonly SystemHandleInformationEx Header;
     public readonly ReadOnlySpan<SystemHandleEntryEx> Entries;
 
-    private static readonly int _headerSize = Marshal.SizeOf<SystemHandleInformationEx>();
-    private static readonly int _entrySize = Marshal.SizeOf<SystemHandleEntryEx>();
+    private static readonly int _headerSize = SystemHandleInformationEx.GetSize();
+    private static readonly int _entrySize = SystemHandleEntryEx.GetSize();
 
     private SystemHandleTable(
         SystemHandleInformationEx header,
