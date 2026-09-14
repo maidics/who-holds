@@ -1,14 +1,14 @@
-﻿using System.Runtime.InteropServices;
-using Shouldly;
-using WhoHolds.Core.Interop.Structs;
+﻿using WhoHolds.Core.Interop.Structs;
+using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop.Structs;
 
-public sealed class SystemHandleEntryExTests
+[InheritsTests]
+internal sealed class SystemHandleEntryExTests : NtStructTestBase<SystemHandleEntryEx>
 {
     [Test]
-    public void SizeShouldMatchNativeSize()
+    public override void ShouldHaveCorrectSize()
     {
-        Marshal.SizeOf<SystemHandleEntryEx>().ShouldBe(40);
+        AssertSize(40);
     }
 }
