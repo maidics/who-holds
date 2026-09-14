@@ -7,12 +7,6 @@ internal sealed class NtException : Exception
     private NtException(string message)
         : base(message) { }
 
-    public static void ThrowIfInfoLengthMismatch(NtStatus status, SystemInformationClass cls)
-    {
-        if (status is NtStatus.InfoLengthMismatch)
-            throw new NtException($"Buffer too small for {cls}");
-    }
-
     public static void ThrowIfUnsuccessful(NtStatus status, SystemInformationClass cls)
     {
         if (status is not NtStatus.Success)
