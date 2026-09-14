@@ -1,22 +1,28 @@
 ﻿using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Enums;
-using WhoHolds.Core.Interop.Structs;
 using WhoHolds.Core.Utility;
 
-namespace WhoHolds.Core.Interop;
+namespace WhoHolds.Core.Interop.Structs;
 
-internal static class ExtendedHandleStructMarshal
+internal readonly ref struct SystemHandleTable
 {
+    public readonly SystemHandleInformationEx Header;
+    public readonly ReadOnlySpan<SystemHandleEntryEx> Entries;
+
     private static readonly int _headerSize = Marshal.SizeOf<SystemHandleInformationEx>();
     private static readonly int _entrySize = Marshal.SizeOf<SystemHandleEntryEx>();
 
-    public static unsafe ReadOnlySpan<SystemHandleEntryEx> EntriesToStruct(
-        NativeBuffer buffer,
-        int returnLength
+    private SystemHandleTable(
+        SystemHandleInformationEx header,
+        ReadOnlySpan<SystemHandleEntryEx> entries
     )
     {
-        ArgumentNullException.ThrowIfNull(buffer);
+        Header = header;
+        Entries = entries;
+    }
 
+    public static unsafe SystemHandleTable FromBuffer(NativeBuffer buffer, int returnLength)
+    {
         if (buffer.SystemInformationClass is not SystemInformationClass.ExtendedHandle)
             throw new InvalidOperationException(
                 $"Buffer contains invalid class: {buffer.SystemInformationClass}. Required: {SystemInformationClass.ExtendedHandle}."
@@ -38,9 +44,9 @@ internal static class ExtendedHandleStructMarshal
                     + "Layout mismatch — check the information class and the architecture."
             );
 
-        return new ReadOnlySpan<SystemHandleEntryEx>(
-            (byte*)buffer.Pointer + _headerSize,
-            (int)count
+        return new SystemHandleTable(
+            header,
+            new ReadOnlySpan<SystemHandleEntryEx>((byte*)buffer.Pointer + _headerSize, (int)count)
         );
     }
 }
