@@ -1,11 +1,10 @@
 ﻿using System.Runtime.InteropServices;
-using Shouldly;
 using WhoHolds.Core.Interop;
 using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Tests.Interop;
 
-public sealed class NativeBufferTests
+internal sealed class NativeBufferTests
 {
     [Test]
     [Arguments(-1)]
