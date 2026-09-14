@@ -7,10 +7,10 @@ namespace WhoHolds.Core.Tests.Interop;
 
 internal sealed class NativeMethodTests
 {
-    private MethodInfo? GetMethodInfo(string method) =>
+    private static MethodInfo? GetMethodInfo(string method) =>
         typeof(NativeMethods).GetMethod(method, BindingFlags.NonPublic | BindingFlags.Static); // asserts that it is internal
 
-    private ParameterInfo[] AssertMethod(
+    private static ParameterInfo[] AssertMethod(
         string method,
         Type returnType,
         Type[] expectedParameterTypes,
