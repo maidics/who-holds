@@ -17,6 +17,8 @@ public static class ObjectTypes
         if (_map.TryGetValue(objectType, out var typeName))
             return typeName;
 
+        BuildMap();
+
         return _map.TryGetValue(objectType, out typeName)
             ? typeName
             : throw new ArgumentException(
