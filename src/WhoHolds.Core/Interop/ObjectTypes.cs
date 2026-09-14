@@ -38,6 +38,8 @@ public static class ObjectTypes
         uint count = (uint)Marshal.ReadInt32(buffer.Pointer);
         IntPtr p = IntPtr.Add(buffer.Pointer, IntPtr.Size);
 
+        _map.Clear();
+
         for (uint i = 0; i < count; i++)
         {
             var info = Marshal.PtrToStructure<ObjectTypeInformation>(p);
