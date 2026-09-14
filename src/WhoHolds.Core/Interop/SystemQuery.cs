@@ -35,36 +35,4 @@ internal static class SystemQuery
 
         throw new InvalidOperationException($"Buffer size never converged: {cls}.");
     }
-
-    /*
-    // 1 << 20 shifts the bit position of 1 twenty positions to the left: 2 to the power of 20
-    public static NativeBuffer QuerySystemHandles(
-        SystemInformationClass cls,
-        out int returnLength,
-        int initialSize = 1 << 20
-    )
-    {
-        int size = initialSize;
-
-        for (int attempt = 0; attempt < 8; attempt++) //TODO: make this configurable or take it from cli?
-        {
-            var buffer = new NativeBuffer(size, cls);
-            var status = NativeMethods.NtQuerySystemInfo(cls, buffer.Pointer, size, out int needed);
-
-            if (status is NtStatus.Success)
-            {
-                returnLength = needed;
-                return buffer;
-            }
-
-            buffer.Dispose();
-
-            NtException.ThrowIfInfoLengthMismatch(status, cls);
-
-            size = Math.Max(needed, size * 2);
-        }
-
-        throw new InvalidOperationException($"Buffer size never converged: {cls}.");
-    }
-    */
 }
