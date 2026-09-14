@@ -1,9 +1,8 @@
-﻿using Shouldly;
-using WhoHolds.Core.Utility;
+﻿using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Tests.Utility;
 
-public sealed class ByteFormatTests
+internal sealed class ByteFormatTests
 {
     [Test]
     [Arguments(1, "1 B")]
