@@ -8,7 +8,12 @@ internal enum SystemInformationClass
     Basic = 0,
 
     /// <summary>
-    /// SYSTEM_HANDLE_INFORMATION. Legacy handle table. PID is a ushort.
+    /// OBJECT_TYPES_INFORMATION.
+    /// </summary>
+    ObjectTypesInformation = 3,
+
+    /// <summary>
+    /// SYSTEM_HANDLE_INFORMATION. Legacy handle table. PID is an ushort.
     /// </summary>
     Handle = 16,
 

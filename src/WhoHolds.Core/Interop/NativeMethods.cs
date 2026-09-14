@@ -81,4 +81,13 @@ internal static class NativeMethods
         int systemInformationLength,
         out int returnLength
     );
+
+    [DllImport(NtDll, EntryPoint = "NtQueryObject")]
+    internal static extern NtStatus NtQueryObject(
+        IntPtr handle,
+        SystemInformationClass informationClass,
+        IntPtr buffer,
+        int bufferLength,
+        out int returnLength
+    );
 }
