@@ -10,19 +10,19 @@ internal static class NativeMethods
     /// <summary>
     /// Retrieves the specified system information from the kernel.
     /// </summary>
-    /// <param name="systemInformationClass">
+    /// <param name="cls">
     /// Selects which structure the kernel returns. This is the only type information in the
-    /// call — the kernel does not validate that <paramref name="systemInformation"/> matches
+    /// call — the kernel does not validate that <paramref name="buffer"/> matches
     /// the class, it simply writes the bytes for whatever class is named here.
     /// </param>
-    /// <param name="systemInformation">
+    /// <param name="buffer">
     /// Caller-allocated buffer that receives the data. Must remain valid for at least
-    /// <paramref name="systemInformationLength"/> bytes; the kernel takes that length on trust,
+    /// <paramref name="bufferLength"/> bytes; the kernel takes that length on trust,
     /// so understating the allocation corrupts the heap rather than returning an error.
     /// May be <see cref="IntPtr.Zero"/> when the length is 0, which is useful for probing
     /// whether a class exists on the current build.
     /// </param>
-    /// <param name="systemInformationLength">
+    /// <param name="bufferLength">
     /// Capacity of the buffer in <b>bytes</b>. If the data does not fit, nothing
     /// is written and <see cref="NtStatus.InfoLengthMismatch"/> is returned. Native type is
     /// <c>ULONG</c>; never pass a negative value, as it reinterprets as a huge unsigned size.
@@ -70,22 +70,22 @@ internal static class NativeMethods
     /// Cap the iterations so a persistent failure cannot spiral into gigabyte allocations.
     /// </para>
     /// <para>
-    /// The caller owns <paramref name="systemInformation"/> in all cases and must free it,
+    /// The caller owns <paramref name="buffer"/> in all cases and must free it,
     /// including on every failed attempt.
     /// </para>
     /// </remarks>
     [DllImport(NtDll, EntryPoint = "NtQuerySystemInformation")]
     internal static extern NtStatus NtQuerySystemInfo(
-        SystemInformationClass systemInformationClass,
-        IntPtr systemInformation,
-        int systemInformationLength,
+        SystemInformationClass cls,
+        IntPtr buffer,
+        int bufferLength,
         out int returnLength
     );
 
     [DllImport(NtDll, EntryPoint = "NtQueryObject")]
     internal static extern NtStatus NtQueryObject(
+        SystemInformationClass cls,
         IntPtr handle,
-        SystemInformationClass informationClass,
         IntPtr buffer,
         int bufferLength,
         out int returnLength
