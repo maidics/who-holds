@@ -84,8 +84,8 @@ internal static class NativeMethods
 
     [DllImport(NtDll, EntryPoint = "NtQueryObject")]
     internal static extern NtStatus NtQueryObject(
-        SystemInformationClass cls,
         IntPtr handle,
+        SystemInformationClass cls,
         IntPtr buffer,
         int bufferLength,
         out int returnLength
