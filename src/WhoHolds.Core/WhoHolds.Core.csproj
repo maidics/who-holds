@@ -5,6 +5,7 @@
     <AssemblyName>WhoHolds.Core</AssemblyName>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
 
   <ItemGroup>
