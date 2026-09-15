@@ -54,6 +54,9 @@ internal static class SystemQuery
         long r = returnLength > current ? returnLength + (long)returnLength / 4 : (long)current * 2;
 
         if (r > MaxBufferSize)
+            r = MaxBufferSize;
+
+        if (r <= current)
         {
             result = 0;
             return false;
