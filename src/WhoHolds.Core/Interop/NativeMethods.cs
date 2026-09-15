@@ -79,7 +79,7 @@ internal static class NativeMethods
         int systemInformationClass,
         IntPtr buffer,
         int bufferLength,
-        out int returnLength
+        out uint returnLength
     );
 
     [DllImport(NtDll, EntryPoint = "NtQueryObject")]
@@ -88,6 +88,6 @@ internal static class NativeMethods
         int objectInformationClass,
         IntPtr buffer,
         int bufferLength,
-        out int returnLength
+        out uint returnLength
     );
 }

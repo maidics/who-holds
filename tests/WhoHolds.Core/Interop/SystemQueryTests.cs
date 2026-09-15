@@ -69,7 +69,7 @@ internal sealed class SystemQueryTests
     {
         Should.Throw<NtException>(() =>
             SystemQuery.QueryWithGrowingBuffer(
-                (SystemClass c, IntPtr b, int l, out int r) =>
+                (SystemClass c, IntPtr b, int l, out uint r) =>
                 {
                     r = 0;
                     return NtStatus.InvalidHandle;
@@ -84,11 +84,11 @@ internal sealed class SystemQueryTests
     private sealed class FakeQuery
     {
         public List<int> Sizes { get; } = new();
-        private readonly int _required;
-        private readonly int? _returnLength;
+        private readonly uint _required;
+        private readonly uint? _returnLength;
         private readonly NtStatus? _status;
 
-        public FakeQuery(int required, int? returnLength = null, NtStatus? returnStatus = null)
+        public FakeQuery(uint required, uint? returnLength = null, NtStatus? returnStatus = null)
         {
             _required = required;
             _returnLength = returnLength;
@@ -99,7 +99,7 @@ internal sealed class SystemQueryTests
             SystemClass systemClass,
             IntPtr buffer,
             int length,
-            out int returnLength
+            out uint returnLength
         )
         {
             Sizes.Add(length);

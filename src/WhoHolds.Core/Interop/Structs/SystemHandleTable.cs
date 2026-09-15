@@ -21,7 +21,7 @@ internal readonly ref struct SystemHandleTable
         Entries = entries;
     }
 
-    public static unsafe SystemHandleTable FromBuffer(NativeBuffer buffer, int returnLength)
+    public static unsafe SystemHandleTable FromBuffer(NativeBuffer buffer, uint returnLength)
     {
         if (buffer.SystemClass.Value is not SystemClass.SYSTEM_HANDLE_INFORMATION_EX)
             throw new InvalidOperationException(

@@ -6,5 +6,5 @@ internal delegate NtStatus SystemQueryDelegate(
     SystemClass systemClass,
     IntPtr buffer,
     int length,
-    out int returnLength
+    out uint returnLength
 );

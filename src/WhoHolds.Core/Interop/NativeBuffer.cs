@@ -9,13 +9,13 @@ internal sealed class NativeBuffer : IDisposable
 {
     private IntPtr _pointer;
 
-    public NativeBuffer(int size, SystemClass systemClass)
+    public NativeBuffer(int size, SystemClass cls)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(size, 0);
 
         Size = size;
         _pointer = Marshal.AllocHGlobal(size);
-        SystemClass = systemClass;
+        SystemClass = cls;
     }
 
     public IntPtr Pointer

@@ -27,7 +27,7 @@ internal sealed class SystemHandleTableTests
         var headerSize = Marshal.SizeOf<SystemHandleInformationEx>();
 
         var ex = Should.Throw<InvalidDataException>(() =>
-            SystemHandleTable.FromBuffer(buffer, headerSize - 1)
+            SystemHandleTable.FromBuffer(buffer, (uint)headerSize - 1)
         );
         ex.Message.ShouldStartWith("Buffer holds");
     }
@@ -38,7 +38,7 @@ internal sealed class SystemHandleTableTests
         using var buffer = TestHandleTableBuilder.BuildNativeBuffer([], -1);
 
         var ex = Should.Throw<InvalidDataException>(() =>
-            SystemHandleTable.FromBuffer(buffer, SystemHandleInformationEx.GetSize())
+            SystemHandleTable.FromBuffer(buffer, (uint)SystemHandleInformationEx.GetSize())
         );
         ex.Message.ShouldStartWith("Header claims");
     }
@@ -54,7 +54,7 @@ internal sealed class SystemHandleTableTests
         };
 
         using var buffer = TestHandleTableBuilder.BuildNativeBuffer(entries);
-        var table = SystemHandleTable.FromBuffer(buffer, buffer.Size);
+        var table = SystemHandleTable.FromBuffer(buffer, (uint)buffer.Size);
 
         table.Entries.Length.ShouldBe(3);
         table.Entries[0].UniqueProcessId.ShouldBe(4);

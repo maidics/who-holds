@@ -11,7 +11,7 @@ internal static class SystemQuery
     public static NativeBuffer QueryWithGrowingBuffer(
         SystemQueryDelegate query,
         SystemClass systemClass,
-        out int returnLength,
+        out uint returnLength,
         int initialSize = 1 << 20
     )
     {
@@ -49,7 +49,7 @@ internal static class SystemQuery
         );
     }
 
-    private static bool TryGrowBuffer(int current, int returnLength, out int result)
+    private static bool TryGrowBuffer(int current, uint returnLength, out int result)
     {
         long r = returnLength > current ? returnLength + (long)returnLength / 4 : (long)current * 2;
 

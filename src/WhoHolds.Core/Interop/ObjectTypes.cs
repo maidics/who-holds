@@ -32,7 +32,7 @@ public static class ObjectTypes
             (cls, buffer, bufferLength, out ret) =>
                 NativeMethods.NtQueryObject(IntPtr.Zero, cls.Value, buffer, bufferLength, out ret),
             SystemClass.ObjectTypesInformation,
-            out int _
+            out _
         );
 
         uint count = (uint)Marshal.ReadInt32(buffer.Pointer);
