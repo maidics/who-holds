@@ -10,7 +10,7 @@ internal static class NativeMethods
     /// <summary>
     /// Retrieves the specified system information from the kernel.
     /// </summary>
-    /// <param name="cls">
+    /// <param name="systemInformationClass">
     /// Selects which structure the kernel returns. This is the only type information in the
     /// call — the kernel does not validate that <paramref name="buffer"/> matches
     /// the class, it simply writes the bytes for whatever class is named here.
@@ -30,7 +30,7 @@ internal static class NativeMethods
     /// <param name="returnLength">
     /// On success, the number of bytes written. On <see cref="NtStatus.InfoLengthMismatch"/>,
     /// the number of bytes required — but for variable-length classes such as
-    /// <see cref="SystemInformationClass.ExtendedHandle"/> this is frequently 0, and is stale
+    /// <see cref="InformationClass.ExtendedHandle"/> this is frequently 0, and is stale
     /// even when populated because the underlying tables change between calls. Treat it as a
     /// hint for the growth factor, not a size to allocate exactly.
     /// </param>
@@ -60,7 +60,7 @@ internal static class NativeMethods
     /// while (true)
     /// {
     ///     IntPtr buffer = Marshal.AllocHGlobal(size);
-    ///     var status = NtQuerySystemInfo(cls, buffer, size, out int needed);
+    ///     var status = NtQuerySystemInfo(systemInformationClass, buffer, size, out int needed);
     ///     if (status != NtStatus.InfoLengthMismatch)
     ///         return (status, buffer, needed);   // caller frees
     ///     Marshal.FreeHGlobal(buffer);
@@ -76,7 +76,7 @@ internal static class NativeMethods
     /// </remarks>
     [DllImport(NtDll, EntryPoint = "NtQuerySystemInformation")]
     internal static extern NtStatus NtQuerySystemInfo(
-        SystemInformationClass cls,
+        int systemInformationClass,
         IntPtr buffer,
         int bufferLength,
         out int returnLength
@@ -85,7 +85,7 @@ internal static class NativeMethods
     [DllImport(NtDll, EntryPoint = "NtQueryObject")]
     internal static extern NtStatus NtQueryObject(
         IntPtr handle,
-        SystemInformationClass cls,
+        int objectInformationClass,
         IntPtr buffer,
         int bufferLength,
         out int returnLength

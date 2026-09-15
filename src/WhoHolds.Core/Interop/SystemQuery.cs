@@ -10,7 +10,7 @@ internal static class SystemQuery
 
     public static NativeBuffer QueryWithGrowingBuffer(
         SystemQueryDelegate query,
-        SystemInformationClass cls,
+        SystemClass systemClass,
         out int returnLength,
         int initialSize = 1 << 20
     )
@@ -24,8 +24,8 @@ internal static class SystemQuery
 
         for (int attempt = 0; attempt < 8; attempt++)
         {
-            var buffer = new NativeBuffer(size, cls);
-            status = query(cls, buffer.Pointer, size, out returnLength);
+            var buffer = new NativeBuffer(size, systemClass);
+            status = query(systemClass, buffer.Pointer, size, out returnLength);
 
             if (status is NtStatus.Success) //TODO: handle more cases if required: STATUS_PENDING, STATUS_MORE_ENTRIES, STATUS_SOME_NOT_MAPPED
                 return buffer;
@@ -33,7 +33,7 @@ internal static class SystemQuery
             buffer.Dispose();
 
             if (status is not (NtStatus.InfoLengthMismatch or NtStatus.BufferTooSmall))
-                NtException.ThrowIfUnsuccessful(status.Value, cls);
+                NtException.ThrowIfUnsuccessful(status.Value, systemClass);
 
             if (!TryGrowBuffer(size, returnLength, out int next))
                 throw new InvalidDataException(
@@ -44,7 +44,7 @@ internal static class SystemQuery
         }
 
         throw new InvalidOperationException(
-            $"Buffer size never converged for {cls} after 8 attempts"
+            $"Buffer size never converged for {systemClass} after 8 attempts"
                 + $" (last {ByteFormat.Humanize(size)}), status: {status}."
         );
     }

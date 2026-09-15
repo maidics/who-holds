@@ -1,4 +1,5 @@
-﻿using WhoHolds.Core.Interop.Enums;
+﻿using WhoHolds.Core.Interop;
+using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Interop.Exceptions;
 
 namespace WhoHolds.Core.Tests.Interop.Exceptions;
@@ -9,28 +10,37 @@ internal sealed class NtExceptionTests
     public void ShouldThrowIfUnsuccessful()
     {
         Should.Throw<NtException>(() =>
-            NtException.ThrowIfUnsuccessful(NtStatus.InvalidInfoClass, SystemInformationClass.Basic)
+            NtException.ThrowIfUnsuccessful(
+                NtStatus.InvalidInfoClass,
+                SystemClass.SystemBasicInformation
+            )
         );
 
         Should.Throw<NtException>(() =>
             NtException.ThrowIfUnsuccessful(
                 NtStatus.InfoLengthMismatch,
-                SystemInformationClass.Basic
+                SystemClass.SystemBasicInformation
             )
         );
 
         Should.Throw<NtException>(() =>
-            NtException.ThrowIfUnsuccessful(NtStatus.AccessDenied, SystemInformationClass.Basic)
+            NtException.ThrowIfUnsuccessful(
+                NtStatus.AccessDenied,
+                SystemClass.SystemBasicInformation
+            )
         );
 
         Should.Throw<NtException>(() =>
-            NtException.ThrowIfUnsuccessful(NtStatus.InvalidHandle, SystemInformationClass.Basic)
+            NtException.ThrowIfUnsuccessful(
+                NtStatus.InvalidHandle,
+                SystemClass.SystemBasicInformation
+            )
         );
     }
 
     [Test]
     public void ShouldNotThrowIfSuccessful()
     {
-        NtException.ThrowIfUnsuccessful(NtStatus.Success, SystemInformationClass.Basic);
+        NtException.ThrowIfUnsuccessful(NtStatus.Success, SystemClass.SystemBasicInformation);
     }
 }

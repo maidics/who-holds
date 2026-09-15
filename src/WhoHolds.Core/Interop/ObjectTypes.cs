@@ -30,8 +30,8 @@ public static class ObjectTypes
     {
         var buffer = SystemQuery.QueryWithGrowingBuffer(
             (cls, buffer, bufferLength, out ret) =>
-                NativeMethods.NtQueryObject(IntPtr.Zero, cls, buffer, bufferLength, out ret),
-            SystemInformationClass.ObjectTypesInformation,
+                NativeMethods.NtQueryObject(IntPtr.Zero, cls.Value, buffer, bufferLength, out ret),
+            SystemClass.ObjectTypesInformation,
             out int _
         );
 

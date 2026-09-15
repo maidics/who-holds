@@ -15,11 +15,13 @@ internal static class TestHandleTableBuilder
         long? declaredCount = null, // pass invalid count
         int? bufferSize = null, // undersize allocation
         int? returnLength = null, // pass invalid bytes returned
-        SystemInformationClass cls = SystemInformationClass.ExtendedHandle
+        SystemClass? cls = null
     )
     {
+        cls ??= SystemClass.SystemHandleInformationEx;
+
         int size = bufferSize ?? _headerSize + entries.Length * _entrySize;
-        var buffer = new NativeBuffer(size, cls);
+        var buffer = new NativeBuffer(size, cls.Value);
 
         var p = (byte*)buffer.Pointer;
         new Span<byte>(p, size).Clear();

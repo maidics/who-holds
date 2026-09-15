@@ -18,7 +18,7 @@ internal sealed class SystemQueryTests
         Should.Throw<ArgumentOutOfRangeException>(() =>
             SystemQuery.QueryWithGrowingBuffer(
                 fake.Invoke,
-                SystemInformationClass.Basic,
+                SystemClass.SystemBasicInformation,
                 out _,
                 initialSize
             )
@@ -32,7 +32,7 @@ internal sealed class SystemQueryTests
 
         using var buffer = SystemQuery.QueryWithGrowingBuffer(
             fake.Invoke,
-            SystemInformationClass.ExtendedHandle,
+            SystemClass.SystemHandleInformationEx,
             out _,
             initialSize: 1024
         );
@@ -53,7 +53,7 @@ internal sealed class SystemQueryTests
         var ex = Should.Throw<InvalidOperationException>(() =>
             SystemQuery.QueryWithGrowingBuffer(
                 fake.Invoke,
-                SystemInformationClass.Basic,
+                SystemClass.SystemBasicInformation,
                 out _,
                 initialSize: 1 << 5
             )
@@ -69,12 +69,12 @@ internal sealed class SystemQueryTests
     {
         Should.Throw<NtException>(() =>
             SystemQuery.QueryWithGrowingBuffer(
-                (SystemInformationClass c, IntPtr b, int l, out int r) =>
+                (SystemClass c, IntPtr b, int l, out int r) =>
                 {
                     r = 0;
                     return NtStatus.InvalidHandle;
                 },
-                SystemInformationClass.Basic,
+                SystemClass.SystemBasicInformation,
                 out _,
                 initialSize: 1024
             )
@@ -96,7 +96,7 @@ internal sealed class SystemQueryTests
         }
 
         public NtStatus Invoke(
-            SystemInformationClass cls,
+            SystemClass systemClass,
             IntPtr buffer,
             int length,
             out int returnLength

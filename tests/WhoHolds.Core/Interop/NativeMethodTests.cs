@@ -41,12 +41,7 @@ internal sealed class NativeMethodTests
         var parameters = AssertMethod(
             nameof(NativeMethods.NtQuerySystemInfo),
             typeof(NtStatus),
-            [
-                typeof(SystemInformationClass),
-                typeof(IntPtr),
-                typeof(int),
-                typeof(int).MakeByRefType(),
-            ],
+            [typeof(int), typeof(IntPtr), typeof(int), typeof(int).MakeByRefType()],
             "NtQuerySystemInformation"
         );
 
@@ -61,13 +56,7 @@ internal sealed class NativeMethodTests
         var parameters = AssertMethod(
             nameof(NativeMethods.NtQueryObject),
             typeof(NtStatus),
-            [
-                typeof(IntPtr),
-                typeof(SystemInformationClass),
-                typeof(IntPtr),
-                typeof(int),
-                typeof(int).MakeByRefType(),
-            ],
+            [typeof(IntPtr), typeof(int), typeof(IntPtr), typeof(int), typeof(int).MakeByRefType()],
             "NtQueryObject"
         );
 

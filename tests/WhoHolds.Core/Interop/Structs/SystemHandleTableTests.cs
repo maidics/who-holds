@@ -11,7 +11,7 @@ internal sealed class SystemHandleTableTests
     [Test]
     public void FromBufferShouldThrowIfBufferContainsInvalidSystemInformationClass()
     {
-        using var buffer = new NativeBuffer(10, SystemInformationClass.Basic);
+        using var buffer = new NativeBuffer(10, SystemClass.SystemBasicInformation);
 
         var ex = Should.Throw<InvalidOperationException>(() =>
             SystemHandleTable.FromBuffer(buffer, 10)
@@ -22,7 +22,7 @@ internal sealed class SystemHandleTableTests
     [Test]
     public void FromBufferShouldThrowIfReturnLengthIsLessThanHeaderSize()
     {
-        using var buffer = new NativeBuffer(10, SystemInformationClass.ExtendedHandle);
+        using var buffer = new NativeBuffer(10, SystemClass.SystemHandleInformationEx);
 
         var headerSize = Marshal.SizeOf<SystemHandleInformationEx>();
 

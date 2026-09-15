@@ -3,7 +3,7 @@
 namespace WhoHolds.Core.Interop;
 
 internal delegate NtStatus SystemQueryDelegate(
-    SystemInformationClass cls,
+    SystemClass systemClass,
     IntPtr buffer,
     int length,
     out int returnLength

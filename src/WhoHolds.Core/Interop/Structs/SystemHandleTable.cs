@@ -23,9 +23,9 @@ internal readonly ref struct SystemHandleTable
 
     public static unsafe SystemHandleTable FromBuffer(NativeBuffer buffer, int returnLength)
     {
-        if (buffer.SystemInformationClass is not SystemInformationClass.ExtendedHandle)
+        if (buffer.SystemClass.Value is not SystemClass.SYSTEM_HANDLE_INFORMATION_EX)
             throw new InvalidOperationException(
-                $"Buffer contains invalid class: {buffer.SystemInformationClass}. Required: {SystemInformationClass.ExtendedHandle}."
+                $"Buffer contains invalid class: {buffer.SystemClass}. Required: {SystemClass.SystemHandleInformationEx.ToString()}."
             );
 
         if (returnLength < _headerSize)
