@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text;
 using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Interop;
@@ -7,6 +8,7 @@ namespace WhoHolds.Core.Interop;
 internal static class NativeMethods
 {
     private const string NtDll = "ntdll.dll";
+    private const string RestartManager = "rstrtmgr.dll";
 
     /// <summary>
     /// Retrieves the specified system information from the kernel.
@@ -90,5 +92,13 @@ internal static class NativeMethods
         IntPtr buffer,
         int bufferLength,
         out uint returnLength
+    );
+
+    [DllImport(RestartManager, ExactSpelling = true, CharSet = CharSet.Unicode)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    internal static extern SystemErrorCode RmStartSession(
+        out uint pSessionHandle,
+        uint dwSessionFlags,
+        StringBuilder strSessionKey
     );
 }
