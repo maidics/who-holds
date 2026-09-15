@@ -3,6 +3,7 @@ using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Interop;
 
+// Note: NtQuerySystemInformation and NtQueryObject functions are a part of the old enumeration based solution
 internal static class NativeMethods
 {
     private const string NtDll = "ntdll.dll";
