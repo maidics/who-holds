@@ -4,7 +4,17 @@ using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Interop;
 
-// Note: NtQuerySystemInformation and NtQueryObject functions are a part of the old enumeration based solution
+/// <summary>
+/// Raw P/Invoke declarations for the Windows API: <c>ntdll.dll</c>, <c>rstrtmgr.dll</c>.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Signatures only. Members mirror the native declarations one-to-one, including naming and capitalization, per the .NET interop guidance.
+/// </para>
+/// </remarks>
+/// <seealso href="https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices">
+/// Native interoperability best practices
+/// </seealso>
 internal static class NativeMethods
 {
     private const string NtDll = "ntdll.dll";
