@@ -104,6 +104,57 @@ internal static class NativeMethods
         out uint returnLength
     );
 
+    /// <summary>
+    /// Starts a new Restart Manager session and returns a session handle and session key
+    /// for use in subsequent Restart Manager calls.
+    /// </summary>
+    /// <param name="pSessionHandle">
+    /// Receives the handle of the new session. Native type is <c>DWORD*</c>: despite the
+    /// (plain 32-bit identifier), <em>not</em> a kernel <c>HANDLE</c>, so it
+    /// must not be wrapped in a <see cref="SafeHandle"/> or closed with
+    /// <c>CloseHandle</c>. Release it with
+    /// <see href="https://learn.microsoft.com/en-us/windows/desktop/api/restartmanager/nf-restartmanager-rmendsession">RmEndSession</see>.
+    /// </param>
+    /// <param name="dwSessionFlags">
+    /// Reserved. Documented as required to be <c>0</c>; passing anything else is undefined.
+    /// </param>
+    /// <param name="strSessionKey">
+    /// Caller-allocated buffer receiving the null-terminated session key. The native API
+    /// requires room for <see cref="CCH_RM_SESSION_KEY"/> + 1 characters. Construct the
+    /// builder with capacity <see cref="CCH_RM_SESSION_KEY"/>, not + 1: a
+    /// <see cref="StringBuilder"/>'s capacity excludes the hidden null, which interop
+    /// always adds. Passing + 1 is safe but allocates one character more than needed.
+    /// <para>
+    /// Deliberately <em>not</em> a C# <c>out</c> parameter, despite the <c>[out]</c>
+    /// annotation in the native documentation. That annotation is a data-direction marker
+    /// meaning "the callee fills this in"; it says nothing about indirection depth. The
+    /// native type is <c>WCHAR[]</c>, which decays to a single <c>WCHAR*</c> aimed at a
+    /// buffer the caller already owns. C# <c>out</c> would marshal this as
+    /// <c>WCHAR**</c> and no longer match the export. Contrast
+    /// <paramref name="pSessionHandle"/>, whose native type genuinely is a pointer
+    /// (<c>DWORD*</c>) and so correctly maps to <c>out</c>.
+    /// </para>
+    /// <para>
+    /// The interop <c>[Out]</c> attribute is also unnecessary here: a
+    /// <see cref="StringBuilder"/> parameter is In and Out by default, so the native
+    /// buffer is copied back on return. It would be required if this were switched to a
+    /// pooled <c>char[]</c>.
+    /// </para>
+    /// </param>
+    /// <returns>
+    /// <see cref="SystemErrorCode"/>.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The call fails if a session with the same session key already exists.
+    /// </para>
+    /// </remarks>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmstartsession">
+    /// RmStartSession function (restartmanager.h)
+    /// </seealso>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/desktop/Debug/system-error-codes">
+    /// System error codes
+    /// </seealso>
     [DllImport(RestartManager, ExactSpelling = true, CharSet = CharSet.Unicode)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern SystemErrorCode RmStartSession(
