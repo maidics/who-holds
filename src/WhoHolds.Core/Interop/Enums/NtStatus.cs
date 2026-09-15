@@ -16,6 +16,7 @@ internal enum NtStatus : uint // 32 bits exactly but the compiler wouldn't know 
     Success = 0x00000000,
     InvalidInfoClass = 0xC0000003, // the class does not exist on the build
     InfoLengthMismatch = 0xC0000004, // the buffer is not big enough for the data
-    AccessDenied = 0xC0000022,
     InvalidHandle = 0xC0000008,
+    AccessDenied = 0xC0000022,
+    BufferTooSmall = 0xC0000023,
 }
