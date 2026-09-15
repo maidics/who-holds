@@ -1,0 +1,49 @@
+﻿using System.Runtime.InteropServices;
+using WhoHolds.Core.Interop.Enums;
+using WhoHolds.Core.Utility;
+
+namespace WhoHolds.Core.Interop;
+
+// TODO: this can leak for caught exceptions
+internal sealed class NativeBuffer : IDisposable
+{
+    private IntPtr _pointer;
+
+    public NativeBuffer(int size, SystemClass cls)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(size, 0);
+
+        Size = size;
+        _pointer = Marshal.AllocHGlobal(size);
+        SystemClass = cls;
+    }
+
+    public IntPtr Pointer
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_pointer == IntPtr.Zero, this);
+            return _pointer;
+        }
+    }
+
+    public int Size { get; }
+    public SystemClass SystemClass { get; }
+
+    public void Dispose()
+    {
+        if (_pointer != IntPtr.Zero)
+        {
+            Marshal.FreeHGlobal(Pointer);
+            _pointer = IntPtr.Zero;
+        }
+    }
+
+    public override string ToString()
+    {
+        if (_pointer == IntPtr.Zero)
+            return $"{nameof(NativeBuffer)}(disposed, {Size:N0} bytes)";
+
+        return $"{nameof(NativeBuffer)}(0x{_pointer:X}, {ByteFormat.Humanize(Size)})";
+    }
+}

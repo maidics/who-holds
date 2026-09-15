@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>WhoHolds.Core.Tests</RootNamespace>
+    <AssemblyName>WhoHolds.Core.Tests</AssemblyName>
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Tunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WhoHolds.Core\WhoHolds.Core.csproj" />
+  </ItemGroup>
+</Project>
