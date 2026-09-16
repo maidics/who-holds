@@ -109,44 +109,33 @@ internal static partial class NativeMethods
     /// for use in subsequent Restart Manager calls.
     /// </summary>
     /// <param name="pSessionHandle">
-    /// Receives the handle of the new session. Native type is <c>DWORD*</c>: despite the
-    /// (plain 32-bit identifier), <em>not</em> a kernel <c>HANDLE</c>, so it
-    /// must not be wrapped in a <see cref="SafeHandle"/> or closed with
-    /// <c>CloseHandle</c>. Release it with
+    /// Receives the handle of the new session. Native type is <c>DWORD*</c>: a plain 32-bit
+    /// identifier, <em>not</em> a kernel <c>HANDLE</c>, so it must not be wrapped in a
+    /// <see cref="SafeHandle"/> or closed with <c>CloseHandle</c>. 0 is a valid handle. Release it with
     /// <see href="https://learn.microsoft.com/en-us/windows/desktop/api/restartmanager/nf-restartmanager-rmendsession">RmEndSession</see>.
     /// </param>
     /// <param name="dwSessionFlags">
     /// Reserved. Documented as required to be <c>0</c>; passing anything else is undefined.
     /// </param>
     /// <param name="strSessionKey">
-    /// Caller-allocated buffer receiving the null-terminated session key. The native API
-    /// requires room for <see cref="CCH_RM_SESSION_KEY"/> + 1 characters. Construct the
-    /// builder with capacity <see cref="CCH_RM_SESSION_KEY"/>, not + 1: a
-    /// <see cref="StringBuilder"/>'s capacity excludes the hidden null, which interop
-    /// always adds. Passing + 1 is safe but allocates one character more than needed.
-    /// <para>
-    /// Deliberately <em>not</em> a C# <c>out</c> parameter, despite the <c>[out]</c>
-    /// annotation in the native documentation. That annotation is a data-direction marker
-    /// meaning "the callee fills this in"; it says nothing about indirection depth. The
-    /// native type is <c>WCHAR[]</c>, which decays to a single <c>WCHAR*</c> aimed at a
-    /// buffer the caller already owns. C# <c>out</c> would marshal this as
-    /// <c>WCHAR**</c> and no longer match the export. Contrast
-    /// <paramref name="pSessionHandle"/>, whose native type genuinely is a pointer
-    /// (<c>DWORD*</c>) and so correctly maps to <c>out</c>.
-    /// </para>
-    /// <para>
-    /// The interop <c>[Out]</c> attribute is also unnecessary here: a
-    /// <see cref="StringBuilder"/> parameter is In and Out by default, so the native
-    /// buffer is copied back on return. It would be required if this were switched to a
-    /// pooled <c>char[]</c>.
-    /// </para>
+    /// Caller-allocated buffer receiving the null-terminated session key. Must have room for
+    /// <see cref="CCH_RM_SESSION_KEY"/> + 1 characters (33): the key is a GUID rendered as 32
+    /// hex digits, plus the terminator. 66 bytes, so <c>stackalloc</c> is appropriate:
+    /// <code>
+    /// Span&lt;char&gt; key = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
+    /// </code>
     /// </param>
     /// <returns>
-    /// <see cref="SystemErrorCode"/>.
+    /// <see cref="SystemErrorCode"/>. Documented values are <c>ERROR_SUCCESS</c>,
+    /// <c>ERROR_SEM_TIMEOUT</c>, <c>ERROR_BAD_ARGUMENTS</c>, <c>ERROR_MAX_SESSIONS_REACHED</c>,
+    /// <c>ERROR_WRITE_FAULT</c> and <c>ERROR_OUTOFMEMORY</c>; handle unlisted codes defensively.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The call fails if a session with the same session key already exists.
+    /// A maximum of 64 sessions per user session may be open simultaneously. Session state
+    /// lives in the registry, not in the calling process, so every successful call must be
+    /// paired with <c>RmEndSession</c> on all paths. Resetting this without ending the sessions
+    /// requires reboot.
     /// </para>
     /// </remarks>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmstartsession">
