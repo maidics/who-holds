@@ -12,6 +12,10 @@ internal static class RestartManagerLimits
     /// RestartManager.h (Windows SDK 10.0.10240.0)
     /// </seealso>
     public const int CCH_RM_SESSION_KEY = 32;
+    public const int CCH_RM_MAX_APP_NAME = 255;
+    public const int CCH_RM_MAX_SVC_NAME = 63;
 
     public const int SessionKeyBufferLength = CCH_RM_SESSION_KEY + 1;
+    public const int MaxAppNameBufferLength = CCH_RM_MAX_APP_NAME + 1;
+    public const int ServiceNameBufferLength = CCH_RM_MAX_SVC_NAME + 1;
 }
