@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Enums;
+using WhoHolds.Core.Interop.Interfaces;
 
 namespace WhoHolds.Core.Interop.Structs;
 
-// TODO: do testing on structs
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct RmProcessInfo
+internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
 {
     public readonly RmUniqueProcess Process;
     public readonly AppNameBuffer strAppName;
@@ -25,4 +25,6 @@ internal readonly struct RmProcessInfo
         int end = buffer.IndexOf('\0');
         return new string(end < 0 ? buffer : buffer[..end]);
     }
+
+    public static int Size => Marshal.SizeOf<RmProcessInfo>();
 }

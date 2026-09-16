@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Structs;
@@ -9,8 +8,8 @@ internal readonly ref struct SystemHandleTable
     public readonly SystemHandleInformationEx Header;
     public readonly ReadOnlySpan<SystemHandleEntryEx> Entries;
 
-    private static readonly int _headerSize = SystemHandleInformationEx.GetSize();
-    private static readonly int _entrySize = SystemHandleEntryEx.GetSize();
+    private static readonly int _headerSize = SystemHandleInformationEx.Size;
+    private static readonly int _entrySize = SystemHandleEntryEx.Size;
 
     private SystemHandleTable(
         SystemHandleInformationEx header,

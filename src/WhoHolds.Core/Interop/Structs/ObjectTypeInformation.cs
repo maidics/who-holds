@@ -4,7 +4,7 @@ using WhoHolds.Core.Interop.Interfaces;
 namespace WhoHolds.Core.Interop.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct ObjectTypeInformation : INtStruct
+internal struct ObjectTypeInformation : INativeSized<ObjectTypeInformation>
 {
     public UnicodeString TypeName;
     public uint TotalNumberOfObjects,
@@ -30,5 +30,5 @@ internal struct ObjectTypeInformation : INtStruct
         DefaultPagedPoolCharge,
         DefaultNonPagedPoolCharge;
 
-    public static int GetSize() => Marshal.SizeOf<ObjectTypeInformation>();
+    public static int Size => Marshal.SizeOf<ObjectTypeInformation>();
 }
