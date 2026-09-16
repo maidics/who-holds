@@ -22,18 +22,17 @@ internal abstract class NativeMethodTestBase(string method)
         return m;
     }
 
-    protected static ParameterInfo[] AssertMethodDeclaration(
-        MethodInfo method,
+    protected ParameterInfo[] AssertMethodDeclaration(
         Type returnType,
         Type[] parameterTypes,
         MethodAttributes methodAttribute
     )
     {
-        method.ReturnType.ShouldBe(returnType);
+        _methodInfo.ReturnType.ShouldBe(returnType);
 
-        method.Attributes.HasFlag(methodAttribute).ShouldBeTrue();
+        _methodInfo.Attributes.HasFlag(methodAttribute).ShouldBeTrue();
 
-        var parameters = method.GetParameters();
+        var parameters = _methodInfo.GetParameters();
         parameters.Select(p => p.ParameterType).ShouldBe(parameterTypes);
 
         return parameters;

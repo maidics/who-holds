@@ -12,9 +12,14 @@ internal sealed class NtQueryObjectTests()
     public override void ShouldBeDeclaredCorrectly()
     {
         var parameters = AssertMethodDeclaration(
-            _methodInfo,
             typeof(NtStatus),
-            [typeof(IntPtr), typeof(int), typeof(IntPtr), typeof(int), typeof(uint).MakeByRefType()],
+            [
+                typeof(IntPtr),
+                typeof(int),
+                typeof(IntPtr),
+                typeof(int),
+                typeof(uint).MakeByRefType(),
+            ],
             MethodAttributes.PinvokeImpl | MethodAttributes.Static
         );
 
