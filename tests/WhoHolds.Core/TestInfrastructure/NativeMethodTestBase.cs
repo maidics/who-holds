@@ -24,7 +24,7 @@ internal abstract class NativeMethodTestBase(string method)
 
     protected ParameterInfo[] AssertMethodDeclaration(
         Type returnType,
-        Type[] parameterTypes,
+        Type[] parameterTypes, // attributes on the parameters should not be tested since the compiler will ensure the correct ones are applied
         MethodAttributes methodAttribute
     )
     {
