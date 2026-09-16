@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using WhoHolds.Core.Interop.Constants;
 using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Interop.Structs;
 using WhoHolds.Core.Tests.TestInfrastructure;
@@ -46,5 +47,45 @@ internal sealed class RmRegisterResourcesTests()
         defaultDllImportSearchPaths.Paths.ShouldBe(DllImportSearchPath.System32);
     }
 
-    // TODO: add error code tests
+    // only error codes that imply declaration correctness are tested here; same as RmStartSessionTests
+
+    [Test]
+    public void ShouldReturnBadArguments()
+    {
+        Span<char> buffer = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
+
+        var startCode = Core.Interop.NativeMethods.RmStartSession(
+            out uint sessionHandle,
+            0,
+            buffer
+        );
+
+        if (startCode is not SystemErrorCode.Success)
+            throw new InvalidOperationException(
+                $"Failed to start rm session. Status: {startCode}."
+            );
+
+        try
+        {
+            var code = Core.Interop.NativeMethods.RmRegisterResources(
+                sessionHandle,
+                1,
+                null,
+                0,
+                null,
+                0,
+                []
+            );
+            code.ShouldBe(SystemErrorCode.BadArguments);
+        }
+        finally
+        {
+            var endCode = Core.Interop.NativeMethods.RmEndSession(sessionHandle);
+
+            if (endCode is not SystemErrorCode.Success)
+                ConsoleWriteFailedToEndRmSession(endCode);
+        }
+    }
+
+    // TODO: add additional tests for RmRegisterResources & RmGetList
 }

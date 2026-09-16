@@ -85,9 +85,7 @@ internal sealed class RmStartSessionTests()
             var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
 
             if (endCode is not SystemErrorCode.Success)
-                throw new InvalidOperationException(
-                    $"Failed to end session after catching an exception at asserting. Status: {endCode}."
-                );
+                ConsoleWriteFailedToEndRmSession(endCode);
         }
     }
 }

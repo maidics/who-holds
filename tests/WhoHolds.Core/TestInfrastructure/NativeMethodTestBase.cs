@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using WhoHolds.Core.Interop;
+using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
@@ -41,4 +42,15 @@ internal abstract class NativeMethodTestBase(string method)
     public abstract void ShouldBeDeclaredCorrectly();
 
     public abstract void ShouldBeDecoratedWithImportAttribute();
+
+    protected void ConsoleWriteFailedToEndRmSession(SystemErrorCode code)
+    {
+        var originalColor = Console.ForegroundColor;
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(
+            $"[cleanup] {nameof(NativeMethods.RmEndSession)} failed: {code} ({(uint)code})."
+        );
+        Console.ForegroundColor = originalColor;
+    }
 }
