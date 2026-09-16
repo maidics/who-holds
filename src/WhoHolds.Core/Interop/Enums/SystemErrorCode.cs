@@ -8,6 +8,11 @@ public enum SystemErrorCode : uint
     Success = 0,
 
     /// <summary>
+    /// ERROR_INVALID_HANDLE - no Restart Manager session exists with the given handle.
+    /// </summary>
+    InvalidHandle = 6,
+
+    /// <summary>
     /// ERROR_OUTOFMEMORY - not enough memory was available to complete the operation.
     /// </summary>
     OutOfMemory = 14,
