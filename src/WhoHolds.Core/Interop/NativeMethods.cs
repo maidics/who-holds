@@ -15,7 +15,7 @@ namespace WhoHolds.Core.Interop;
 /// <seealso href="https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices">
 /// Native interoperability best practices
 /// </seealso>
-internal static class NativeMethods
+internal static partial class NativeMethods
 {
     private const string NtDll = "ntdll.dll";
     private const string RestartManager = "rstrtmgr.dll";
@@ -155,11 +155,14 @@ internal static class NativeMethods
     /// <seealso href="https://learn.microsoft.com/en-us/windows/desktop/Debug/system-error-codes">
     /// System error codes
     /// </seealso>
-    [DllImport(RestartManager, ExactSpelling = true, CharSet = CharSet.Unicode)]
+    [LibraryImport( // Native AOT and trimming works with LibraryImport, no StringBuilder, can step into marshalling code
+        RestartManager,
+        StringMarshalling = StringMarshalling.Utf16 /* type of strSessionKey (char) is ambiguous: blittable to char and char16_t - this resolves it */
+    )]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    internal static extern SystemErrorCode RmStartSession(
+    internal static partial SystemErrorCode RmStartSession(
         out uint pSessionHandle,
         uint dwSessionFlags,
-        StringBuilder strSessionKey
+        Span<char> strSessionKey
     );
 }
