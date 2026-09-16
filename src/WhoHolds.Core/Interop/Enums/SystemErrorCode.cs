@@ -8,6 +8,11 @@ public enum SystemErrorCode : uint
     Success = 0,
 
     /// <summary>
+    /// ERROR_ACCESS_DENIED - a path registered to the Restart Manager session is a directory.
+    /// </summary>
+    AccessDenied = 5,
+
+    /// <summary>
     /// ERROR_INVALID_HANDLE - no Restart Manager session exists with the given handle.
     /// </summary>
     InvalidHandle = 6,
@@ -34,7 +39,17 @@ public enum SystemErrorCode : uint
     BadArguments = 160,
 
     /// <summary>
+    /// ERROR_MORE_DATA - passed buffer is too small to hold all the information.
+    /// </summary>
+    MoreData = 234,
+
+    /// <summary>
     /// ERROR_MAX_SESSIONS_REACHED - the maximum number of sessions has been reached: 64.
     /// </summary>
     MaxSessionsReached = 353,
+
+    /// <summary>
+    /// ERROR_CANCELLED - operation canceled by the user.
+    /// </summary>
+    Cancelled = 1223,
 }
