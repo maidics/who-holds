@@ -5,7 +5,7 @@ namespace WhoHolds.Core.Interop.Structs;
 
 // extended system handle entry
 [StructLayout(LayoutKind.Sequential)]
-internal struct SystemHandleEntryEx : INtStruct
+internal struct SystemHandleEntryEx : INativeSized<SystemHandleEntryEx>
 {
     public IntPtr Object;
     public IntPtr UniqueProcessId;
@@ -21,5 +21,5 @@ internal struct SystemHandleEntryEx : INtStruct
         return $"{nameof(SystemHandleEntryEx)}:\n\t- Object: 0x{Object:X}\n\t- UniqueProcessId: 0x{UniqueProcessId:X}\n\t- HandleValue: 0x{HandleValue:X}\n\t- GrantedAccess: {GrantedAccess}\n\t- CreatorBackTraceIndex: {CreatorBackTraceIndex}\n\t- ObjectTypeIndex: {ObjectTypeIndex}\n\t- Reserved: {Reserved}";
     }
 
-    public static int GetSize() => Marshal.SizeOf<SystemHandleEntryEx>();
+    public static int Size => Marshal.SizeOf<SystemHandleEntryEx>();
 }

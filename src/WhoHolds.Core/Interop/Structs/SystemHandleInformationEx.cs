@@ -4,7 +4,7 @@ using WhoHolds.Core.Interop.Interfaces;
 namespace WhoHolds.Core.Interop.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal struct SystemHandleInformationEx : INtStruct
+internal struct SystemHandleInformationEx : INativeSized<SystemHandleInformationEx>
 {
     public IntPtr NumberOfHandles;
     public IntPtr Reserved;
@@ -14,5 +14,5 @@ internal struct SystemHandleInformationEx : INtStruct
         return $"{nameof(SystemHandleInformationEx)}:\n\t- NumberOfHandles: {NumberOfHandles.ToInt32()}\n\t- Reserved: {Reserved.ToInt32()}";
     }
 
-    public static int GetSize() => Marshal.SizeOf<SystemHandleInformationEx>();
+    public static int Size => Marshal.SizeOf<SystemHandleInformationEx>();
 }

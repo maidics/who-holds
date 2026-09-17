@@ -4,4 +4,4 @@ using WhoHolds.Core.Tests.TestInfrastructure;
 namespace WhoHolds.Core.Tests.Interop.Structs;
 
 [InheritsTests]
-internal sealed class GenericMappingTests() : NativeStructTestBase<GenericMapping>(16);
+internal sealed class RmProcessInfoTests() : NativeStructTestBase<RmProcessInfo>(668);

@@ -38,7 +38,7 @@ internal sealed class SystemHandleTableTests
         using var buffer = TestHandleTableBuilder.BuildNativeBuffer([], -1);
 
         var ex = Should.Throw<InvalidDataException>(() =>
-            SystemHandleTable.FromBuffer(buffer, (uint)SystemHandleInformationEx.GetSize())
+            SystemHandleTable.FromBuffer(buffer, (uint)SystemHandleInformationEx.Size)
         );
         ex.Message.ShouldStartWith("Header claims");
     }

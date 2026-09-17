@@ -1,14 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 using WhoHolds.Core.Interop;
-using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Interop.Structs;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
 internal static class TestHandleTableBuilder
 {
-    private static readonly int _headerSize = SystemHandleInformationEx.GetSize();
-    private static readonly int _entrySize = SystemHandleEntryEx.GetSize();
+    private static readonly int _headerSize = SystemHandleInformationEx.Size;
+    private static readonly int _entrySize = SystemHandleEntryEx.Size;
 
     public static unsafe NativeBuffer BuildNativeBuffer(
         SystemHandleEntryEx[] entries,
