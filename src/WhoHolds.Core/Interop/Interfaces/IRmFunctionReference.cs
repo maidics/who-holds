@@ -5,6 +5,8 @@ namespace WhoHolds.Core.Interop.Interfaces;
 
 public interface IRmFunctionReference
 {
+    static string ApiName => "Restart Manager";
+
     static abstract string FunctionName { get; }
     static abstract string DocumentationLink { get; }
     static abstract string GetErrorMessageByErrorCode(SystemErrorCode code);

@@ -16,14 +16,15 @@ internal abstract class RmStartSessionReference : IRmFunctionReference
         return code switch
         {
             SystemErrorCode.ERROR_SEM_TIMEOUT =>
-                $"Restart Manager {nameof(NativeMethods.RmStartSession)} function could not obtain Registry write mutex in time. A system restart is recommended because further use of Restart Manager is likely to fail.",
+                $"{IRmFunctionReference.ApiName} {nameof(NativeMethods.RmStartSession)} function could not obtain Registry write mutex in time. A system restart is recommended because further use of {IRmFunctionReference.ApiName} is likely to fail.",
             SystemErrorCode.ERROR_BAD_ARGUMENTS =>
                 $"One or more arguments passed to {nameof(NativeMethods.RmStartSession)} is not correct. Please contact the maintainer of this application.",
             SystemErrorCode.ERROR_MAX_SESSIONS_REACHED =>
-                "Maximum number of Restart Manager sessions have been reached (64). End your sessions or restart your PC.",
-            SystemErrorCode.ERROR_WRITE_FAULT => "Restart Manager failed to write to the Registry.",
+                $"Maximum number of {IRmFunctionReference.ApiName} sessions have been reached (64). End your sessions or restart your PC.",
+            SystemErrorCode.ERROR_WRITE_FAULT =>
+                $"{IRmFunctionReference.ApiName} failed to write to the Registry.",
             SystemErrorCode.ERROR_OUTOFMEMORY =>
-                "Restart Manager operation could not complete because not enough memory was available.",
+                $"{IRmFunctionReference.ApiName} operation could not complete because not enough memory was available.",
             _ => throw new ArgumentException($"Unknown {FunctionName} error code: {code}"),
         };
     }
