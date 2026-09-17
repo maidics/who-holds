@@ -153,7 +153,7 @@ internal static partial class NativeMethods
     internal static partial SystemErrorCode RmStartSession(
         out uint pSessionHandle,
         uint dwSessionFlags,
-        Span<char> strSessionKey
+        Span<char> strSessionKey // session key is used by other installers - this will not be used in this application
     );
 
     /// <summary>
