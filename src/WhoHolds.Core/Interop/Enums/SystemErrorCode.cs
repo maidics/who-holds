@@ -3,53 +3,53 @@
 public enum SystemErrorCode : uint
 {
     /// <summary>
-    /// ERROR_SUCCESS - the function completed successfully.
+    /// The function completed successfully.
     /// </summary>
-    Success = 0,
+    ERROR_SUCCESS = 0,
 
     /// <summary>
-    /// ERROR_ACCESS_DENIED - a path registered to the Restart Manager session is a directory.
+    /// A path registered to the Restart Manager session is a directory.
     /// </summary>
-    AccessDenied = 5,
+    ERROR_ACCESS_DENIED = 5,
 
     /// <summary>
-    /// ERROR_INVALID_HANDLE - no Restart Manager session exists with the given handle.
+    /// No Restart Manager session exists with the given handle.
     /// </summary>
-    InvalidHandle = 6,
+    ERROR_INVALID_HANDLE = 6,
 
     /// <summary>
-    /// ERROR_OUTOFMEMORY - not enough memory was available to complete the operation.
+    /// Not enough memory was available to complete the operation.
     /// </summary>
-    OutOfMemory = 14,
+    ERROR_OUTOFMEMORY = 14,
 
     /// <summary>
-    /// ERROR_WRITE_FAULT - the system cannot write to the specified device.
+    /// The system cannot write to the specified device.
     /// </summary>
-    WriteFault = 29,
+    ERROR_WRITE_FAULT = 29,
 
     /// <summary>
-    /// ERROR_SEM_TIMEOUT - Restart Manager could not obtain the Registry write mutex in the allotted time.
+    /// Restart Manager could not obtain the Registry write mutex in the allotted time.
     /// A system restart is recommended because further use of the Restart Manager is likely to fail.
     /// </summary>
-    Timeout = 121,
+    ERROR_SEM_TIMEOUT = 121,
 
     /// <summary>
-    /// ERROR_BAD_ARGUMENTS - one or more arguments are not correct.
+    /// One or more arguments are not correct.
     /// </summary>
-    BadArguments = 160,
+    ERROR_BAD_ARGUMENTS = 160,
 
     /// <summary>
-    /// ERROR_MORE_DATA - passed buffer is too small to hold all the information.
+    /// Passed buffer is too small to hold all the information.
     /// </summary>
-    MoreData = 234,
+    ERROR_MORE_DATA = 234,
 
     /// <summary>
-    /// ERROR_MAX_SESSIONS_REACHED - the maximum number of sessions has been reached: 64.
+    /// The maximum number of sessions has been reached: 64.
     /// </summary>
-    MaxSessionsReached = 353,
+    ERROR_MAX_SESSIONS_REACHED = 353,
 
     /// <summary>
-    /// ERROR_CANCELLED - operation canceled by the user.
+    /// Operation canceled by the user.
     /// </summary>
-    Cancelled = 1223,
+    ERROR_CANCELLED = 1223,
 }

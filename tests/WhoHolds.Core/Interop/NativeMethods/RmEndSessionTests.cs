@@ -52,9 +52,9 @@ internal sealed class RmEndSessionTests()
         );
 
         var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
-        endCode.ShouldBe(SystemErrorCode.Success);
+        endCode.ShouldBe(SystemErrorCode.ERROR_SUCCESS);
 
         var endCode2 = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
-        endCode2.ShouldBe(SystemErrorCode.InvalidHandle);
+        endCode2.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
     }
 }

@@ -49,7 +49,7 @@ internal static partial class NativeMethods
     /// hint for the growth factor, not a size to allocate exactly.
     /// </param>
     /// <returns>
-    /// <see cref="NtStatus.Success"/>, or an NTSTATUS error code. Failure is indicated by the
+    /// <see cref="NtStatus.ERROR_SUCCESS"/>, or an NTSTATUS error code. Failure is indicated by the
     /// high bit being set; values in the <c>0x40000000</c> range are informational successes.
     /// Common results are <see cref="NtStatus.InfoLengthMismatch"/> (0xC0000004, buffer too
     /// small) and <see cref="NtStatus.InvalidInfoClass"/>.
