@@ -88,5 +88,78 @@ internal sealed class RmRegisterResourcesTests()
         }
     }
 
-    // TODO: add additional tests for RmRegisterResources & RmGetList
+    [Test]
+    public void ShouldReturnInvalidHandle()
+    {
+        Span<char> buffer = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
+
+        var startCode = Core.Interop.NativeMethods.RmStartSession(
+            out uint pSessionHandle,
+            0,
+            buffer
+        );
+
+        RestartManagerException.ThrowIfOperationFailed(
+            startCode,
+            nameof(Core.Interop.NativeMethods.RmStartSession)
+        );
+
+        var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
+
+        RestartManagerException.ThrowIfOperationFailed(
+            endCode,
+            nameof(Core.Interop.NativeMethods.RmEndSession)
+        );
+
+        var registerCode = Core.Interop.NativeMethods.RmRegisterResources(
+            pSessionHandle,
+            0,
+            null,
+            0,
+            null,
+            0,
+            null
+        );
+
+        registerCode.ShouldBe(SystemErrorCode.InvalidHandle);
+    }
+
+    [Test]
+    public void ShouldReturnSuccess()
+    {
+        Span<char> buffer = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
+
+        var startCode = Core.Interop.NativeMethods.RmStartSession(
+            out uint pSessionHandle,
+            0,
+            buffer
+        );
+
+        RestartManagerException.ThrowIfOperationFailed(
+            startCode,
+            nameof(Core.Interop.NativeMethods.RmStartSession)
+        );
+
+        try
+        {
+            var registerCode = Core.Interop.NativeMethods.RmRegisterResources(
+                pSessionHandle,
+                0,
+                null,
+                0,
+                null,
+                0,
+                null
+            );
+
+            registerCode.ShouldBe(SystemErrorCode.Success);
+        }
+        finally
+        {
+            var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
+
+            if (endCode is not SystemErrorCode.Success)
+                ConsoleWriteFailedToEndRmSession(endCode);
+        }
+    }
 }
