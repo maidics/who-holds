@@ -6,7 +6,7 @@ namespace WhoHolds.Core.Interop.Constants;
 
 internal static class RmFunctionReference
 {
-    private const string ApiName = "Restart Manager";
+    public const string ApiName = "Restart Manager";
 
     public static Result ErrorCodeToResult(SystemErrorCode code, string function)
     {
