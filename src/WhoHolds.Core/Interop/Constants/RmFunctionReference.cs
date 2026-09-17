@@ -1,14 +1,18 @@
-﻿using WhoHolds.Core.Common.Models;
+﻿using System.Collections.Frozen;
+using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Interop.Constants;
 
-public static class RmFunctionReference
+internal static class RmFunctionReference
 {
     private const string ApiName = "Restart Manager";
 
     public static Result ErrorCodeToResult(SystemErrorCode code, string function)
     {
+        if (!_functions.Contains(function))
+            throw new ArgumentException($"Unknown {ApiName} function: " + function);
+
         if (code is SystemErrorCode.ERROR_SUCCESS)
             return Result.Success();
 
@@ -22,10 +26,7 @@ public static class RmFunctionReference
 
     private static string[] GetErrors(SystemErrorCode code, string function)
     {
-        if (!_returnedErrorCodes.TryGetValue(function, out var supported))
-            throw new ArgumentException($"Unknown {ApiName} function: {function}.");
-
-        if (!supported.Contains(code))
+        if (!_returnedErrorCodes[function].Contains(code))
             throw new ArgumentException(
                 $"Unknown {nameof(SystemErrorCode)} for function: {function}."
             );
@@ -36,7 +37,7 @@ public static class RmFunctionReference
         return
         [
             error,
-            $"{ApiName} {function} returned {code}: {(uint)code}",
+            $"{ApiName} {function} returned {code}: {(uint)code}.",
             .. _documentations.TryGetValue(function, out var doc)
                 ? new[] { $"More information about this function: {doc}" }
                 : [],
@@ -129,5 +130,8 @@ public static class RmFunctionReference
         [SystemErrorCode.ERROR_BAD_ARGUMENTS] = Result.InternalError,
         [SystemErrorCode.ERROR_MAX_SESSIONS_REACHED] = Result.Conflict,
         [SystemErrorCode.ERROR_CANCELLED] = Result.Canceled,
+        [SystemErrorCode.ERROR_MORE_DATA] = Result.InternalError,
     };
+
+    private static readonly FrozenSet<string> _functions = _documentations.Keys.ToFrozenSet();
 }
