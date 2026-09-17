@@ -27,6 +27,6 @@ internal sealed class NtQuerySystemInfoTests()
     {
         var dllImport = _methodInfo.GetCustomAttribute<DllImportAttribute>();
         dllImport.ShouldNotBeNull();
-        dllImport.Value.ShouldBe("NtQuerySystemInformation");
+        dllImport.Value.ShouldBe("ntdll.dll");
     }
 }
