@@ -6,11 +6,28 @@ using WhoHolds.Core.Interop.Structs;
 
 namespace WhoHolds.Core.Interop;
 
-internal sealed class RestartManagerSession(string[] filePaths) : IDisposable // file paths have to normalized before or filePaths have to passed in Start()
+internal sealed class RestartManagerSession : IDisposable // file paths have to normalized before or filePaths have to passed in Start()
 {
     private bool _disposed;
     private bool _started; // default for uint 0 which is a valid handle so this is required to know whether the session has been started
     private uint _sessionHandle;
+    private readonly string[] filePaths;
+
+    public RestartManagerSession(string[] filePaths)
+    {
+        ArgumentOutOfRangeException.ThrowIfEqual(filePaths.Length, 0, nameof(filePaths));
+        // limit should be uint.MaxValue but this will run out of memory before that so the cap will be the user's memory instead of a constant
+
+        var invalid = filePaths.Where(p => !Path.Exists(p)).ToList();
+
+        if (invalid.Count != 0) // this does not have to be more robust because the orchestrator of this class should do checks for the file paths
+            throw new ArgumentException(
+                $"Passed file paths are invalid: {string.Join(", ", invalid)}.",
+                nameof(filePaths)
+            );
+
+        this.filePaths = filePaths;
+    }
 
     public Result Start()
     {
