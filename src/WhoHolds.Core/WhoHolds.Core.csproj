@@ -11,4 +11,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="WhoHolds.Core.Tests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Constants\" />
+  </ItemGroup>
 </Project>
