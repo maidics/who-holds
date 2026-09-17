@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Constants;
 using WhoHolds.Core.Interop.Enums;
+using WhoHolds.Core.Interop.Exceptions;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop.NativeMethods;
@@ -45,10 +46,10 @@ internal sealed class RmEndSessionTests()
             sessionKeyBuffer
         );
 
-        if (startCode is not SystemErrorCode.Success)
-            throw new InvalidOperationException(
-                $"Failed to start rm session. Status: {startCode}."
-            );
+        RestartManagerException.ThrowIfOperationFailed(
+            startCode,
+            nameof(Core.Interop.NativeMethods.RmStartSession)
+        );
 
         var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
         endCode.ShouldBe(SystemErrorCode.Success);

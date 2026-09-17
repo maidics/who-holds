@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Constants;
 using WhoHolds.Core.Interop.Enums;
+using WhoHolds.Core.Interop.Exceptions;
 using WhoHolds.Core.Interop.Structs;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
@@ -60,10 +61,10 @@ internal sealed class RmRegisterResourcesTests()
             buffer
         );
 
-        if (startCode is not SystemErrorCode.Success)
-            throw new InvalidOperationException(
-                $"Failed to start rm session. Status: {startCode}."
-            );
+        RestartManagerException.ThrowIfOperationFailed(
+            startCode,
+            nameof(Core.Interop.NativeMethods.RmStartSession)
+        );
 
         try
         {
