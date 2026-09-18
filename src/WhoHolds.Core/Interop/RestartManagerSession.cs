@@ -129,15 +129,18 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
 
     public void Dispose()
     {
-        if (!_started || _disposed)
+        if (_disposed)
             return;
 
+        if (_started)
+        {
+            var code = NativeMethods.RmEndSession(_sessionHandle);
+
+            if (code is not SystemErrorCode.ERROR_SUCCESS)
+                Debug.WriteLine($"Failed to dispose session: {code}.");
+        }
+
         _disposed = true;
-
-        var code = NativeMethods.RmEndSession(_sessionHandle);
-
-        if (code is not SystemErrorCode.ERROR_SUCCESS)
-            Debug.WriteLine($"Failed to dispose session: {code}.");
     }
 
     private SystemErrorCode RegisterResourcesSafe(uint sessionHandle) =>
