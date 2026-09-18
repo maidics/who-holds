@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop;
+using WhoHolds.Core.Interop.Structs;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop;
@@ -43,7 +45,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         var session = new RestartManagerSession(files);
 
         var result = session.Start();
-        result.Succeeded.ShouldBeTrue();
+        result.ShouldBeResultedTo(ResultType.Success);
 
         var startedField = typeof(RestartManagerSession).GetField(
             "_started",
@@ -82,7 +84,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
 
         using var session = new RestartManagerSession(files);
         var result = session.Start();
-        result.Succeeded.ShouldBeTrue();
+        result.ShouldBeResultedTo(ResultType.Success);
 
         Should.Throw<InvalidOperationException>(() => session.Start());
     }
@@ -129,7 +131,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         session.Start();
 
         var result = session.GetProcesses(out _);
-        result.Succeeded.ShouldBeTrue();
+        result.ShouldBeResultedTo(ResultType.Success);
 
         var processes = result.Value;
         processes.Length.ShouldBe(1);
