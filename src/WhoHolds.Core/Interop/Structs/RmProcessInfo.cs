@@ -5,6 +5,7 @@ using WhoHolds.Core.Interop.Interfaces;
 
 namespace WhoHolds.Core.Interop.Structs;
 
+//TODO: add testing to helpers
 [StructLayout(LayoutKind.Sequential)]
 internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
 {
@@ -89,5 +90,45 @@ internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
             names.Add($"Unrecognized (0x{remaining:X})");
 
         return names;
+    }
+
+    // test constructor
+    internal RmProcessInfo(
+        RmUniqueProcess process,
+        string appName,
+        string? serviceShortName,
+        RmAppType applicationType,
+        RmAppStatus appStatus,
+        uint sessionId,
+        int restartable
+    )
+    {
+        Process = process;
+
+        var appNameBuffer = new AppNameBuffer();
+        Span<ushort> appNameSpan = appNameBuffer;
+        WriteString(appName, MemoryMarshal.Cast<ushort, char>(appNameSpan));
+        strAppName = appNameBuffer;
+
+        var serviceNameBuffer = new ServiceNameBuffer();
+        Span<ushort> serviceNameSpan = serviceNameBuffer;
+        WriteString(serviceShortName, MemoryMarshal.Cast<ushort, char>(serviceNameSpan));
+        strServiceShortName = serviceNameBuffer;
+
+        ApplicationType = applicationType;
+        AppStatus = appStatus;
+        TSSessionId = sessionId;
+        Restartable = restartable;
+    }
+
+    private static void WriteString(string? value, Span<char> buffer)
+    {
+        if (string.IsNullOrEmpty(value))
+            return; // buffer is already zeroed, so it's an empty string
+
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value.Length, buffer.Length);
+
+        value.AsSpan().CopyTo(buffer);
+        buffer[value.Length] = '\0';
     }
 }

@@ -16,4 +16,11 @@ internal readonly struct FileTime : INativeSized<FileTime>
     }
 
     public static int Size => Marshal.SizeOf<FileTime>();
+
+    // test constructor
+    internal FileTime(uint lowDateTime, uint highDateTime)
+    {
+        dwLowDateTime = lowDateTime;
+        dwHighDateTime = highDateTime;
+    }
 }
