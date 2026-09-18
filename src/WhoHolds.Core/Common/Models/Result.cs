@@ -22,6 +22,16 @@ public readonly struct Result
         return Result<T>.Success(value);
     }
 
+    public Result<T> ToFailure<T>()
+    {
+        if (Succeeded)
+            throw new InvalidOperationException(
+                $"Cannot cast {nameof(Result)} when {nameof(Type)} is {ResultType.Success}."
+            );
+
+        return new Result<T>(Errors, Type, default!);
+    }
+
     public static ResultFailure NotFound(params string[] errors) =>
         new(ResultType.NotFound, errors);
 
