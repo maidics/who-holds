@@ -1,6 +1,6 @@
 ﻿namespace WhoHolds.Core.Interop.Enums;
 
-public enum SystemErrorCode : uint
+internal enum SystemErrorCode : uint
 {
     /// <summary>
     /// The function completed successfully.

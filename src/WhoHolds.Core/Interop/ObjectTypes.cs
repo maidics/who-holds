@@ -1,10 +1,9 @@
 ﻿using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Interop.Structs;
 
 namespace WhoHolds.Core.Interop;
 
-public static class ObjectTypes
+internal static class ObjectTypes
 {
     private static bool _initialized;
     private static readonly Dictionary<ushort, string> _map = new();
