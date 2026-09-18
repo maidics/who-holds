@@ -1,5 +1,6 @@
 ﻿namespace WhoHolds.Core.Tests.TestInfrastructure;
 
+[NotInParallel] // because of static _tempDir
 internal abstract class FileHandlerTestBase
 {
     private static string _tempDir = null!;
@@ -25,6 +26,10 @@ internal abstract class FileHandlerTestBase
         }
     }
 
-    protected static string CreateTestFile(string? name = null) =>
-        Path.Combine(_tempDir, name ?? Guid.NewGuid().ToString());
+    protected static string CreateTestFile(string? name = null)
+    {
+        var path = Path.Combine(_tempDir, name ?? Guid.NewGuid().ToString("N"));
+        File.Create(path).Dispose();
+        return path;
+    }
 }
