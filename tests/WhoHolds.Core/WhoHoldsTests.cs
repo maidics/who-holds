@@ -3,34 +3,32 @@ using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests;
 
-internal sealed class HandleFinderTests : PathHandlerTestBase
+internal sealed class WhoHoldsTests : PathHandlerTestBase
 {
     [Test] // since this uses PathUtils covering one case is enough
-    public void GetHolderProcessesToFileShouldReturnNotFoundIfFileNotFound()
+    public void FileMethodToFileShouldReturnNotFoundIfFileNotFound()
     {
-        var result = HandleFinder.GetHolderProcessesToFile(
-            Path.Combine(_tempDir, Guid.NewGuid().ToString())
-        );
+        var result = WhoHolds.File(Path.Combine(_tempDir, Guid.NewGuid().ToString()));
         result.Type.ShouldBe(ResultType.NotFound);
     }
 
     [Test]
-    public void GetHolderProcessesToFileShouldReturnEmptyArrayIfNothingHoldsFile()
+    public void FileMethodToFileShouldReturnEmptyArrayIfNothingHoldsFile()
     {
         var file = CreateTestFile();
 
-        var result = HandleFinder.GetHolderProcessesToFile(file);
+        var result = WhoHolds.File(file);
         result.ShouldBeResultedTo(ResultType.Success);
         result.Value.Length.ShouldBe(0);
     }
 
     [Test] // because it orchestrates the search with RestartManagerSession covering one case where it returns something is enough as well
-    public void GetHolderProcessesToFileShouldReturnHolderProcesses()
+    public void FileMethodToFileShouldReturnHolderProcesses()
     {
         var file = CreateTestFile();
         using var hold = HoldFile(file);
 
-        var result = HandleFinder.GetHolderProcessesToFile(file);
+        var result = WhoHolds.File(file);
         result.ShouldBeResultedTo(ResultType.Success);
 
         var processes = result.Value;

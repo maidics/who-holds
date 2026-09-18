@@ -4,9 +4,9 @@ using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core;
 
-public static class HandleFinder
+public static class WhoHolds
 {
-    public static Result<HolderProcess[]> GetHolderProcessesToFile(string file)
+    public static Result<HolderProcess[]> File(string file)
     {
         var fileCheckResult = PathUtils.CheckFilePath(file);
 
