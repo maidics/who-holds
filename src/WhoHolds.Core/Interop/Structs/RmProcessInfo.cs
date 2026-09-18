@@ -5,7 +5,6 @@ using WhoHolds.Core.Interop.Interfaces;
 
 namespace WhoHolds.Core.Interop.Structs;
 
-//TODO: add testing to helpers
 [StructLayout(LayoutKind.Sequential)]
 internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
 {
