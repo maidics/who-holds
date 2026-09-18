@@ -9,7 +9,7 @@ internal sealed class RestartManagerException : Exception
 
     public static void ThrowIfOperationFailed(SystemErrorCode code, string method)
     {
-        if (code is not SystemErrorCode.Success)
+        if (code is not SystemErrorCode.ERROR_SUCCESS)
             throw new RestartManagerException($"'{method}' RM operation failed: {code}.");
     }
 }

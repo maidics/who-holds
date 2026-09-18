@@ -53,7 +53,7 @@ internal sealed class RmStartSessionTests()
     public void ShouldReturnBadArguments()
     {
         var code = Core.Interop.NativeMethods.RmStartSession(out _, 0, null!);
-        code.ShouldBe(SystemErrorCode.BadArguments);
+        code.ShouldBe(SystemErrorCode.ERROR_BAD_ARGUMENTS);
     }
 
     [Test]
@@ -66,7 +66,7 @@ internal sealed class RmStartSessionTests()
             0,
             sessionKeyBuffer
         );
-        code.ShouldBe(SystemErrorCode.Success);
+        code.ShouldBe(SystemErrorCode.ERROR_SUCCESS);
 
         try
         {
@@ -84,7 +84,7 @@ internal sealed class RmStartSessionTests()
         {
             var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
 
-            if (endCode is not SystemErrorCode.Success)
+            if (endCode is not SystemErrorCode.ERROR_SUCCESS)
                 ConsoleWriteFailedToEndRmSession(endCode);
         }
     }

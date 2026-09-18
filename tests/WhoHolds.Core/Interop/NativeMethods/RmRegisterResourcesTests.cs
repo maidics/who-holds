@@ -77,13 +77,13 @@ internal sealed class RmRegisterResourcesTests()
                 0,
                 []
             );
-            code.ShouldBe(SystemErrorCode.BadArguments);
+            code.ShouldBe(SystemErrorCode.ERROR_BAD_ARGUMENTS);
         }
         finally
         {
             var endCode = Core.Interop.NativeMethods.RmEndSession(sessionHandle);
 
-            if (endCode is not SystemErrorCode.Success)
+            if (endCode is not SystemErrorCode.ERROR_SUCCESS)
                 ConsoleWriteFailedToEndRmSession(endCode);
         }
     }
@@ -121,7 +121,7 @@ internal sealed class RmRegisterResourcesTests()
             null
         );
 
-        registerCode.ShouldBe(SystemErrorCode.InvalidHandle);
+        registerCode.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
     }
 
     [Test]
@@ -152,13 +152,13 @@ internal sealed class RmRegisterResourcesTests()
                 null
             );
 
-            registerCode.ShouldBe(SystemErrorCode.Success);
+            registerCode.ShouldBe(SystemErrorCode.ERROR_SUCCESS);
         }
         finally
         {
             var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
 
-            if (endCode is not SystemErrorCode.Success)
+            if (endCode is not SystemErrorCode.ERROR_SUCCESS)
                 ConsoleWriteFailedToEndRmSession(endCode);
         }
     }

@@ -84,13 +84,13 @@ internal sealed class RmGetListTests()
                 out _
             );
 
-            listCode.ShouldBe(SystemErrorCode.BadArguments);
+            listCode.ShouldBe(SystemErrorCode.ERROR_BAD_ARGUMENTS);
         }
         finally
         {
             var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
 
-            if (endCode is not SystemErrorCode.Success)
+            if (endCode is not SystemErrorCode.ERROR_SUCCESS)
                 ConsoleWriteFailedToEndRmSession(endCode);
         }
     }
@@ -127,7 +127,7 @@ internal sealed class RmGetListTests()
             [],
             out _
         );
-        listCode.ShouldBe(SystemErrorCode.InvalidHandle);
+        listCode.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
     }
 
     [Test]
@@ -157,13 +157,13 @@ internal sealed class RmGetListTests()
                 [],
                 out _
             );
-            listCode.ShouldBe(SystemErrorCode.Success);
+            listCode.ShouldBe(SystemErrorCode.ERROR_SUCCESS);
         }
         finally
         {
             var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
 
-            if (endCode is not SystemErrorCode.Success)
+            if (endCode is not SystemErrorCode.ERROR_SUCCESS)
                 ConsoleWriteFailedToEndRmSession(endCode);
         }
     }

@@ -59,7 +59,7 @@ public readonly struct Result
 
 public readonly struct Result<T>
 {
-    private Result(string[] errors, ResultType type, T value)
+    public Result(string[] errors, ResultType type, T value)
     {
         Errors = errors;
         Type = type;
