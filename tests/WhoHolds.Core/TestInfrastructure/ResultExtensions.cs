@@ -2,7 +2,6 @@
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
-//TODO: refactor tests with this
 internal static class ResultExtensions
 {
     extension(Result result)
