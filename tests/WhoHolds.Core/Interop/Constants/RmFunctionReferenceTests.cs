@@ -60,7 +60,7 @@ internal sealed class RmFunctionReferenceTests
         foreach (var tuple in supported)
         {
             var result = RmFunctionReference.ErrorCodeToResult(tuple.code, function);
-            result.ShouldBeResultedTo(tuple.resultType);
+            result.Type.ShouldBe(tuple.resultType);
         }
     }
 
