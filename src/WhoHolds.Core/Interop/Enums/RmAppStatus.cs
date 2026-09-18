@@ -1,5 +1,6 @@
 ﻿namespace WhoHolds.Core.Interop.Enums;
 
+[Flags]
 internal enum RmAppStatus : uint
 {
     StatusUnknown = 0x0,

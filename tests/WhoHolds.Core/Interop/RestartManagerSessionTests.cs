@@ -4,7 +4,7 @@ using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop;
 
-internal sealed class RestartManagerSessionTests : FileHandlerTestBase
+internal sealed class RestartManagerSessionTests : PathHandlerTestBase
 {
     [Test]
     public void ConstructorShouldThrowArgumentOutOfRangeExceptionIf0FilePathsPassed()

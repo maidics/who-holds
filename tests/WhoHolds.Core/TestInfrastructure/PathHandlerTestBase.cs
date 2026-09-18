@@ -1,9 +1,9 @@
 ﻿namespace WhoHolds.Core.Tests.TestInfrastructure;
 
 [NotInParallel] // because of static _tempDir
-internal abstract class FileHandlerTestBase
+internal abstract class PathHandlerTestBase
 {
-    private static string _tempDir = null!;
+    protected static string _tempDir = null!;
 
     [Before(Class)]
     public static void SetUp()
