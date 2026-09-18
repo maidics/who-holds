@@ -32,4 +32,9 @@ internal abstract class PathHandlerTestBase
         File.Create(path).Dispose();
         return path;
     }
+
+    protected static FileStream HoldFile(string filePath)
+    {
+        return new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+    }
 }

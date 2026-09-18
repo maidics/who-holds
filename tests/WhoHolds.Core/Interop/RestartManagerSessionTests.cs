@@ -120,12 +120,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         var nonHeldFile = CreateTestFile();
 
         string[] files = [heldFile, nonHeldFile];
-        using var hold = new FileStream(
-            heldFile,
-            FileMode.Open,
-            FileAccess.ReadWrite,
-            FileShare.None
-        );
+        using var hold = HoldFile(heldFile);
 
         using var session = new RestartManagerSession(files);
         session.Start();
