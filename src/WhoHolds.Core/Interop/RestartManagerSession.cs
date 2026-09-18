@@ -6,12 +6,12 @@ using WhoHolds.Core.Interop.Structs;
 
 namespace WhoHolds.Core.Interop;
 
-internal sealed class RestartManagerSession : IDisposable // file paths have to normalized before or filePaths have to passed in Start()
+internal sealed class RestartManagerSession : IDisposable // file paths have to normalized before or _filePaths have to passed in Start()
 {
     private bool _disposed;
     private bool _started; // default for uint 0 which is a valid handle so this is required to know whether the session has been started
     private uint _sessionHandle;
-    private readonly string[] filePaths;
+    private readonly string[] _filePaths;
 
     public RestartManagerSession(string[] filePaths)
     {
@@ -26,7 +26,7 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
                 nameof(filePaths)
             );
 
-        this.filePaths = filePaths;
+        _filePaths = filePaths;
     }
 
     public Result Start()
@@ -48,7 +48,7 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
                 nameof(NativeMethods.RmStartSession)
             );
 
-        var registerCode = RegisterResourcesSafe();
+        var registerCode = RegisterResourcesSafe(_sessionHandle);
 
         if (registerCode is SystemErrorCode.ERROR_SUCCESS)
             _started = true;
@@ -140,11 +140,11 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
             Debug.WriteLine($"Failed to dispose session: {code}.");
     }
 
-    private SystemErrorCode RegisterResourcesSafe() =>
+    private SystemErrorCode RegisterResourcesSafe(uint sessionHandle) =>
         NativeMethods.RmRegisterResources(
-            GetSessionHandle(),
-            (uint)filePaths.Length,
-            filePaths,
+            sessionHandle,
+            (uint)_filePaths.Length,
+            _filePaths,
             0,
             null,
             0,
