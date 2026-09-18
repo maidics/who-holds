@@ -1,6 +1,7 @@
 ﻿using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Constants;
 using WhoHolds.Core.Interop.Enums;
+using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop.Constants;
 
@@ -32,7 +33,7 @@ internal sealed class RmFunctionReferenceTests
             SystemErrorCode.ERROR_SUCCESS,
             RmStartSession
         );
-        result.Type.ShouldBe(ResultType.Success);
+        result.ShouldBeResultedTo(ResultType.Success);
     }
 
     [Test]

@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
+using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop;
+using WhoHolds.Core.Interop.Structs;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop;
 
-internal sealed class RestartManagerSessionTests : FileHandlerTestBase
+internal sealed class RestartManagerSessionTests : PathHandlerTestBase
 {
     [Test]
     public void ConstructorShouldThrowArgumentOutOfRangeExceptionIf0FilePathsPassed()
@@ -43,7 +45,7 @@ internal sealed class RestartManagerSessionTests : FileHandlerTestBase
         var session = new RestartManagerSession(files);
 
         var result = session.Start();
-        result.Succeeded.ShouldBeTrue();
+        result.ShouldBeResultedTo(ResultType.Success);
 
         var startedField = typeof(RestartManagerSession).GetField(
             "_started",
@@ -82,7 +84,7 @@ internal sealed class RestartManagerSessionTests : FileHandlerTestBase
 
         using var session = new RestartManagerSession(files);
         var result = session.Start();
-        result.Succeeded.ShouldBeTrue();
+        result.ShouldBeResultedTo(ResultType.Success);
 
         Should.Throw<InvalidOperationException>(() => session.Start());
     }
@@ -118,18 +120,13 @@ internal sealed class RestartManagerSessionTests : FileHandlerTestBase
         var nonHeldFile = CreateTestFile();
 
         string[] files = [heldFile, nonHeldFile];
-        using var hold = new FileStream(
-            heldFile,
-            FileMode.Open,
-            FileAccess.ReadWrite,
-            FileShare.None
-        );
+        using var hold = HoldFile(heldFile);
 
         using var session = new RestartManagerSession(files);
         session.Start();
 
         var result = session.GetProcesses(out _);
-        result.Succeeded.ShouldBeTrue();
+        result.ShouldBeResultedTo(ResultType.Success);
 
         var processes = result.Value;
         processes.Length.ShouldBe(1);
