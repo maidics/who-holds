@@ -1,4 +1,5 @@
 ﻿using WhoHolds.Cli.Output;
+using WhoHolds.Core.Common.Models;
 
 namespace WhoHolds.Cli.Commands;
 
@@ -19,18 +20,8 @@ public sealed class GetFileHoldersCommand : RootCommand
     };
 
     public GetFileHoldersCommand(TextWriter stdout, TextWriter stderr)
-        : base("Shows which processes are holding a file.")
-    { //TODO: create IResultWriter interface and implement for Text and Json then use it here
-        /*
-         * internal static class ResultWriters
-{
-    public static IResultWriter For(OutputFormat format) => format switch
+        : base($"Shows which processes are holding a file.\n\n{HolderProcess.DescribeFields()}")
     {
-        OutputFormat.Json => new JsonResultWriter(),
-        _                 => new TextResultWriter()
-    };
-}
-         */
         _filePath.AcceptLegalFilePathsOnly();
         Arguments.Add(_filePath);
         Options.Add(_format);
@@ -43,11 +34,18 @@ public sealed class GetFileHoldersCommand : RootCommand
             try
             {
                 var result = Core.WhoHolds.File(path);
-                stdout.WriteLine();
+
+                var writer = IResultWriter.For(format);
+
+                writer.Write(result, stdout);
+
+                return result.GetExitCode();
             }
             catch (Exception e)
             {
                 stderr.WriteLine(e.Message);
+
+                return ExitCodes.Error;
             }
         });
     }
