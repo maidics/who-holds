@@ -1,0 +1,9 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "WhoHolds.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "./artifacts/obj/WhoHolds.Cli/debug/WhoHolds.Cli.dll"
+    }
+  }
+}
