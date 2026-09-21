@@ -37,7 +37,7 @@ public sealed class GetFileHoldersCommand : RootCommand
 
                 var writer = IResultWriter.For(format);
 
-                writer.Write(result, stdout);
+                writer.Write(result, stdout, stderr);
 
                 return result.GetExitCode();
             }
