@@ -34,14 +34,7 @@ internal static class RmFunctionReference
         if (!_errorMessages.TryGetValue(code, out var error))
             throw new ArgumentException($"Unknown error: {code}.");
 
-        return
-        [
-            error,
-            $"{ApiName} {function} returned {code}: {(uint)code}.",
-            .. _documentations.TryGetValue(function, out var doc)
-                ? new[] { $"More information about this function: {doc}" }
-                : [],
-        ];
+        return [error, $"{ApiName} {function} returned {code}: {(uint)code}."];
     }
 
     private static readonly Dictionary<string, HashSet<SystemErrorCode>> _returnedErrorCodes = new()
@@ -105,18 +98,6 @@ internal static class RmFunctionReference
         [SystemErrorCode.ERROR_CANCELLED] = "The operation was canceled.",
     };
 
-    private static readonly Dictionary<string, string> _documentations = new()
-    {
-        [nameof(NativeMethods.RmStartSession)] =
-            "https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmstartsession",
-        [nameof(NativeMethods.RmRegisterResources)] =
-            "https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmregisterresources",
-        [nameof(NativeMethods.RmGetList)] =
-            "https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmgetlist",
-        [nameof(NativeMethods.RmEndSession)] =
-            "https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmendsession",
-    };
-
     private static readonly Dictionary<
         SystemErrorCode,
         Func<string[], ResultFailure>
@@ -133,5 +114,5 @@ internal static class RmFunctionReference
         [SystemErrorCode.ERROR_MORE_DATA] = Result.InternalError,
     };
 
-    private static readonly FrozenSet<string> _functions = _documentations.Keys.ToFrozenSet();
+    private static readonly FrozenSet<string> _functions = _returnedErrorCodes.Keys.ToFrozenSet();
 }

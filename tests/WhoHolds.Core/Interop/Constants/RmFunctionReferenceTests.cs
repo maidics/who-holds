@@ -124,15 +124,9 @@ internal sealed class RmFunctionReferenceTests
         string error
     )
     {
-        const string docBase =
-            "https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-";
-
         var result = RmFunctionReference.ErrorCodeToResult(code, function);
         result.Errors[0].ShouldContain(error);
         result.Errors[1].ShouldContain($"{function} returned {code}: {(uint)code}.");
-        result
-            .Errors[2]
-            .ShouldBe($"More information about this function: {docBase + function.ToLower()}");
     }
 
     public static IEnumerable<(
