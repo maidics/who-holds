@@ -33,18 +33,24 @@ public readonly struct Result<T>
         if (succeeded && errors.Length > 0)
             throw new ArgumentException($"Succeeded {nameof(Result)} cannot contain errors.");
 
-        if (!succeeded && value is not null)
-            throw new ArgumentException(
-                $"Failed {nameof(Result)} must set {nameof(Value)} to null."
-            );
-
         Succeeded = succeeded;
         Value = value;
         Errors = errors;
     }
 
     public bool Succeeded { get; }
-    public T Value { get; }
+    public T Value
+    {
+        get
+        {
+            if (!Succeeded)
+            {
+                throw new InvalidOperationException("Failed result does not have value.");
+            }
+
+            return field;
+        }
+    }
     public string[] Errors { get; }
 
     [JsonInclude]
