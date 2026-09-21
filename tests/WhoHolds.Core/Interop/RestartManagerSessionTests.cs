@@ -1,7 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop;
-using WhoHolds.Core.Interop.Structs;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop;
@@ -131,5 +131,41 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         var processes = result.Value;
         processes.Length.ShouldBe(1);
         processes.ShouldContain(p => p.Process.dwProcessId == Environment.ProcessId);
+    }
+
+    [Test]
+    public void GetProcessesShouldReturnHolderWhenAnotherProcessHoldsIt()
+    {
+        var file = CreateTestFile();
+
+        using var holder = Process.Start(
+            new ProcessStartInfo
+            {
+                FileName = "powershell",
+                Arguments =
+                    $"-NoProfile -Command \"$f=[IO.File]::Open('{file}','Open','Read','None'); Start-Sleep 30\"",
+                CreateNoWindow = true,
+            }
+        )!;
+
+        Thread.Sleep(1500);
+
+        try
+        {
+            using var session = new RestartManagerSession([file]);
+            var startResult = session.Start();
+            startResult.ShouldBeResultedTo(ResultType.Success);
+
+            var result = session.GetProcesses(out _);
+            result.ShouldBeResultedTo(ResultType.Success);
+
+            var processes = result.Value;
+            processes.Length.ShouldBe(1);
+            processes[0].Process.dwProcessId.ShouldBe((uint)holder.Id);
+        }
+        finally
+        {
+            holder.Kill();
+        }
     }
 }

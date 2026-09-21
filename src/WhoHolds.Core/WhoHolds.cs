@@ -14,7 +14,10 @@ public static class WhoHolds
             return fileCheckResult.ToFailure<HolderProcess[]>();
 
         using var session = new RestartManagerSession([file]);
-        session.Start();
+        var startResult = session.Start();
+
+        if (!startResult.Succeeded)
+            return startResult.ToFailure<HolderProcess[]>();
 
         var getResult = session.GetProcesses(out _);
 

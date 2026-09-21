@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <RootNamespace>WhoHolds.Core</RootNamespace>
     <AssemblyName>WhoHolds.Core</AssemblyName>
 

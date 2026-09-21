@@ -78,7 +78,7 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
             uint count = (uint)(buffer?.Length ?? 0);
 
             code = NativeMethods.RmGetList(
-                GetSessionHandle(),
+                _sessionHandle,
                 out uint needed,
                 ref count,
                 buffer,
@@ -117,14 +117,6 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
             ResultType.InternalError,
             []
         );
-    }
-
-    private uint GetSessionHandle()
-    {
-        if (!_started)
-            throw new InvalidOperationException("Session must be started to acquire handle.");
-
-        return _sessionHandle;
     }
 
     public void Dispose()
