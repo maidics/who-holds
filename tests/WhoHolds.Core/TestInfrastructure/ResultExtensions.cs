@@ -6,18 +6,18 @@ internal static class ResultExtensions
 {
     extension(Result result)
     {
-        public void ShouldBeResultedTo(ResultType type, params string[] errors)
+        public void ShouldBeResultedTo(bool succeeded, params string[] errors)
         {
-            result.Type.ShouldBe(type);
+            result.Succeeded.ShouldBe(succeeded);
             result.Errors.ShouldBe(errors);
         }
     }
 
     extension<T>(Result<T> result)
     {
-        public void ShouldBeResultedTo(ResultType type, params string[] errors)
+        public void ShouldBeResultedTo(bool succeeded, params string[] errors)
         {
-            result.Type.ShouldBe(type);
+            result.Succeeded.ShouldBe(succeeded);
             result.Errors.ShouldBe(errors);
         }
     }

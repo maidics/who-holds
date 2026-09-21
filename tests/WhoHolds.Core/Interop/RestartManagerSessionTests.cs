@@ -45,7 +45,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         var session = new RestartManagerSession(files);
 
         var result = session.Start();
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
 
         var startedField = typeof(RestartManagerSession).GetField(
             "_started",
@@ -84,7 +84,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
 
         using var session = new RestartManagerSession(files);
         var result = session.Start();
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
 
         Should.Throw<InvalidOperationException>(() => session.Start());
     }
@@ -126,7 +126,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         session.Start();
 
         var result = session.GetProcesses(out _);
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
 
         var processes = result.Value;
         processes.Length.ShouldBe(1);
@@ -154,10 +154,10 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         {
             using var session = new RestartManagerSession([file]);
             var startResult = session.Start();
-            startResult.ShouldBeResultedTo(ResultType.Success);
+            startResult.ShouldBeResultedTo(true);
 
             var result = session.GetProcesses(out _);
-            result.ShouldBeResultedTo(ResultType.Success);
+            result.ShouldBeResultedTo(true);
 
             var processes = result.Value;
             processes.Length.ShouldBe(1);

@@ -18,10 +18,7 @@ internal static class RmFunctionReference
 
         var errors = GetErrors(code, function);
 
-        if (!_resultFailureFactoryMethods.TryGetValue(code, out var resultFactory))
-            throw new ArgumentException($"No {nameof(Result)} factory method found for {code}.");
-
-        return resultFactory(errors);
+        return new Result(false, errors);
     }
 
     private static string[] GetErrors(SystemErrorCode code, string function)
@@ -96,22 +93,6 @@ internal static class RmFunctionReference
         [SystemErrorCode.ERROR_MAX_SESSIONS_REACHED] =
             $"Maximum number of {ApiName} sessions have been reached (64). End your sessions or restart your PC.",
         [SystemErrorCode.ERROR_CANCELLED] = "The operation was canceled.",
-    };
-
-    private static readonly Dictionary<
-        SystemErrorCode,
-        Func<string[], ResultFailure>
-    > _resultFailureFactoryMethods = new()
-    {
-        [SystemErrorCode.ERROR_ACCESS_DENIED] = Result.InternalError, // should be against - registering a directory as resource
-        [SystemErrorCode.ERROR_INVALID_HANDLE] = Result.InternalError,
-        [SystemErrorCode.ERROR_OUTOFMEMORY] = Result.InternalError,
-        [SystemErrorCode.ERROR_WRITE_FAULT] = Result.ExternalServiceError,
-        [SystemErrorCode.ERROR_SEM_TIMEOUT] = Result.Timeout,
-        [SystemErrorCode.ERROR_BAD_ARGUMENTS] = Result.InternalError,
-        [SystemErrorCode.ERROR_MAX_SESSIONS_REACHED] = Result.Conflict,
-        [SystemErrorCode.ERROR_CANCELLED] = Result.Canceled,
-        [SystemErrorCode.ERROR_MORE_DATA] = Result.InternalError,
     };
 
     private static readonly FrozenSet<string> _functions = _returnedErrorCodes.Keys.ToFrozenSet();

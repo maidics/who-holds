@@ -10,7 +10,7 @@ internal sealed class PathUtilsTests : PathHandlerTestBase
     public void CheckFilePathShouldReturnRuleViolationWhenPathIsADirectory()
     {
         var result = PathUtils.CheckFilePath(_tempDir);
-        result.ShouldBeResultedTo(ResultType.RuleViolation, "Given path is a directory.");
+        result.ShouldBeResultedTo(false, "Given path is a directory.");
     }
 
     [Test]
@@ -19,7 +19,7 @@ internal sealed class PathUtilsTests : PathHandlerTestBase
         var nonExisting = Path.Combine(_tempDir, Guid.NewGuid().ToString());
 
         var result = PathUtils.CheckFilePath(nonExisting);
-        result.ShouldBeResultedTo(ResultType.NotFound, "File not found.");
+        result.ShouldBeResultedTo(false, "File not found.");
     }
 
     // UnauthorizedAccessException is left out due to security reasons: TODO: implement it in november
@@ -31,7 +31,7 @@ internal sealed class PathUtilsTests : PathHandlerTestBase
     public void CheckFilePathShouldRuleViolationForInvalidFilePaths(string path)
     {
         var result = PathUtils.CheckFilePath(path);
-        result.ShouldBeResultedTo(ResultType.RuleViolation, "Invalid file path.");
+        result.ShouldBeResultedTo(false, "Invalid file path.");
     }
 
     [Test]
@@ -40,6 +40,6 @@ internal sealed class PathUtilsTests : PathHandlerTestBase
         var path = CreateTestFile();
 
         var result = PathUtils.CheckFilePath(path);
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
     }
 }

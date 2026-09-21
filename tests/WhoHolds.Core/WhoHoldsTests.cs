@@ -9,7 +9,7 @@ internal sealed class WhoHoldsTests : PathHandlerTestBase
     public void FileMethodToFileShouldReturnNotFoundIfFileNotFound()
     {
         var result = WhoHolds.File(Path.Combine(_tempDir, Guid.NewGuid().ToString()));
-        result.Type.ShouldBe(ResultType.NotFound);
+        result.ShouldBeResultedTo(false, "File not found.");
     }
 
     [Test]
@@ -18,7 +18,7 @@ internal sealed class WhoHoldsTests : PathHandlerTestBase
         var file = CreateTestFile();
 
         var result = WhoHolds.File(file);
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
         result.Value.Length.ShouldBe(0);
     }
 
@@ -29,7 +29,7 @@ internal sealed class WhoHoldsTests : PathHandlerTestBase
         using var hold = HoldFile(file);
 
         var result = WhoHolds.File(file);
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
 
         var processes = result.Value;
         processes.Length.ShouldBe(1);
