@@ -3,7 +3,7 @@
 /// <summary>
 /// Process exit codes.
 /// </summary>
-internal static class ExitCodes
+public static class ExitCodes
 {
     /// <summary>No process is holding the specified file.</summary>
     public const int NotLocked = 0;
