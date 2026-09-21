@@ -4,7 +4,7 @@ namespace WhoHolds.Cli.Output;
 
 public interface IResultWriter
 {
-    void Write(Result<HolderProcess[]> result, TextWriter output);
+    void Write(Result<HolderProcess[]> result, TextWriter stdout, TextWriter stderr);
 
     public static IResultWriter For(OutputFormat format) =>
         format switch

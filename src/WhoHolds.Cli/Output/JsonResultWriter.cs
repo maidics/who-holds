@@ -5,9 +5,9 @@ namespace WhoHolds.Cli.Output;
 
 public sealed class JsonResultWriter : IResultWriter
 {
-    public void Write(Result<HolderProcess[]> result, TextWriter output)
+    public void Write(Result<HolderProcess[]> result, TextWriter stdout, TextWriter stderr)
     {
-        output.WriteLine(
+        stdout.WriteLine(
             JsonSerializer.Serialize(
                 result.Succeeded ? result.Value : [],
                 CliJsonContext.Default.HolderProcessArray
