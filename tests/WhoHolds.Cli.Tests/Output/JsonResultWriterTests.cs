@@ -4,7 +4,7 @@ using WhoHolds.Core.Common.Models;
 
 namespace WhoHolds.Cli.Tests.Output;
 
-public sealed class JsonResultWriterTests
+public sealed class JsonResultWriterTests // this also covers: ResultJsonConverter
 {
     private static readonly JsonResultWriter _writer = new();
 
