@@ -52,13 +52,6 @@ public readonly struct Result<T>
     }
     public string[] Errors { get; }
 
-    [JsonInclude]
-    [JsonPropertyName("value")]
-    private T? ValueJson
-    {
-        get => Succeeded ? Value : default;
-    }
-
     public static implicit operator Result<T>(ResultFailure failure)
     {
         return new Result<T>(false, default!, failure.Errors);
