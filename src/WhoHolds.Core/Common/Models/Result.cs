@@ -2,7 +2,6 @@
 
 namespace WhoHolds.Core.Common.Models;
 
-// TODO: test this
 public readonly struct Result
 {
     public Result(bool succeeded, params string[] errors)
