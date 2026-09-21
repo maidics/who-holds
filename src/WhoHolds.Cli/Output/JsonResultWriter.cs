@@ -8,10 +8,7 @@ public sealed class JsonResultWriter : IResultWriter
     public void Write(Result<HolderProcess[]> result, TextWriter stdout, TextWriter stderr)
     {
         stdout.WriteLine(
-            JsonSerializer.Serialize(
-                result.Succeeded ? result.Value : [],
-                CliJsonContext.Default.HolderProcessArray
-            )
+            JsonSerializer.Serialize(result, CliJsonContext.Default.ResultHolderProcessArray)
         );
     }
 }
