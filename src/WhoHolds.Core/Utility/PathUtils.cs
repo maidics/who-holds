@@ -10,22 +10,22 @@ internal static class PathUtils
         {
             var attributes = File.GetAttributes(path);
             return attributes.HasFlag(FileAttributes.Directory)
-                ? Result.RuleViolation("Given path is a directory.")
+                ? Result.Failure("Given path is a directory.")
                 : Result.Success();
         }
         catch (FileNotFoundException)
         {
-            return Result.NotFound("File not found.");
+            return Result.Failure("File not found.");
         }
         catch (UnauthorizedAccessException)
         {
-            return Result.Forbidden(
+            return Result.Failure(
                 "Access denied. Try running the application as an administrator."
             );
         }
         catch (Exception ex) when (ex is ArgumentException or IOException)
         {
-            return Result.RuleViolation("Invalid file path.");
+            return Result.Failure("Invalid file path.");
         }
     }
 }

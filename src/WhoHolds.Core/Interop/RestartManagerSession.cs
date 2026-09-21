@@ -106,16 +106,12 @@ internal sealed class RestartManagerSession : IDisposable // file paths have to 
                         nameof(NativeMethods.RmGetList)
                     );
 
-                    return new Result<RmProcessInfo[]>(result.Errors, result.Type, []);
+                    return Result.Failure(result.Errors);
             }
         }
 
-        return new Result<RmProcessInfo[]>(
-            [
-                $"{RmFunctionReference.ApiName} {nameof(NativeMethods.RmGetList)} kept returning {SystemErrorCode.ERROR_MORE_DATA} after {attempts}.",
-            ],
-            ResultType.InternalError,
-            []
+        return Result.Failure(
+            $"{RmFunctionReference.ApiName} {nameof(NativeMethods.RmGetList)} kept returning {SystemErrorCode.ERROR_MORE_DATA} after {attempts}."
         );
     }
 

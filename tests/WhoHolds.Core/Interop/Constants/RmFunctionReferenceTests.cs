@@ -1,5 +1,4 @@
-﻿using WhoHolds.Core.Common.Models;
-using WhoHolds.Core.Interop.Constants;
+﻿using WhoHolds.Core.Interop.Constants;
 using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
@@ -33,7 +32,7 @@ internal sealed class RmFunctionReferenceTests
             SystemErrorCode.ERROR_SUCCESS,
             RmStartSession
         );
-        result.ShouldBeResultedTo(ResultType.Success);
+        result.ShouldBeResultedTo(true);
     }
 
     [Test]
@@ -47,72 +46,6 @@ internal sealed class RmFunctionReferenceTests
     {
         Should.Throw<ArgumentException>(() =>
             RmFunctionReference.ErrorCodeToResult(code, function)
-        );
-    }
-
-    [Test] // test supported codes here
-    [MethodDataSource(nameof(ErrorCodeToResultShouldReturnResultForSupportedErrorCodesCases))]
-    public void ErrorCodeToResultShouldReturnResultForSupportedErrorCodes(
-        string function,
-        HashSet<(SystemErrorCode code, ResultType resultType)> supported
-    )
-    {
-        foreach (var tuple in supported)
-        {
-            var result = RmFunctionReference.ErrorCodeToResult(tuple.code, function);
-            result.Type.ShouldBe(tuple.resultType);
-        }
-    }
-
-    public static IEnumerable<(
-        string,
-        HashSet<(SystemErrorCode, ResultType)>
-    )> ErrorCodeToResultShouldReturnResultForSupportedErrorCodesCases()
-    {
-        yield return (
-            RmStartSession,
-            [
-                (SystemErrorCode.ERROR_SEM_TIMEOUT, ResultType.Timeout),
-                (SystemErrorCode.ERROR_BAD_ARGUMENTS, ResultType.InternalError),
-                (SystemErrorCode.ERROR_MAX_SESSIONS_REACHED, ResultType.Conflict),
-                (SystemErrorCode.ERROR_WRITE_FAULT, ResultType.ExternalServiceError),
-                (SystemErrorCode.ERROR_OUTOFMEMORY, ResultType.InternalError),
-            ]
-        );
-
-        yield return (
-            RmRegisterResources,
-            [
-                (SystemErrorCode.ERROR_SEM_TIMEOUT, ResultType.Timeout),
-                (SystemErrorCode.ERROR_BAD_ARGUMENTS, ResultType.InternalError),
-                (SystemErrorCode.ERROR_WRITE_FAULT, ResultType.ExternalServiceError),
-                (SystemErrorCode.ERROR_OUTOFMEMORY, ResultType.InternalError),
-                (SystemErrorCode.ERROR_INVALID_HANDLE, ResultType.InternalError),
-            ]
-        );
-
-        yield return (
-            RmGetList,
-            [
-                (SystemErrorCode.ERROR_MORE_DATA, ResultType.InternalError),
-                (SystemErrorCode.ERROR_CANCELLED, ResultType.Canceled),
-                (SystemErrorCode.ERROR_SEM_TIMEOUT, ResultType.Timeout),
-                (SystemErrorCode.ERROR_BAD_ARGUMENTS, ResultType.InternalError),
-                (SystemErrorCode.ERROR_WRITE_FAULT, ResultType.ExternalServiceError),
-                (SystemErrorCode.ERROR_OUTOFMEMORY, ResultType.InternalError),
-                (SystemErrorCode.ERROR_INVALID_HANDLE, ResultType.InternalError),
-                (SystemErrorCode.ERROR_ACCESS_DENIED, ResultType.InternalError),
-            ]
-        );
-
-        yield return (
-            RmEndSession,
-            [
-                (SystemErrorCode.ERROR_SEM_TIMEOUT, ResultType.Timeout),
-                (SystemErrorCode.ERROR_WRITE_FAULT, ResultType.ExternalServiceError),
-                (SystemErrorCode.ERROR_OUTOFMEMORY, ResultType.InternalError),
-                (SystemErrorCode.ERROR_INVALID_HANDLE, ResultType.InternalError),
-            ]
         );
     }
 

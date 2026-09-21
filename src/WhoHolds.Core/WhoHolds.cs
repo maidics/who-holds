@@ -11,18 +11,18 @@ public static class WhoHolds
         var fileCheckResult = PathUtils.CheckFilePath(file);
 
         if (!fileCheckResult.Succeeded)
-            return fileCheckResult.ToFailure<HolderProcess[]>();
+            return Result.Failure(fileCheckResult.Errors);
 
         using var session = new RestartManagerSession([file]);
         var startResult = session.Start();
 
         if (!startResult.Succeeded)
-            return startResult.ToFailure<HolderProcess[]>();
+            return Result.Failure(startResult.Errors);
 
         var getResult = session.GetProcesses(out _);
 
         if (!getResult.Succeeded)
-            return getResult.ToFailure<HolderProcess[]>();
+            return Result.Failure(getResult.Errors);
 
         var processes = getResult.Value.Select(p => p.ToHolderProcess()).ToArray();
 
