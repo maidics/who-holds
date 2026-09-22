@@ -21,7 +21,7 @@ public abstract class DotNetModuleTestBase<TModule>
         _builder.AddModule<TModule>();
     }
 
-    protected async Task<PipelineSummary> BuildAndRunAsync()
+    protected async Task<PipelineSummary> BuildAndRunAsync() // runs using the IDotNet mock so the module does not actually run
     {
         var pipeline = await _builder.BuildAsync();
         return await pipeline.RunAsync();
