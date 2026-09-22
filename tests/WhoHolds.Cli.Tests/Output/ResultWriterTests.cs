@@ -1,4 +1,5 @@
-﻿using WhoHolds.Cli.Output;
+﻿using TUnit.Core;
+using WhoHolds.Cli.Output;
 
 namespace WhoHolds.Cli.Tests.Output;
 

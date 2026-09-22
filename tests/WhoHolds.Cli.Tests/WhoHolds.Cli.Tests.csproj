@@ -6,11 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Shouldly" />
-    <PackageReference Include="Tunit" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WhoHolds.Cli\WhoHolds.Cli.csproj" />
-    <ProjectReference Include="..\WhoHolds.Core.Tests\WhoHolds.Core.Tests.csproj" />
+    <ProjectReference Include="..\WhoHolds.Tests.Shared\WhoHolds.Tests.Shared.csproj" />
   </ItemGroup>
 </Project>

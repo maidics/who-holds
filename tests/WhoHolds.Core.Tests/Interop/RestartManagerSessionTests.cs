@@ -3,6 +3,7 @@ using System.Reflection;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop;
 using WhoHolds.Core.Tests.TestInfrastructure;
+using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Core.Tests.Interop;
 
