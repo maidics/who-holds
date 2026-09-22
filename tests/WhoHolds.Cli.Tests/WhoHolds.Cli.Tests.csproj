@@ -11,5 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WhoHolds.Cli\WhoHolds.Cli.csproj" />
+    <ProjectReference Include="..\WhoHolds.Core.Tests\WhoHolds.Core.Tests.csproj" />
   </ItemGroup>
 </Project>
