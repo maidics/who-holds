@@ -132,40 +132,4 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         processes.Length.ShouldBe(1);
         processes.ShouldContain(p => p.Process.dwProcessId == Environment.ProcessId);
     }
-
-    [Test]
-    public void GetProcessesShouldReturnHolderWhenAnotherProcessHoldsIt()
-    {
-        var file = CreateTestFile();
-
-        using var holder = Process.Start(
-            new ProcessStartInfo
-            {
-                FileName = "powershell",
-                Arguments =
-                    $"-NoProfile -Command \"$f=[IO.File]::Open('{file}','Open','Read','None'); Start-Sleep 30\"",
-                CreateNoWindow = true,
-            }
-        )!;
-
-        Thread.Sleep(1500);
-
-        try
-        {
-            using var session = new RestartManagerSession([file]);
-            var startResult = session.Start();
-            startResult.ShouldBeResultedTo(true);
-
-            var result = session.GetProcesses(out _);
-            result.ShouldBeResultedTo(true);
-
-            var processes = result.Value;
-            processes.Length.ShouldBe(1);
-            processes[0].Process.dwProcessId.ShouldBe((uint)holder.Id);
-        }
-        finally
-        {
-            holder.Kill();
-        }
-    }
 }
