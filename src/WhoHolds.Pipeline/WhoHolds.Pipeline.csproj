@@ -5,9 +5,6 @@
 
   <ItemGroup>
     <PackageReference Include="ModularPipelines" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Modules\" />
+    <PackageReference Include="ModularPipelines.DotNet" />
   </ItemGroup>
 </Project>
