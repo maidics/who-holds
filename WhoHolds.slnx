@@ -14,12 +14,18 @@
     <Project Path="src/WhoHolds.Core/WhoHolds.Core.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/WhoHolds.Pipeline/WhoHolds.Pipeline.csproj">
+      <Platform Project="x64" />
+    </Project>
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/WhoHolds.Cli.Tests/WhoHolds.Cli.Tests.csproj">
       <Platform Project="x64" />
     </Project>
     <Project Path="tests/WhoHolds.Core.Tests/WhoHolds.Core.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="tests/WhoHolds.Pipeline.Tests/WhoHolds.Pipeline.Tests.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>

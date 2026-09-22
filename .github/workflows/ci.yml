@@ -1,0 +1,31 @@
+﻿name: CI
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true # cancels in progress run if pushing again
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  pipeline:
+    runs-on: windows-latest # Latest Windows Server
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Run pipeline
+        run: dotnet run --project src/WhoHolds.Pipeline/WhoHolds.Pipeline.csproj --configuration Release
