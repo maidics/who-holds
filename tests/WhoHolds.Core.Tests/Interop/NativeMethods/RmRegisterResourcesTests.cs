@@ -91,28 +91,8 @@ internal sealed class RmRegisterResourcesTests()
     [Test]
     public void ShouldReturnInvalidHandle()
     {
-        Span<char> buffer = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
-
-        var startCode = Core.Interop.NativeMethods.RmStartSession(
-            out uint pSessionHandle,
-            0,
-            buffer
-        );
-
-        RestartManagerException.ThrowIfOperationFailed(
-            startCode,
-            nameof(Core.Interop.NativeMethods.RmStartSession)
-        );
-
-        var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
-
-        RestartManagerException.ThrowIfOperationFailed(
-            endCode,
-            nameof(Core.Interop.NativeMethods.RmEndSession)
-        );
-
-        var registerCode = Core.Interop.NativeMethods.RmRegisterResources(
-            pSessionHandle,
+        var code = Core.Interop.NativeMethods.RmRegisterResources(
+            uint.MaxValue,
             0,
             null,
             0,
@@ -121,7 +101,7 @@ internal sealed class RmRegisterResourcesTests()
             null
         );
 
-        registerCode.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
+        code.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
     }
 
     [Test]
