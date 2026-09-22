@@ -4,6 +4,7 @@ using WhoHolds.Core.Interop.Enums;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
+[NotInParallel] // due to rm session handles: rm gives out handles starting from 0 so parallelizing these can lead to flaky tests
 internal abstract class NativeMethodTestBase(string method)
 {
     protected readonly MethodInfo _methodInfo = GetMethodInfo(method);
