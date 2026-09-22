@@ -1,10 +1,11 @@
 ﻿using System.CommandLine;
 using System.Text.Json;
+using TUnit.Core;
 using WhoHolds.Cli.Commands;
 using WhoHolds.Cli.Output;
 using WhoHolds.Cli.Tests.TestInfrastructure;
 using WhoHolds.Core.Common.Models;
-using WhoHolds.Core.Tests.TestInfrastructure;
+using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Cli.Tests.Commands;
 

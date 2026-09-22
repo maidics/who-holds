@@ -28,5 +28,8 @@
     <Project Path="tests/WhoHolds.Pipeline.Tests/WhoHolds.Pipeline.Tests.csproj">
       <Platform Project="x64" />
     </Project>
+    <Project Path="tests/WhoHolds.Tests.Shared/WhoHolds.Tests.Shared.csproj">
+      <Platform Project="x64" />
+    </Project>
   </Folder>
 </Solution>

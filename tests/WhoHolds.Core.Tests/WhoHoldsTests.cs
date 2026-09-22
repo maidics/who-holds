@@ -1,5 +1,6 @@
 ﻿using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Tests.TestInfrastructure;
+using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Core.Tests;
 
