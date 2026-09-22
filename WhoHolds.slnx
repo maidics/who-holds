@@ -16,6 +16,9 @@
     </Project>
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/WhoHolds.Cli.Tests/WhoHolds.Cli.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="tests/WhoHolds.Core.Tests/WhoHolds.Core.Tests.csproj">
       <Platform Project="x64" />
     </Project>

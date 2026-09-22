@@ -15,19 +15,26 @@ public sealed class ResultJsonConverter<T> : JsonConverter<Result<T>>
     {
         writer.WriteStartObject();
 
-        writer.WriteBoolean(nameof(Result.Succeeded).ToLower(), value.Succeeded);
+        writer.WriteBoolean(
+            JsonNamingPolicy.CamelCase.ConvertName(nameof(Result.Succeeded)),
+            value.Succeeded
+        );
+
+        var v = JsonNamingPolicy.CamelCase.ConvertName(nameof(Result<>.Value));
 
         if (value.Succeeded)
         {
+            writer.WritePropertyName(v);
             var typeInfo = (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T));
-            JsonSerializer.Serialize(writer, value, typeInfo);
+            JsonSerializer.Serialize(writer, value.Value, typeInfo);
         }
         else
         {
-            writer.WriteNullValue();
+            writer.WriteNull(v);
         }
 
-        writer.WriteStartArray();
+        writer.WriteStartArray(JsonNamingPolicy.CamelCase.ConvertName(nameof(Result.Errors)));
+
         foreach (var error in value.Errors)
             writer.WriteStringValue(error);
 
