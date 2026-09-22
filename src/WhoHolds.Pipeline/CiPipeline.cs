@@ -25,7 +25,7 @@ public static class CiPipeline
                 options.ExecutionMode = ExecutionMode.StopOnFirstException;
             });
 
-            builder.AddModule<RestoreModule>().AddModule<BuildModule>(); //TODO: add more modules
+            builder.AddModule<RestoreModule>().AddModule<BuildModule>().AddModule<TestModule>();
 
             return builder;
         }
