@@ -39,8 +39,9 @@ public sealed class CiPipelineTests
         var p = await CreateAndAddCi();
 
         var modules = p.Services.GetServices<IModule>().ToList();
-        modules.Count.ShouldBe(2);
+        modules.Count.ShouldBe(3);
         modules.FirstOrDefault(m => m is RestoreModule).ShouldNotBeNull();
         modules.FirstOrDefault(m => m is BuildModule).ShouldNotBeNull();
+        modules.FirstOrDefault(m => m is TestModule).ShouldNotBeNull();
     }
 }
