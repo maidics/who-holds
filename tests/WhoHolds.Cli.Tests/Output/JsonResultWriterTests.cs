@@ -29,7 +29,10 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         using var doc = JsonDocument.Parse(stdout.ToString());
         var v = doc.ShouldHaveResultedTo(true, JsonValueKind.Array);
         v.GetArrayLength().ShouldBe(1);
-        v[0].GetProperty("processId").GetInt32().ShouldBe(result.Value[0].ProcessId);
+        v[0]
+            .GetProperty(JsonNamingPolicy.CamelCase.ConvertName(nameof(HolderProcess.ProcessId)))
+            .GetInt32()
+            .ShouldBe(result.Value[0].ProcessId);
     }
 
     [Test]
