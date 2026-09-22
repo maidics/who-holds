@@ -98,35 +98,16 @@ internal sealed class RmGetListTests()
     [Test]
     public void ShouldReturnInvalidHandle()
     {
-        Span<char> buffer = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
-
-        var startCode = Core.Interop.NativeMethods.RmStartSession(
-            out uint pSessionHandle,
-            0,
-            buffer
-        );
-
-        RestartManagerException.ThrowIfOperationFailed(
-            startCode,
-            nameof(Core.Interop.NativeMethods.RmStartSession)
-        );
-
-        var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
-
-        RestartManagerException.ThrowIfOperationFailed(
-            endCode,
-            nameof(Core.Interop.NativeMethods.RmEndSession)
-        );
-
         uint count = 0;
 
         var listCode = Core.Interop.NativeMethods.RmGetList(
-            pSessionHandle,
+            uint.MaxValue,
             out _,
             ref count,
             [],
             out _
         );
+
         listCode.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
     }
 

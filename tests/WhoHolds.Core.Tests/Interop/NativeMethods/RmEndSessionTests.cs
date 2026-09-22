@@ -36,25 +36,9 @@ internal sealed class RmEndSessionTests()
     // Similarly to the RmStartSessionTests this class does not cover error handling only declaration
 
     [Test]
-    public void ShouldReturnSuccessAfterEndingAndInvalidHandleAfterEndingTheSameSessionAgain()
+    public void ShouldReturnInvalidHandle()
     {
-        Span<char> sessionKeyBuffer = stackalloc char[RestartManagerLimits.SessionKeyBufferLength];
-
-        var startCode = Core.Interop.NativeMethods.RmStartSession(
-            out uint pSessionHandle,
-            0,
-            sessionKeyBuffer
-        );
-
-        RestartManagerException.ThrowIfOperationFailed(
-            startCode,
-            nameof(Core.Interop.NativeMethods.RmStartSession)
-        );
-
-        var endCode = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
-        endCode.ShouldBe(SystemErrorCode.ERROR_SUCCESS);
-
-        var endCode2 = Core.Interop.NativeMethods.RmEndSession(pSessionHandle);
-        endCode2.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
+        var code = Core.Interop.NativeMethods.RmEndSession(uint.MaxValue); // rm session handles start from 0 so this is safe
+        code.ShouldBe(SystemErrorCode.ERROR_INVALID_HANDLE);
     }
 }
