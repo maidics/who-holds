@@ -1,4 +1,5 @@
-﻿using ModularPipelines.Context;
+﻿using ModularPipelines.Attributes;
+using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
 using ModularPipelines.Modules;
@@ -6,6 +7,7 @@ using WhoHolds.Pipeline.Constants;
 
 namespace WhoHolds.Pipeline.Modules;
 
+[DependsOn<RestoreModule>]
 public sealed class BuildModule : Module
 {
     protected override async Task ExecuteModuleAsync(
