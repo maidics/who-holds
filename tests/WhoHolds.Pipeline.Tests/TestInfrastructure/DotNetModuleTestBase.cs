@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines.DotNet.Services;
 using ModularPipelines.Extensions;
 using ModularPipelines.Models;
@@ -24,6 +25,15 @@ public abstract class DotNetModuleTestBase<TModule>
     {
         var pipeline = await _builder.BuildAsync();
         return await pipeline.RunAsync();
+    }
+
+    protected ModularPipelines.Attributes.DependsOnAttribute<TModuleDependency> ShouldHaveDependsOnAttribute<TModuleDependency>()
+        where TModuleDependency : class, IModule
+    {
+        var attr =
+            typeof(TModule).GetCustomAttribute<ModularPipelines.Attributes.DependsOnAttribute<TModuleDependency>>();
+        attr.ShouldNotBeNull();
+        return attr;
     }
 
     public abstract Task ShouldRunModule();

@@ -9,6 +9,12 @@ namespace WhoHolds.Pipeline.Tests.Modules;
 public sealed class BuildModuleTests : DotNetModuleTestBase<BuildModule>
 {
     [Test]
+    public void ShouldDependOnRestoreModule()
+    {
+        ShouldHaveDependsOnAttribute<RestoreModule>();
+    }
+
+    [Test]
     public override async Task ShouldRunModule()
     {
         var summary = await BuildAndRunAsync();
