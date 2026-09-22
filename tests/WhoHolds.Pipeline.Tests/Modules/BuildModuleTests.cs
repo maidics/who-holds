@@ -26,7 +26,7 @@ public sealed class BuildModuleTests : DotNetModuleTestBase<BuildModule>
             Nologo = true,
             NoRestore = true,
             ProjectSolution = Repo.Solution,
-            Configuration = Repo.BuildConfiguration,
+            Configuration = Repo.Configuration,
         };
 
         _dotNet.Build(expectedOptions, Any(), Any()).WasCalled(Times.Once);

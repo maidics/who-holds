@@ -4,5 +4,5 @@ public static class Repo
 {
     public const string Solution = "WhoHolds.slnx";
 
-    public const string BuildConfiguration = "Release";
+    public const string Configuration = "Release";
 }

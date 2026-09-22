@@ -20,7 +20,7 @@ public sealed class BuildModule : Module
             NoRestore = true,
             Nologo = true,
             ProjectSolution = Repo.Solution,
-            Configuration = Repo.BuildConfiguration,
+            Configuration = Repo.Configuration,
         };
 
         await context.DotNet().Build(options, cancellationToken: cancellationToken);
