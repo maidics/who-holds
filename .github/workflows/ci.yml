@@ -19,6 +19,11 @@ jobs:
     runs-on: windows-latest # Latest Windows Server
     
     steps:
+      - name: Disable Defender real-time scanning
+        if: runner.environment == 'github-hosted' # must only run on the GitHub host
+        run: Set-MpPreference -DisableRealtimeMonitoring $true
+        shell: pwsh
+    
       - name: Checkout
         uses: actions/checkout@v5
 
