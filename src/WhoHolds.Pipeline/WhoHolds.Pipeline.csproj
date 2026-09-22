@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModularPipelines" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Modules\" />
+  </ItemGroup>
+</Project>
