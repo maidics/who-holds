@@ -4,6 +4,7 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <AssemblyName>wh</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
