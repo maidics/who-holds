@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>WhoHolds.Core</RootNamespace>
-    <AssemblyName>WhoHolds.Core</AssemblyName>
-
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <IsAotCompatible>true</IsAotCompatible>

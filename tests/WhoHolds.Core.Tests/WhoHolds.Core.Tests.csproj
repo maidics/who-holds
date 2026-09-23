@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>WhoHolds.Core.Tests</RootNamespace>
-    <AssemblyName>WhoHolds.Core.Tests</AssemblyName>
-
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
