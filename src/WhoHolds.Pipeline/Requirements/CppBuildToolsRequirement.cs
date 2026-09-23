@@ -1,6 +1,7 @@
 ﻿using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Requirements;
+using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Interfaces;
 
 namespace WhoHolds.Pipeline.Requirements;
@@ -13,7 +14,7 @@ public sealed class CppBuildToolsRequirement(ICppBuildToolsLocator locator) : IP
 
         if (!result.VsWhereFound)
             return RequirementDecision.Failed(
-                "vswhere.exe not found. Install Visual Studio or Build Tools with the 'Desktop development with C++' workload."
+                $"{Repo.VsWhere} not found. Install Visual Studio or Build Tools with the 'Desktop development with C++' workload."
             );
 
         if (result.InstallationPath is null)

@@ -1,5 +1,6 @@
 ﻿using ModularPipelines.Context;
 using ModularPipelines.Options;
+using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Models;
 
@@ -12,7 +13,7 @@ public sealed class CppBuildToolsLocator(string vswherePath) : ICppBuildToolsLoc
             Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
             "Microsoft Visual Studio",
             "Installer",
-            "vswhere.exe"
+            Repo.VsWhere
         );
 
     public async Task<CppBuildToolsLookupResult> LocateAsync(IPipelineContext context)
