@@ -1,6 +1,5 @@
 ﻿namespace WhoHolds.Core.Common.Models;
 
-//TODO: add a command that describes the fields with sample values
 public sealed record HolderProcess(
     int ProcessId, // .NET ProcessId is an int
     DateTime StartTime, // UTC time
