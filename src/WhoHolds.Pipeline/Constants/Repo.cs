@@ -13,4 +13,6 @@ public static class Repo
     public const string GitHubTagRef = "tag";
 
     public const string GitHubRefNameEnvVar = "GITHUB_REF_NAME";
+
+    public const string DotNetVersionArgumentKey = "Version";
 }

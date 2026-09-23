@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines;
 using ModularPipelines.Extensions;
 using ModularPipelines.Options;
@@ -45,7 +44,10 @@ public static class PipelineBuilderExtensions
 
         public PipelineBuilder AddModules(string? releaseVersion)
         {
-            builder.AddModule<RestoreModule>().AddModule<BuildModule>().AddModule<TestModule>();
+            builder
+                .AddModule<RestoreModule>()
+                .AddModule(_ => new BuildModule(releaseVersion))
+                .AddModule<TestModule>();
 
             // TODO: add required modules
 
