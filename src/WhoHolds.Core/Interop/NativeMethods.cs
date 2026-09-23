@@ -18,8 +18,8 @@ namespace WhoHolds.Core.Interop;
 /// </seealso>
 internal static partial class NativeMethods
 {
-    private const string NtDll = "ntdll.dll";
-    private const string RestartManager = "rstrtmgr.dll";
+    private const string _ntDll = "ntdll.dll";
+    private const string _restartManager = "rstrtmgr.dll";
 
     /// <summary>
     /// Retrieves the specified system information from the kernel.
@@ -88,7 +88,7 @@ internal static partial class NativeMethods
     /// including on every failed attempt.
     /// </para>
     /// </remarks>
-    [DllImport(NtDll, EntryPoint = "NtQuerySystemInformation")]
+    [DllImport(_ntDll, EntryPoint = "NtQuerySystemInformation")]
     internal static extern NtStatus NtQuerySystemInfo(
         int systemInformationClass,
         IntPtr buffer,
@@ -96,7 +96,7 @@ internal static partial class NativeMethods
         out uint returnLength
     );
 
-    [DllImport(NtDll, EntryPoint = "NtQueryObject")]
+    [DllImport(_ntDll, EntryPoint = "NtQueryObject")]
     internal static extern NtStatus NtQueryObject(
         IntPtr handle,
         int objectInformationClass,
@@ -146,7 +146,7 @@ internal static partial class NativeMethods
     /// System error codes
     /// </seealso>
     [LibraryImport( // Native AOT and trimming works with LibraryImport, no StringBuilder, can step into marshalling code
-        RestartManager,
+        _restartManager,
         StringMarshalling = StringMarshalling.Utf16 /* type of strSessionKey (char) is ambiguous: blittable to char and char16_t - this resolves it */
     )]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -179,7 +179,7 @@ internal static partial class NativeMethods
     /// <seealso href="https://learn.microsoft.com/en-us/windows/desktop/Debug/system-error-codes">
     /// System error codes
     /// </seealso>
-    [LibraryImport(RestartManager)]
+    [LibraryImport(_restartManager)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static partial SystemErrorCode RmEndSession(uint dwSessionHandle);
 
@@ -221,7 +221,7 @@ internal static partial class NativeMethods
     /// </para>
     /// </remarks>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmregisterresources"/>
-    [LibraryImport(RestartManager, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport(_restartManager, StringMarshalling = StringMarshalling.Utf16)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static partial SystemErrorCode RmRegisterResources(
         uint dwSessionHandle,
@@ -261,7 +261,7 @@ internal static partial class NativeMethods
     /// <see cref="SystemErrorCode"/>
     /// </returns>
     /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/restartmanager/nf-restartmanager-rmgetlist"/>
-    [LibraryImport(RestartManager, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport(_restartManager, StringMarshalling = StringMarshalling.Utf16)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static partial SystemErrorCode RmGetList(
         uint dwSessionHandle,

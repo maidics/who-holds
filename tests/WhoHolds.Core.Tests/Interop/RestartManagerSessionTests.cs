@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using WhoHolds.Core.Common.Models;
+﻿using System.Reflection;
 using WhoHolds.Core.Interop;
 using WhoHolds.Core.Tests.TestInfrastructure;
 using WhoHolds.Tests.Shared;

@@ -6,7 +6,7 @@ namespace WhoHolds.Core.Interop;
 
 internal static class SystemQuery
 {
-    private const int MaxBufferSize = int.MaxValue;
+    private const int _maxBufferSize = int.MaxValue;
 
     public static NativeBuffer QueryWithGrowingBuffer(
         SystemQueryDelegate query,
@@ -16,7 +16,7 @@ internal static class SystemQuery
     )
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(initialSize, 0);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(initialSize, MaxBufferSize);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(initialSize, _maxBufferSize);
 
         int size = initialSize;
         returnLength = 0;
@@ -37,7 +37,7 @@ internal static class SystemQuery
 
             if (!TryGrowBuffer(size, returnLength, out int next))
                 throw new InvalidDataException(
-                    $"Data requires more than {MaxBufferSize} bytes ({ByteFormat.Humanize(MaxBufferSize)})."
+                    $"Data requires more than {_maxBufferSize} bytes ({ByteFormat.Humanize(_maxBufferSize)})."
                 );
 
             size = next;
@@ -53,8 +53,8 @@ internal static class SystemQuery
     {
         long r = returnLength > current ? returnLength + (long)returnLength / 4 : (long)current * 2;
 
-        if (r > MaxBufferSize)
-            r = MaxBufferSize;
+        if (r > _maxBufferSize)
+            r = _maxBufferSize;
 
         if (r <= current)
         {

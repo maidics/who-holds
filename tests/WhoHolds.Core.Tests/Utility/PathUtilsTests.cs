@@ -1,5 +1,4 @@
-﻿using WhoHolds.Core.Common.Models;
-using WhoHolds.Core.Tests.TestInfrastructure;
+﻿using WhoHolds.Core.Tests.TestInfrastructure;
 using WhoHolds.Core.Utility;
 using WhoHolds.Tests.Shared;
 

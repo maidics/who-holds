@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>WhoHolds.Core</RootNamespace>
-    <AssemblyName>WhoHolds.Core</AssemblyName>
-
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <IsAotCompatible>true</IsAotCompatible>
@@ -10,9 +7,5 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="WhoHolds.Core.Tests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Constants\" />
   </ItemGroup>
 </Project>

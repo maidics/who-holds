@@ -1,6 +1,5 @@
 ﻿using System.CommandLine;
 using System.Text.Json;
-using TUnit.Core;
 using WhoHolds.Cli.Commands;
 using WhoHolds.Cli.Output;
 using WhoHolds.Cli.Tests.TestInfrastructure;

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace WhoHolds.Core.Common.Models;
+﻿namespace WhoHolds.Core.Common.Models;
 
 public readonly struct Result
 {

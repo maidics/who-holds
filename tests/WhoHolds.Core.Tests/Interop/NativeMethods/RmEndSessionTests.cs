@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.Constants;
 using WhoHolds.Core.Interop.Enums;
-using WhoHolds.Core.Interop.Exceptions;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop.NativeMethods;

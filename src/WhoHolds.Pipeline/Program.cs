@@ -1,4 +1,5 @@
-﻿using WhoHolds.Pipeline;
+﻿using ModularPipelines;
+using WhoHolds.Pipeline;
 
 var builder = Pipeline.CreateBuilder(args);
 

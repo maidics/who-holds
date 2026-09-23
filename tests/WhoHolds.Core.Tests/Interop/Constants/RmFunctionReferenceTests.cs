@@ -6,12 +6,12 @@ namespace WhoHolds.Core.Tests.Interop.Constants;
 
 internal sealed class RmFunctionReferenceTests
 {
-    private const string RmStartSession = nameof(Core.Interop.NativeMethods.RmStartSession);
-    private const string RmRegisterResources = nameof(
+    private const string _rmStartSession = nameof(Core.Interop.NativeMethods.RmStartSession);
+    private const string _rmRegisterResources = nameof(
         Core.Interop.NativeMethods.RmRegisterResources
     );
-    private const string RmGetList = nameof(Core.Interop.NativeMethods.RmGetList);
-    private const string RmEndSession = nameof(Core.Interop.NativeMethods.RmEndSession);
+    private const string _rmGetList = nameof(Core.Interop.NativeMethods.RmGetList);
+    private const string _rmEndSession = nameof(Core.Interop.NativeMethods.RmEndSession);
 
     [Test]
     public void ErrorCodeToResultShouldThrowIfFunctionIsUnknown()
@@ -22,23 +22,23 @@ internal sealed class RmFunctionReferenceTests
     }
 
     [Test]
-    [Arguments(RmStartSession)]
-    [Arguments(RmRegisterResources)]
-    [Arguments(RmGetList)]
-    [Arguments(RmEndSession)]
+    [Arguments(_rmStartSession)]
+    [Arguments(_rmRegisterResources)]
+    [Arguments(_rmGetList)]
+    [Arguments(_rmEndSession)]
     public void ErrorCodeToResultShouldReturnSucceededResultForSuccessCode(string function)
     {
         var result = RmFunctionReference.ErrorCodeToResult(
             SystemErrorCode.ERROR_SUCCESS,
-            RmStartSession
+            _rmStartSession
         );
         result.ShouldBeResultedTo(true);
     }
 
     [Test]
-    [Arguments(RmStartSession, SystemErrorCode.ERROR_MORE_DATA)]
-    [Arguments(RmRegisterResources, SystemErrorCode.ERROR_MORE_DATA)]
-    [Arguments(RmEndSession, SystemErrorCode.ERROR_MORE_DATA)]
+    [Arguments(_rmStartSession, SystemErrorCode.ERROR_MORE_DATA)]
+    [Arguments(_rmRegisterResources, SystemErrorCode.ERROR_MORE_DATA)]
+    [Arguments(_rmEndSession, SystemErrorCode.ERROR_MORE_DATA)]
     public void ErrorCodeToResultShouldThrowIfFunctionDoesNotReturnTheGivenErrorCode(
         string function,
         SystemErrorCode code
@@ -68,42 +68,42 @@ internal sealed class RmFunctionReferenceTests
         string
     )> ErrorCodeToResultShouldReturnCorrectErrorMessagesForCodeCases()
     {
-        yield return (RmGetList, SystemErrorCode.ERROR_ACCESS_DENIED, "A path registered to the");
+        yield return (_rmGetList, SystemErrorCode.ERROR_ACCESS_DENIED, "A path registered to the");
         yield return (
-            RmRegisterResources,
+            _rmRegisterResources,
             SystemErrorCode.ERROR_INVALID_HANDLE,
             "Invalid handle passed to "
         );
         yield return (
-            RmStartSession,
+            _rmStartSession,
             SystemErrorCode.ERROR_OUTOFMEMORY,
             "not enough memory was available."
         );
         yield return (
-            RmStartSession,
+            _rmStartSession,
             SystemErrorCode.ERROR_WRITE_FAULT,
             "failed to write to the Registry."
         );
         yield return (
-            RmStartSession,
+            _rmStartSession,
             SystemErrorCode.ERROR_SEM_TIMEOUT,
             "could not obtain Registry write mutex in time."
         );
         yield return (
-            RmStartSession,
+            _rmStartSession,
             SystemErrorCode.ERROR_BAD_ARGUMENTS,
             "One or more arguments passed to"
         );
         yield return (
-            RmGetList,
+            _rmGetList,
             SystemErrorCode.ERROR_MORE_DATA,
             "Failed to allocate for data returned from"
         );
         yield return (
-            RmStartSession,
+            _rmStartSession,
             SystemErrorCode.ERROR_MAX_SESSIONS_REACHED,
             "sessions have been reached (64)."
         );
-        yield return (RmGetList, SystemErrorCode.ERROR_CANCELLED, "The operation was canceled.");
+        yield return (_rmGetList, SystemErrorCode.ERROR_CANCELLED, "The operation was canceled.");
     }
 }

@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>WhoHolds.Cli.Tests</RootNamespace>
-    <AssemblyName>WhoHolds.Cli.Tests</AssemblyName>
-  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="Shouldly" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Shouldly" />
