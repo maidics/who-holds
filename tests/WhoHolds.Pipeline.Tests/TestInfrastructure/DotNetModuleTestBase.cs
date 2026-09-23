@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using ModularPipelines;
 using ModularPipelines.DotNet.Services;
 using ModularPipelines.Extensions;
 using ModularPipelines.Models;

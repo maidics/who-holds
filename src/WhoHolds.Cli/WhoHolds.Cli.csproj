@@ -6,9 +6,15 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <AssemblyName>wh</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.CommandLine" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\WhoHolds.Core\WhoHolds.Core.csproj" />
   </ItemGroup>
