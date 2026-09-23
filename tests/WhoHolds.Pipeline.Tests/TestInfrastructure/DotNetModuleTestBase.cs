@@ -14,12 +14,16 @@ public abstract class DotNetModuleTestBase<TModule>
     protected readonly IDotNetMock _dotNet;
     protected readonly PipelineBuilder _builder;
 
-    protected DotNetModuleTestBase()
+    protected DotNetModuleTestBase(Func<IServiceProvider, TModule>? factory = null)
     {
         _dotNet = IDotNet.Mock();
         _builder = ModularPipelines.Pipeline.CreateBuilder();
         _builder.Services.AddSingleton(_dotNet.Object);
-        _builder.AddModule<TModule>();
+
+        if (factory is null)
+            _builder.AddModule<TModule>();
+        else
+            _builder.AddModule(factory);
     }
 
     protected async Task<PipelineSummary> BuildAndRunAsync() // runs using the IDotNet mock so the module does not actually run
