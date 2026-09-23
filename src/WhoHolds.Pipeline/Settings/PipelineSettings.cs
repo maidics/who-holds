@@ -3,8 +3,10 @@ using WhoHolds.Pipeline.Constants;
 
 namespace WhoHolds.Pipeline.Settings;
 
-public sealed record PipelineSettings(bool IsTagPush, string? ReleaseVersion)
+public sealed record PipelineSettings(string? ReleaseVersion)
 {
+    public bool IsTagPush => ReleaseVersion is not null;
+
     public static PipelineSettings From(IConfiguration configuration)
     {
         var isTagPush =
@@ -17,7 +19,7 @@ public sealed record PipelineSettings(bool IsTagPush, string? ReleaseVersion)
                 )
             : null;
 
-        return new PipelineSettings(isTagPush, tag is not null ? ParseVersion(tag) : null);
+        return new PipelineSettings(tag is not null ? ParseVersion(tag) : null);
     }
 
     private static string ParseVersion(string tag)
