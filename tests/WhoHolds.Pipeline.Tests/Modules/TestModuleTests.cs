@@ -18,7 +18,6 @@ public sealed class TestModuleTests
     public async Task ShouldRunModule()
     {
         var testing = new ModuleTesting<TestModule>();
-        testing.AddModuleDependency(_ => new BuildModule(null));
 
         var summary = await testing.GetSummaryAsync();
 
@@ -39,7 +38,6 @@ public sealed class TestModuleTests
     public async Task ShouldFailPipelineWhenModuleFails()
     {
         var testing = new ModuleTesting<TestModule>();
-        testing.AddModuleDependency(_ => new BuildModule(null));
 
         testing
             .DotNet.Test(Any(), Any(), Any())
