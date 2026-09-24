@@ -3,7 +3,7 @@ using WhoHolds.Pipeline.Models;
 
 namespace WhoHolds.Pipeline.Interfaces;
 
-public interface ICppBuildToolsLocator
+public interface ICppBuildToolLocator
 {
-    Task<CppBuildToolsLookupResult> LocateAsync(IPipelineContext context); // to use context.Shell.Command
+    Task<CppBuildToolLookupResult> LocateAsync(IPipelineContext context); // to use context.Shell.Command
 }

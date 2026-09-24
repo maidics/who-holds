@@ -4,6 +4,7 @@ using ModularPipelines.Extensions;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
 using WhoHolds.Pipeline.Modules;
+using WhoHolds.Pipeline.Requirements;
 
 namespace WhoHolds.Pipeline.Extensions;
 
@@ -33,7 +34,9 @@ public static class PipelineBuilderExtensions
 
         public PipelineBuilder AddRequirements()
         {
-            return builder.AddRequirement<WindowsRequirement>();
+            return builder
+                .AddRequirement<WindowsRequirement>()
+                .AddRequirement<CppBuildToolRequirement>();
         }
 
         public PipelineBuilder AddModules()

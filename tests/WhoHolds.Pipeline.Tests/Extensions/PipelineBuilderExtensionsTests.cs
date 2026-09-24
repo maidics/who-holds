@@ -6,6 +6,7 @@ using ModularPipelines.Options;
 using ModularPipelines.Requirements;
 using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Modules;
+using WhoHolds.Pipeline.Requirements;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
@@ -40,9 +41,10 @@ public sealed class PipelineBuilderExtensionTests
     {
         _builder.AddRequirements();
 
-        _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(1);
+        _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(2);
 
         ContainsRequirement<WindowsRequirement>().ShouldBeTrue();
+        ContainsRequirement<CppBuildToolRequirement>().ShouldBeTrue();
     }
 
     [Test]

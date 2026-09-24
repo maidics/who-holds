@@ -6,7 +6,7 @@ using WhoHolds.Pipeline.Models;
 
 namespace WhoHolds.Pipeline.Services;
 
-public sealed class CppBuildToolsLocator(string vswherePath) : ICppBuildToolsLocator
+public sealed class CppBuildToolLocator(string vswherePath) : ICppBuildToolLocator
 {
     public static string DefaultPath { get; } =
         Path.Combine(
@@ -16,11 +16,11 @@ public sealed class CppBuildToolsLocator(string vswherePath) : ICppBuildToolsLoc
             Repo.VsWhere
         );
 
-    public async Task<CppBuildToolsLookupResult> LocateAsync(IPipelineContext context)
+    public async Task<CppBuildToolLookupResult> LocateAsync(IPipelineContext context)
     {
         if (!File.Exists(vswherePath))
         {
-            return new CppBuildToolsLookupResult(VsWhereFound: false, InstallationPath: null);
+            return new CppBuildToolLookupResult(VsWhereFound: false, InstallationPath: null);
         }
 
         var result = await context.Shell.Command.ExecuteCommandLineTool(
@@ -41,7 +41,7 @@ public sealed class CppBuildToolsLocator(string vswherePath) : ICppBuildToolsLoc
 
         var path = result.StandardOutput.Trim();
 
-        return new CppBuildToolsLookupResult(
+        return new CppBuildToolLookupResult(
             VsWhereFound: true,
             string.IsNullOrEmpty(path) ? null : path
         );

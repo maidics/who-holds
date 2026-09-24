@@ -1,3 +1,3 @@
 ﻿namespace WhoHolds.Pipeline.Models;
 
-public sealed record CppBuildToolsLookupResult(bool VsWhereFound, string? InstallationPath);
+public sealed record CppBuildToolLookupResult(bool VsWhereFound, string? InstallationPath);
