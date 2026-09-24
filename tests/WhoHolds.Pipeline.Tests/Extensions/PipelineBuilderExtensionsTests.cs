@@ -26,8 +26,8 @@ public sealed class PipelineBuilderExtensionTests
     [Test]
     public void ShouldAddJsonConfiguration()
     {
-        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Testing"); // _builder does not respect .Environment.EnvironmentName
-
+        // _builder does not respect .Environment.EnvironmentName
+        // because of this the environment is set in Testing
         _builder.AddJsonConfiguration();
 
         var json = _builder.Configuration.Sources.OfType<JsonConfigurationSource>().Single();
