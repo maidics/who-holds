@@ -41,9 +41,10 @@ public sealed class PipelineBuilderExtensionTests
     {
         _builder.AddRequirements();
 
-        _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(2);
+        _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(3);
 
         ContainsRequirement<WindowsRequirement>().ShouldBeTrue();
+        ContainsRequirement<ConfigurationRequirement>();
         ContainsRequirement<CppBuildToolRequirement>().ShouldBeTrue();
     }
 
