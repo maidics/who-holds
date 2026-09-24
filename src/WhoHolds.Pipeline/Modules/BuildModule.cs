@@ -9,7 +9,7 @@ using WhoHolds.Pipeline.Constants;
 namespace WhoHolds.Pipeline.Modules;
 
 [DependsOn<RestoreModule>]
-public sealed class BuildModule(string? releaseVersion) : Module
+public sealed class BuildModule : Module
 {
     protected override async Task ExecuteModuleAsync(
         IModuleContext context,
@@ -21,10 +21,7 @@ public sealed class BuildModule(string? releaseVersion) : Module
             NoRestore = true,
             Nologo = true,
             ProjectSolution = Repo.Solution,
-            Configuration = Repo.Configuration,
-            Properties = releaseVersion is null
-                ? null
-                : [new KeyValue(Repo.DotNetVersionArgumentKey, releaseVersion)],
+            Configuration = Repo.Configuration, // no release version because this is the test build, not native aot
         };
 
         await context.DotNet().Build(options, cancellationToken: cancellationToken);

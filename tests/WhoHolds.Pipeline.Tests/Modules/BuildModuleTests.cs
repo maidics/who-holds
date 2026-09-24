@@ -20,7 +20,7 @@ public sealed class BuildModuleTests
     [Arguments("1.0.0")]
     public async Task ShouldRunDotNetBuild(string? releaseVersion)
     {
-        var testing = new ModuleTesting<BuildModule>(_ => new BuildModule(releaseVersion));
+        var testing = new ModuleTesting<BuildModule>();
 
         var summary = await testing.GetSummaryAsync();
 
@@ -51,7 +51,7 @@ public sealed class BuildModuleTests
     [Test]
     public async Task ShouldFailPipelineWhenModuleFails()
     {
-        var testing = new ModuleTesting<BuildModule>(_ => new BuildModule(null));
+        var testing = new ModuleTesting<BuildModule>();
 
         testing
             .DotNet.Build(Any(), Any(), Any())
