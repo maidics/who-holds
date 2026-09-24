@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines;
 using ModularPipelines.Extensions;
 using ModularPipelines.Options;
@@ -15,8 +16,10 @@ public static class PipelineBuilderExtensions
 {
     extension(PipelineBuilder builder)
     {
-        public PipelineBuilder ConfigurePipeline()
+        public PipelineBuilder ConfigurePipeline(string appSettings)
         {
+            builder.Configuration.AddJsonFile(appSettings, optional: false);
+
             builder.ConfigurePipelineOptions(options =>
             {
                 options.PrintLogo = false;
@@ -27,35 +30,36 @@ public static class PipelineBuilderExtensions
             return builder;
         }
 
+        public PipelineBuilder AddServices()
+        {
+            builder.Services.AddSingleton<ICppBuildToolsLocator>(_ => new CppBuildToolsLocator(
+                CppBuildToolsLocator.DefaultPath
+            ));
+
+            return builder;
+        }
+
         public PipelineBuilder AddGlobalHooks()
         {
             return builder.AddPipelineGlobalHooks<PipelineInformationHooks>();
         }
 
-        public PipelineBuilder AddRequirements(bool isTagPush)
+        public PipelineBuilder AddRequirements()
         {
-            builder.AddRequirement<WindowsRequirement>();
-
-            if (isTagPush)
-            {
-                builder.Services.AddSingleton<ICppBuildToolsLocator>(_ => new CppBuildToolsLocator(
-                    CppBuildToolsLocator.DefaultPath
-                ));
-
-                builder.AddRequirement<TagRequirement>();
-                builder.AddRequirement<CppBuildToolsRequirement>();
-            }
+            builder
+                .AddRequirement<WindowsRequirement>()
+                .AddRequirement<VersionTagFormatRequirement>()
+                .AddRequirement<CppBuildToolsRequirement>();
 
             return builder;
         }
 
         public PipelineBuilder AddModules()
         {
-            builder.AddModule<RestoreModule>().AddModule<BuildModule>().AddModule<TestModule>();
-
-            // TODO: add required modules
-
-            return builder;
+            return builder
+                .AddModule<RestoreModule>()
+                .AddModule<BuildModule>()
+                .AddModule<TestModule>(); // TODO: add other modules
         }
     }
 }

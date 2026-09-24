@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <Using Include="Shouldly" />
+
+    <None Update="appsettings.Testing.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WhoHolds.Pipeline\WhoHolds.Pipeline.csproj" />
+    <ProjectReference Include="..\WhoHolds.Tests.Shared\WhoHolds.Tests.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

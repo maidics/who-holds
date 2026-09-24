@@ -4,6 +4,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Used to resolve publish output -->
+    <AssemblyMetadata Include="ArtifactsPath" Value="$(ArtifactPath)" />
+    <None Update="appsettings*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ModularPipelines" />
     <PackageReference Include="ModularPipelines.DotNet" />
   </ItemGroup>

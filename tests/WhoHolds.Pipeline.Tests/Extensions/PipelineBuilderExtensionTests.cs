@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration.Json;
 using ModularPipelines;
-using ModularPipelines.Modules;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
 using WhoHolds.Pipeline.Extensions;
-using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
@@ -16,11 +14,16 @@ public sealed class PipelineBuilderExtensionTests
     [Test]
     public void ShouldConfigurePipeline()
     {
-        _builder.ConfigurePipeline();
+        const string appSettings = "appsettings.Testing.json";
+        _builder.ConfigurePipeline(appSettings);
 
         _builder.Options.PrintLogo.ShouldBeFalse();
         _builder.Options.ShowProgressInConsole.ShouldBeTrue();
         _builder.Options.ExecutionMode.ShouldBe(ExecutionMode.StopOnFirstException);
+
+        var json = _builder.Configuration.Sources.OfType<JsonConfigurationSource>().Single();
+        json.Path.ShouldBe(appSettings);
+        json.Optional.ShouldBeFalse();
     }
 
     [Test]
