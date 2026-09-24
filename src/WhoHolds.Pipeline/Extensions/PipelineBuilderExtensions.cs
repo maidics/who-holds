@@ -3,6 +3,7 @@ using ModularPipelines;
 using ModularPipelines.Extensions;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
+using WhoHolds.Pipeline.GlobalHooks;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
@@ -26,6 +27,11 @@ public static class PipelineBuilderExtensions
             return builder;
         }
 
+        public PipelineBuilder AddGlobalHooks()
+        {
+            return builder.AddPipelineGlobalHooks<PipelineInformationHooks>();
+        }
+
         public PipelineBuilder AddRequirements(bool isTagPush)
         {
             builder.AddRequirement<WindowsRequirement>();
@@ -36,18 +42,16 @@ public static class PipelineBuilderExtensions
                     CppBuildToolsLocator.DefaultPath
                 ));
 
+                builder.AddRequirement<TagRequirement>();
                 builder.AddRequirement<CppBuildToolsRequirement>();
             }
 
             return builder;
         }
 
-        public PipelineBuilder AddModules(string? releaseVersion)
+        public PipelineBuilder AddModules()
         {
-            builder
-                .AddModule<RestoreModule>()
-                .AddModule(_ => new BuildModule(releaseVersion))
-                .AddModule<TestModule>();
+            builder.AddModule<RestoreModule>().AddModule<BuildModule>().AddModule<TestModule>();
 
             // TODO: add required modules
 

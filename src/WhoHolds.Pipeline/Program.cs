@@ -1,12 +1,11 @@
 ﻿using ModularPipelines;
 using WhoHolds.Pipeline.Extensions;
-using WhoHolds.Pipeline.Settings;
 
 var builder = Pipeline.CreateBuilder(args);
 
-var settings = PipelineSettings.From(builder.Configuration);
+bool isTagPush = builder.Configuration.IsTagPush();
 
-builder.ConfigurePipeline().AddRequirements(settings.IsTagPush);
+builder.AddGlobalHooks().ConfigurePipeline().AddRequirements(isTagPush).AddModules();
 
 await using var pipeline = await builder.BuildAsync();
 await pipeline.RunAsync();
