@@ -6,28 +6,38 @@ using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
-public sealed class RestoreModulesTests : DotNetModuleTestBase<RestoreModule>
+public sealed class RestoreModulesTests
 {
     [Test]
-    public override async Task ShouldRunModule()
+    public void ShouldNotDependOnAnyModule()
     {
-        var summary = await BuildAndRunAsync();
+        ModuleTesting<RestoreModule>.ShouldNotDependOnAnyModule();
+    }
+
+    [Test]
+    public async Task ShouldRunDotNetRestore()
+    {
+        var testing = new ModuleTesting<RestoreModule>();
+
+        var summary = await testing.GetSummaryAsync();
 
         summary.Status.ShouldBe(Status.Successful);
 
         var expectedOptions = new DotNetRestoreOptions { ProjectSolution = Repo.Solution };
 
-        _dotNet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
+        testing.DotNet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
 
     [Test]
-    public override async Task ShouldFailPipelineWhenModuleFails()
+    public async Task ShouldFailPipelineWhenModuleFails()
     {
-        _dotNet
-            .Restore(Any(), Any(), Any())
+        var testing = new ModuleTesting<RestoreModule>();
+
+        testing
+            .DotNet.Restore(Any(), Any(), Any())
             .Throws(new InvalidOperationException("Restore failed."));
 
-        var ex = await Should.ThrowAsync<Exception>(BuildAndRunAsync);
+        var ex = await Should.ThrowAsync<Exception>(testing.GetSummaryAsync);
         ex.Message.ShouldContain(nameof(RestoreModule));
     }
 }
