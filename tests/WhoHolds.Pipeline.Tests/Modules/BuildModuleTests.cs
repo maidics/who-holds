@@ -7,21 +7,22 @@ using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
-[Arguments(null)]
-[Arguments("1.0.0")]
-public sealed class BuildModuleTests(string? releaseVersion)
-    : DotNetModuleTestBase<BuildModule>(_ => new BuildModule(releaseVersion))
+public sealed class BuildModuleTests
 {
     [Test]
     public void ShouldDependOnRestoreModule()
     {
-        ShouldHaveDependsOnAttribute<RestoreModule>();
+        ModuleTesting<BuildModule>.ShouldDependOn<RestoreModule>();
     }
 
     [Test]
-    public override async Task ShouldRunModule()
+    [Arguments(null)]
+    [Arguments("1.0.0")]
+    public async Task ShouldRunDotNetBuild(string? releaseVersion)
     {
-        var summary = await BuildAndRunAsync();
+        var testing = new ModuleTesting<BuildModule>(_ => new BuildModule(releaseVersion));
+
+        var summary = await testing.GetSummaryAsync();
 
         summary.Status.ShouldBe(Status.Successful);
 
@@ -36,8 +37,8 @@ public sealed class BuildModuleTests(string? releaseVersion)
                 : [new KeyValue(Repo.DotNetVersionArgumentKey, releaseVersion)],
         };
 
-        _dotNet
-            .Build(
+        testing
+            .DotNet.Build(
                 o =>
                     o with { Properties = null } == expectedOptions with { Properties = null }
                     && (o.Properties ?? []).SequenceEqual(expectedOptions.Properties ?? []),
@@ -48,11 +49,15 @@ public sealed class BuildModuleTests(string? releaseVersion)
     }
 
     [Test]
-    public override async Task ShouldFailPipelineWhenModuleFails()
+    public async Task ShouldFailPipelineWhenModuleFails()
     {
-        _dotNet.Build(Any(), Any(), Any()).Throws(new InvalidOperationException("Build failed."));
+        var testing = new ModuleTesting<BuildModule>(_ => new BuildModule(null));
 
-        var ex = await Should.ThrowAsync<Exception>(BuildAndRunAsync);
+        testing
+            .DotNet.Build(Any(), Any(), Any())
+            .Throws(new InvalidOperationException("Build failed."));
+
+        var ex = await Should.ThrowAsync<Exception>(testing.GetSummaryAsync);
         ex.Message.ShouldContain(nameof(BuildModule));
     }
 }
