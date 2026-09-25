@@ -8,8 +8,11 @@ using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Cli.Tests.Commands;
 
-public sealed class GetFileHoldersCommandTests : PathHandlerTestBase
+public sealed class GetFileHoldersCommandTests
 {
+    [ClassDataSource<TestFileSystem>]
+    public required TestFileSystem Testing { get; init; }
+
     private static (int exitCode, string stdout, string stderr) Run(params string[] args)
     {
         var stdout = new StringWriter();
@@ -82,7 +85,7 @@ public sealed class GetFileHoldersCommandTests : PathHandlerTestBase
     [Arguments("-f TEXT")]
     public void ShouldWriteTextWhenOutputFormatIsText(string textOutput)
     {
-        var file = CreateTestFile();
+        var file = Testing.CreateTestFile();
 
         var (exitCode, stdout, stderr) = Run(file);
 
@@ -102,8 +105,8 @@ public sealed class GetFileHoldersCommandTests : PathHandlerTestBase
     [Arguments("-f", "JSON")]
     public void ShouldReturnJsonWhenOutputFormatIsJson(params string[] jsonOutput)
     {
-        var file = CreateTestFile();
-        using var hold = HoldFile(file);
+        var file = Testing.CreateTestFile();
+        using var hold = TestFileSystem.HoldFile(file);
 
         var (exitCode, stdout, stderr) = Run([file, .. jsonOutput]);
 

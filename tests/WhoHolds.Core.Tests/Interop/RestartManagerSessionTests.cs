@@ -5,8 +5,11 @@ using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Core.Tests.Interop;
 
-internal sealed class RestartManagerSessionTests : PathHandlerTestBase
+internal sealed class RestartManagerSessionTests
 {
+    [ClassDataSource<TestFileSystem>]
+    public required TestFileSystem Testing { get; init; }
+
     [Test]
     public void ConstructorShouldThrowArgumentOutOfRangeExceptionIf0FilePathsPassed()
     {
@@ -19,7 +22,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
         var invalidFile1 = Guid.NewGuid().ToString();
         var invalidFile2 = Guid.NewGuid().ToString();
 
-        string[] files = [CreateTestFile(), invalidFile1, invalidFile2];
+        string[] files = [Testing.CreateTestFile(), invalidFile1, invalidFile2];
 
         var ex = Should.Throw<ArgumentException>(() => new RestartManagerSession(files));
 
@@ -31,7 +34,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void ShouldCreateSession()
     {
-        string[] files = [CreateTestFile(), CreateTestFile()];
+        string[] files = [Testing.CreateTestFile(), Testing.CreateTestFile()];
 
         Should.NotThrow(() => new RestartManagerSession(files));
     }
@@ -39,7 +42,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void ShouldStartSessionAndDisposeIt()
     {
-        string[] files = [CreateTestFile()];
+        string[] files = [Testing.CreateTestFile()];
 
         var session = new RestartManagerSession(files);
 
@@ -68,7 +71,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void StartMethodShouldThrowIfDisposed()
     {
-        string[] files = [CreateTestFile()];
+        string[] files = [Testing.CreateTestFile()];
 
         var session = new RestartManagerSession(files);
         session.Dispose();
@@ -79,7 +82,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void StartMethodShouldThrowIfAlreadyStarted()
     {
-        string[] files = [CreateTestFile()];
+        string[] files = [Testing.CreateTestFile()];
 
         using var session = new RestartManagerSession(files);
         var result = session.Start();
@@ -91,7 +94,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void DisposeShouldBeIdempotent()
     {
-        string[] files = [CreateTestFile()];
+        string[] files = [Testing.CreateTestFile()];
 
         var session = new RestartManagerSession(files);
         session.Dispose();
@@ -104,7 +107,7 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void GetProcessesShouldThrowIfSessionIsDisposed()
     {
-        string[] files = [CreateTestFile()];
+        string[] files = [Testing.CreateTestFile()];
 
         var session = new RestartManagerSession(files);
         session.Dispose();
@@ -115,11 +118,11 @@ internal sealed class RestartManagerSessionTests : PathHandlerTestBase
     [Test]
     public void GetProcessesShouldReturnHolderProcessesForFiles()
     {
-        var heldFile = CreateTestFile();
-        var nonHeldFile = CreateTestFile();
+        var heldFile = Testing.CreateTestFile();
+        var nonHeldFile = Testing.CreateTestFile();
 
         string[] files = [heldFile, nonHeldFile];
-        using var hold = HoldFile(heldFile);
+        using var hold = TestFileSystem.HoldFile(heldFile);
 
         using var session = new RestartManagerSession(files);
         session.Start();
