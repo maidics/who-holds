@@ -7,16 +7,22 @@ public static class ConfigurationExtensions
 {
     extension(IConfiguration configuration)
     {
-        public bool IsTagPush()
+        public string GetRequiredStringValue(string key)
         {
-            var refType = configuration.GetValue<string>(Repo.GitHubRefTypeEnvVar);
+            var value = configuration.GetValue<string>(key);
 
-            if (string.IsNullOrEmpty(refType))
-                throw new InvalidOperationException(
-                    $"Configuration not found: '{Repo.GitHubRefTypeEnvVar}'."
+            if (string.IsNullOrWhiteSpace(value))
+                throw new KeyNotFoundException(
+                    $"Required configuration not found: '{key}', value: '{value}'."
                 );
 
-            return refType == Repo.GitHubTagRef;
+            return value;
+        }
+
+        public bool IsTagPush()
+        {
+            return configuration.GetRequiredStringValue(Repo.GitHubRefTypeEnvVar)
+                == Repo.GitHubTagRef;
         }
     }
 }
