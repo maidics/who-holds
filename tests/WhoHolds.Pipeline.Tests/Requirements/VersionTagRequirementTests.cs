@@ -39,6 +39,10 @@ public sealed class VersionTagFormatRequirementTests
     [Arguments("1_1_1")]
     [Arguments("1.1.1.1")]
     [Arguments("v1.1.1.1")]
+    [Arguments("v01.2.3")]
+    [Arguments("v1.02.3")]
+    [Arguments("v1.2.03")]
+    [Arguments("v1.2.3-rc.1")]
     public async Task ShouldReturnFailedWhenTagIsNotValid(string tag)
     {
         var config = new ConfigurationBuilder()
