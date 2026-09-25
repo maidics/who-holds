@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines;
+using ModularPipelines.Interfaces;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
@@ -43,12 +44,10 @@ public sealed class PipelineBuilderExtensionTests
     {
         _builder.AddServices();
 
-        _builder
-            .Services.SingleOrDefault(d =>
-                d.ServiceType == typeof(ICppBuildToolLocator)
-                && d.ImplementationType == typeof(CppBuildToolLocator)
-            )
-            .ShouldNotBeNull();
+        // provider has to be built because CppBuildToolLocator was registered with a factory
+        using var provider = _builder.Services.BuildServiceProvider();
+
+        provider.GetRequiredService<ICppBuildToolLocator>().ShouldBeOfType<CppBuildToolLocator>();
     }
 
     [Test]
