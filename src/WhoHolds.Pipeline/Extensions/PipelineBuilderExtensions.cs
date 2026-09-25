@@ -1,9 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines;
 using ModularPipelines.Extensions;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
+using WhoHolds.Pipeline.Constants;
+using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
+using WhoHolds.Pipeline.Requirements;
+using WhoHolds.Pipeline.Services;
 
 namespace WhoHolds.Pipeline.Extensions;
 
@@ -31,9 +36,21 @@ public static class PipelineBuilderExtensions
             return builder;
         }
 
+        public PipelineBuilder AddServices()
+        {
+            builder.Services.AddSingleton<ICppBuildToolLocator>(_ => new CppBuildToolLocator(
+                CppBuildToolLocator.DefaultPath
+            ));
+
+            return builder;
+        }
+
         public PipelineBuilder AddRequirements()
         {
-            return builder.AddRequirement<WindowsRequirement>();
+            return builder
+                .AddRequirement<WindowsRequirement>()
+                .AddRequirement<ConfigurationRequirement>()
+                .AddRequirement<CppBuildToolRequirement>();
         }
 
         public PipelineBuilder AddModules()
