@@ -50,6 +50,7 @@ public static class PipelineBuilderExtensions
             return builder
                 .AddRequirement<WindowsRequirement>()
                 .AddRequirement<ConfigurationRequirement>()
+                .AddRequirement<VersionTagFormatRequirement>()
                 .AddRequirement<CppBuildToolRequirement>();
         }
 
