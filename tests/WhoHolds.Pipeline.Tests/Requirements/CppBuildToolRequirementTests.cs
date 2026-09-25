@@ -50,7 +50,9 @@ public sealed class CppBuildToolRequirementTests
 
         logger.Collector.Count.ShouldBe(1);
         logger.Collector.LatestRecord.Level.ShouldBe(LogLevel.Information);
-        logger.Collector.LatestRecord.Message.ShouldBe("Returning early on non tag push ref.");
+        logger.Collector.LatestRecord.Message.ShouldBe(
+            $"{nameof(CppBuildToolRequirement)} returning early on non tag ref push."
+        );
     }
 
     [Test]
