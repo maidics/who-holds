@@ -42,6 +42,8 @@ public static class PipelineBuilderExtensions
                 CppBuildToolLocator.DefaultPath
             ));
 
+            builder.Services.AddSingleton<IReleaseVersionResolver, ReleaseVersionResolver>();
+
             return builder;
         }
 

@@ -49,6 +49,9 @@ public sealed class PipelineBuilderExtensionTests
         using var provider = _builder.Services.BuildServiceProvider();
 
         provider.GetRequiredService<ICppBuildToolLocator>().ShouldBeOfType<CppBuildToolLocator>();
+        provider
+            .GetRequiredService<IReleaseVersionResolver>()
+            .ShouldBeOfType<ReleaseVersionResolver>();
     }
 
     [Test]
