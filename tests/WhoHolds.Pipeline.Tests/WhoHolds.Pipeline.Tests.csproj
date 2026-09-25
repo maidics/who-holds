@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WhoHolds.Pipeline\WhoHolds.Pipeline.csproj" />
+    <ProjectReference Include="..\WhoHolds.Tests.Shared\WhoHolds.Tests.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
