@@ -4,19 +4,22 @@ using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Core.Tests.Utility;
 
-internal sealed class PathUtilsTests : PathHandlerTestBase
+internal sealed class PathUtilsTests
 {
+    [ClassDataSource<TestFileSystem>]
+    public required TestFileSystem Testing { get; init; }
+
     [Test]
     public void CheckFilePathShouldReturnRuleViolationWhenPathIsADirectory()
     {
-        var result = PathUtils.CheckFilePath(_tempDir);
+        var result = PathUtils.CheckFilePath(Testing.TempDir);
         result.ShouldBeResultedTo(false, "Given path is a directory.");
     }
 
     [Test]
     public void CheckFilePathShouldReturnNotFoundIfFileNotFound()
     {
-        var nonExisting = Path.Combine(_tempDir, Guid.NewGuid().ToString());
+        var nonExisting = Path.Combine(Testing.TempDir, Guid.NewGuid().ToString());
 
         var result = PathUtils.CheckFilePath(nonExisting);
         result.ShouldBeResultedTo(false, "File not found.");
@@ -37,7 +40,7 @@ internal sealed class PathUtilsTests : PathHandlerTestBase
     [Test]
     public void ShouldReturnSucceededForValidFilePath()
     {
-        var path = CreateTestFile();
+        var path = Testing.CreateTestFile();
 
         var result = PathUtils.CheckFilePath(path);
         result.ShouldBeResultedTo(true);
