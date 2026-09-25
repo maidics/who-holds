@@ -4,7 +4,7 @@ using ModularPipelines;
 using ModularPipelines.Extensions;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
-using WhoHolds.Pipeline.Constants;
+using WhoHolds.Pipeline.GlobalHooks;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
@@ -43,6 +43,11 @@ public static class PipelineBuilderExtensions
             ));
 
             return builder;
+        }
+
+        public PipelineBuilder AddGlobalHooks()
+        {
+            return builder.AddPipelineGlobalHooks<LoggingGlobalHooks>();
         }
 
         public PipelineBuilder AddRequirements()
