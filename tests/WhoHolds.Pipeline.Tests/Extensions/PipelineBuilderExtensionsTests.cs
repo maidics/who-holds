@@ -5,8 +5,10 @@ using ModularPipelines.Modules;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
 using WhoHolds.Pipeline.Extensions;
+using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
+using WhoHolds.Pipeline.Services;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
@@ -34,6 +36,19 @@ public sealed class PipelineBuilderExtensionTests
         var json = _builder.Configuration.Sources.OfType<JsonConfigurationSource>().Single();
         json.Path.ShouldBe("appsettings.Testing.json");
         json.Optional.ShouldBeFalse();
+    }
+
+    [Test]
+    public void ShouldAddServices()
+    {
+        _builder.AddServices();
+
+        _builder
+            .Services.SingleOrDefault(d =>
+                d.ServiceType == typeof(ICppBuildToolLocator)
+                && d.ImplementationType == typeof(CppBuildToolLocator)
+            )
+            .ShouldNotBeNull();
     }
 
     [Test]
