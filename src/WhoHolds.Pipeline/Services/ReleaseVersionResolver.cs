@@ -2,7 +2,7 @@
 
 namespace WhoHolds.Pipeline.Services;
 
-public sealed class ReleaseVersionResolver : IReleaseVersionResolver // TODO: add tests, register in AddServices, test AddServices
+public sealed class ReleaseVersionResolver : IReleaseVersionResolver
 {
     public string Resolve(string tagName) // TagVersionRequirement ensures the tag name is the correct format
     {
