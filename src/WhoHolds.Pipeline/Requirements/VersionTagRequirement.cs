@@ -20,7 +20,7 @@ public sealed partial class VersionTagFormatRequirement(IConfiguration configura
     {
         if (!configuration.IsTagPush())
         {
-            context.Logger.LogInformation("Returning early on non tag push ref.");
+            context.Logger.LogSkippingRequirementOnNonTagPush<VersionTagFormatRequirement>();
             return RequirementDecision.Passed;
         }
 
