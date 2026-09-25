@@ -44,7 +44,7 @@ public sealed class ConfigurationRequirementTests
         var result = await requirement.MustAsync(null!);
         result.Success.ShouldBeFalse();
         result.Reason.ShouldNotBeNull();
-        result.ShouldBe($"Missing required configurations: {string.Join(", ", missing)}.");
+        result.Reason.ShouldBe($"Missing required configurations: {string.Join(", ", missing)}.");
     }
 
     [Test]
