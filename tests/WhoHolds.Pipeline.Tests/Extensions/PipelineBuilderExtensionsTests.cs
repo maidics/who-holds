@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using ModularPipelines;
+using ModularPipelines.Interfaces;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
 using ModularPipelines.Requirements;
 using WhoHolds.Pipeline.Extensions;
+using WhoHolds.Pipeline.GlobalHooks;
+using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
+using WhoHolds.Pipeline.Services;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
@@ -37,16 +41,35 @@ public sealed class PipelineBuilderExtensionTests
     }
 
     [Test]
+    public void ShouldAddServices()
+    {
+        _builder.AddServices();
+
+        // provider has to be built because CppBuildToolLocator was registered with a factory
+        using var provider = _builder.Services.BuildServiceProvider();
+
+        provider.GetRequiredService<ICppBuildToolLocator>().ShouldBeOfType<CppBuildToolLocator>();
+    }
+
+    [Test]
+    public void ShouldAddGlobalHooks()
+    {
+        _builder.AddGlobalHooks();
+
+        ContainsService<IPipelineGlobalHooks, LoggingGlobalHooks>().ShouldBeTrue();
+    }
+
+    [Test]
     public void ShouldAddRequirements()
     {
         _builder.AddRequirements();
 
         _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(4);
 
-        ContainsRequirement<WindowsRequirement>().ShouldBeTrue();
-        ContainsRequirement<ConfigurationRequirement>().ShouldBeTrue();
-        ContainsRequirement<VersionTagFormatRequirement>().ShouldBeTrue();
-        ContainsRequirement<CppBuildToolRequirement>().ShouldBeTrue();
+        ContainsService<IPipelineRequirement, WindowsRequirement>().ShouldBeTrue();
+        ContainsService<IPipelineRequirement, ConfigurationRequirement>().ShouldBeTrue();
+        ContainsService<IPipelineRequirement, VersionTagFormatRequirement>().ShouldBeTrue();
+        ContainsService<IPipelineRequirement, CppBuildToolRequirement>().ShouldBeTrue();
     }
 
     [Test]
@@ -61,10 +84,10 @@ public sealed class PipelineBuilderExtensionTests
         pipeline.Services.GetServices<IModule>().Select(m => m.GetType()).ShouldBe(expected);
     }
 
-    private bool ContainsRequirement<TRequirement>()
-        where TRequirement : IPipelineRequirement =>
+    private bool ContainsService<TService, TImplementation>()
+        where TService : notnull
+        where TImplementation : TService =>
         _builder.Services.Any(d =>
-            d.ServiceType == typeof(IPipelineRequirement)
-            && (d.ImplementationType ?? d.ImplementationInstance?.GetType()) == typeof(TRequirement)
+            d.ServiceType == typeof(TService) && d.ImplementationType == typeof(TImplementation)
         );
 }
