@@ -18,7 +18,7 @@ public sealed class CppBuildToolRequirement(
     {
         if (!configuration.IsTagPush())
         {
-            context.Logger.LogInformation("Returning early on non tag push ref.");
+            context.Logger.LogSkippingRequirementOnNonTagPush<CppBuildToolRequirement>();
             return RequirementDecision.Passed;
         }
 
