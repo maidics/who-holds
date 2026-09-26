@@ -8,7 +8,8 @@ public sealed class ConfigurationRequirementTests
 {
     [Test]
     [Arguments(Repo.GitHubRefTypeEnvVar)]
-    [Arguments(Repo.GitHubRefNameEnvVar)]
+    [Arguments(Repo.GitHubRefNameEnvVar, Repo.PublishOutputDirectory)]
+    [Arguments(Repo.GitHubRefNameEnvVar, Repo.GitHubRefTypeEnvVar)]
     public async Task ShouldReturnFailedIfMissingConfigurationKeys(params string[] keys)
     {
         var config = new ConfigurationBuilder()
@@ -58,6 +59,7 @@ public sealed class ConfigurationRequirementTests
                 {
                     [Repo.GitHubRefTypeEnvVar] = v,
                     [Repo.GitHubRefNameEnvVar] = v,
+                    [Repo.PublishOutputDirectory] = v,
                 }
             )
             .Build();

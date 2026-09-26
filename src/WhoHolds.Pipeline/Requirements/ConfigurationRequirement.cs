@@ -8,7 +8,12 @@ namespace WhoHolds.Pipeline.Requirements;
 
 public sealed class ConfigurationRequirement(IConfiguration configuration) : IPipelineRequirement
 {
-    public static readonly string[] Required = [Repo.GitHubRefTypeEnvVar, Repo.GitHubRefNameEnvVar];
+    public static readonly string[] Required =
+    [
+        Repo.GitHubRefTypeEnvVar,
+        Repo.GitHubRefNameEnvVar,
+        Repo.PublishOutputDirectory,
+    ];
 
     public Task<RequirementDecision> MustAsync(IPipelineHookContext context)
     {
