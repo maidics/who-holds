@@ -26,7 +26,9 @@ WhoHolds is a CLI application built with .NET for resolving holder processes to 
 | Testing | Testing with TUnit    | [`TUnit Skill`](.claude/skills/tunit/SKILL.md)                | No |
 
 ## Commands
+- Use `-c Release` with `dotnet` commands
+
+### Working on Windows features on Linux host:
 
 - Access the Windows Server VM from Linux: `ssh winvm`
 - Push your changes to the Windows Server VM: [`push-win.sh`](./scripts/windows-server-vm/push-win.sh)
-- Use `-c Release` with `dotnet` commands
