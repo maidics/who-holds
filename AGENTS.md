@@ -20,7 +20,7 @@ WhoHolds is a CLI application built with .NET for resolving holder processes to 
 
 | Topic                          | Description                         | Document                                                      | Keep updated |
 |--------------------------------|-------------------------------------|---------------------------------------------------------------|--------------|
-| Architecture                   | High-level application architecture | [`publish.md`](./docs/publish.md)                             | Yes |
+| Architecture                   | High-level application architecture | [`architecture.md`](./docs/architecture.md)                        | Yes |
 | Publish                        | Publishing / Native AOT target      | [`publish.md`](./docs/publish.md)                             | Yes |
 | WhoHolds.Cli project structure | Cli project structure               | [`core-project-structure.md`](docs/core-project-structure.md) | Yes |
 | Testing | Testing with TUnit    | [`TUnit Skill`](.claude/skills/tunit/SKILL.md)                | No |
