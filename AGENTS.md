@@ -1,9 +1,31 @@
 ﻿# WhoHolds Agent Guide
 
-Before you take action, write code or answer a question search on the internet for the official documentation on the subject - if this is not found use unofficial sources on the internet and as the last resort use your training data - explicitly reference your source:
-- **No**: Here's the solution: [solution]. / I found a solution for this on the web here's the code: [code]. / I found the XY documentation to this, here's the solution: [solution]
-- **Yes**: I used official XY documentation: *link.to.the.source*. / [code] // the solution was created using official documented source / unofficial source: *link.to.the.source* / I came up with the solution using my training data
+WhoHolds is a CLI application built with .NET for resolving holder processes to a specified file.
 
-As for unofficial sources do not take them for granted rather use your logic to assess the stated information and explain it if you're answering a question and write a comment when coding.
+---
 
-Using sources from the web and referencing them is not required for simple and universal logic such as calling a function from the codebase, doing simple math etc. This is also not required when asked to use a certain logic or pointed to a source.
+## Working with this repository
+
+- Check the [Directory.Build.props](Directory.Build.props) for package versions, target frameworks, and the SDK/test runner in [`global.json`](global.json). Preserve the project's versions unless an upgrade is requested or necessary and explained.
+- Documents that are not listed in the table under [References](#references) should not be read or changed by AI Agents.
+- Choose the closest topic from [References](#references) or the targeted website containing the documents and fetch that document before choosing APIs or commands. Start with one page; fetch another only when the task needs it. Skip pages already available in the conversation unless they need refreshing. 
+- You may find that a feature requires Windows but the host machine has Linux. In this case a VM with Windows Server is set up with the required tools and is accessible with the `ssh winvm` command or scripts inside [`windows-server-vm`](scripts/windows-server-vm).
+- Run focused build or test when making code changes.
+- After you finish your changes, check the References table if the related topic to your changes requires its document to be changed - in this case update the document. **Only update documents that are marked with _Yes_ in the 'Keep updated' column.**
+
+---
+
+## References
+
+| Topic                          | Description                         | Document                                                      | Keep updated |
+|--------------------------------|-------------------------------------|---------------------------------------------------------------|--------------|
+| Architecture                   | High-level application architecture | [`publish.md`](./docs/publish.md)                             | Yes |
+| Publish                        | Publishing / Native AOT target      | [`publish.md`](./docs/publish.md)                             | Yes |
+| WhoHolds.Cli project structure | Cli project structure               | [`core-project-structure.md`](docs/core-project-structure.md) | Yes |
+| Testing | Testing with TUnit    | [`TUnit Skill`](.claude/skills/tunit/SKILL.md)                | No |
+
+## Commands
+
+- Access the Windows Server VM from Linux: `ssh winvm`
+- Push your changes to the Windows Server VM: [`push-win.sh`](./scripts/windows-server-vm/push-win.sh)
+- Use `-c Release` with `dotnet` commands
