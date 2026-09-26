@@ -1,0 +1,1 @@
+dotnet publish .\..\src\WhoHolds.Cli\WhoHolds.Cli.csproj -c Release -r win-x64 -o .\artifacts\publish
