@@ -120,6 +120,51 @@ public sealed class PipelineBuilderExtensionTests
     }
 
     [Test]
+    [MethodDataSource(
+        nameof(AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
+    )]
+    public async Task AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
+        Dictionary<string, string?> values
+    )
+    {
+        _builder.Configuration.Sources.Clear();
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPublishSettings();
+
+        await Should.ThrowAsync<OptionsValidationException>(_builder.BuildAsync);
+    }
+
+    public static IEnumerable<
+        Func<Dictionary<string, string?>>
+    > AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
+    {
+        yield return () => new() { ["Runtime"] = "runtime" };
+
+        yield return () => new() { ["OutputDirectory"] = "output-dir" };
+    }
+
+    [Test]
+    public void ShouldAddPublishSettings()
+    {
+        _builder.Configuration.Sources.Clear();
+
+        var values = new Dictionary<string, string?>
+        {
+            ["Publish:Runtime"] = "runtime",
+            ["Publish:OutputDirectory"] = "output-dir",
+        };
+
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPublishSettings();
+
+        var provider = _builder.Services.BuildServiceProvider();
+
+        var settings = provider.GetRequiredService<IOptions<PublishSettings>>().Value;
+        settings.OutputDirectory.ShouldBe(values["Publish:OutputDirectory"]);
+        settings.Runtime.ShouldBe(values["Publish:Runtime"]);
+    }
+
+    [Test]
     public void ShouldAddServices()
     {
         _builder.AddServices();
