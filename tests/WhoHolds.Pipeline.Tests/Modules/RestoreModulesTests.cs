@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
+using ModularPipelines.Context;
 using ModularPipelines.DotNet.Options;
-using ModularPipelines.Enums;
+using ModularPipelines.DotNet.Services;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.TestInfrastructure;
+using WhoHolds.Pipeline.Tests.Extensions;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
@@ -13,31 +14,35 @@ public sealed class RestoreModulesTests
         new PipelineSettings()
     );
 
-    private readonly PipelineTesting _testing = new(_ => new RestoreModule(_options));
-
     [Test]
     public async Task ShouldRunModule()
     {
-        var summary = await _testing.BuildAndRunAsync();
-
-        summary.Status.ShouldBe(Status.Successful);
+        var dotnet = IDotNet.Mock();
+        var context = IModuleContext.CreateWithDotNetMock(dotnet);
+        var module = new RestoreModule(_options);
+        await module.TestExecuteAsync(context);
 
         var expectedOptions = new DotNetRestoreOptions
         {
             ProjectSolution = _options.Value.Solution,
         };
 
-        _testing.Dotnet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
+        dotnet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
 
     [Test]
     public async Task ShouldFailPipelineWhenModuleFails()
     {
-        _testing
-            .Dotnet.Restore(Any(), Any(), Any())
-            .Throws(new InvalidOperationException("Restore failed."));
+        var dotnet = IDotNet.Mock();
+        var context = IModuleContext.CreateWithDotNetMock(dotnet);
+        var module = new RestoreModule(_options);
 
-        var ex = await Should.ThrowAsync<Exception>(_testing.BuildAndRunAsync);
-        ex.Message.ShouldContain(nameof(RestoreModule));
+        var exception = new InvalidOperationException("Restore failed.");
+        dotnet
+            .Restore(Any(), Any(), Any())
+            .Throws(exception);
+
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() => module.TestExecuteAsync(context)); // ignore error
+        ex.Message.ShouldBe(exception.Message);
     }
 }

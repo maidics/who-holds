@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
+using ModularPipelines.Context;
+using ModularPipelines.DotNet.Services;
 using ModularPipelines.DotNet.Options;
 using ModularPipelines.Enums;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.TestInfrastructure;
+using WhoHolds.Pipeline.Tests.Extensions;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
@@ -16,21 +18,17 @@ public sealed class BuildModuleTests
     [Test]
     public void ShouldDependOnRestoreModule()
     {
-        PipelineTesting.ShouldHaveDependsOnAttribute<BuildModule, RestoreModule>();
+        BuildModule.ShouldHaveDependsOnAttribute<BuildModule,RestoreModule>();
     }
-
+ 
     [Test]
     public async Task ShouldRunModule()
     {
-        var testing = new PipelineTesting(
-            _ => new RestoreModule(_options),
-            _ => new BuildModule(_options)
-        );
-
-        var summary = await testing.BuildAndRunAsync();
-
-        summary.Status.ShouldBe(Status.Successful);
-
+        var dotnet = IDotNet.Mock();
+        var context = IModuleContext.CreateWithDotNetMock(dotnet);
+        var module = new BuildModule(_options);
+        await module.TestExecuteAsync(context);
+    
         var expectedOptions = new DotNetBuildOptions
         {
             Nologo = true,
@@ -38,20 +36,22 @@ public sealed class BuildModuleTests
             ProjectSolution = _options.Value.Solution,
             Configuration = _options.Value.Configuration,
         };
-
-        testing.Dotnet.Build(expectedOptions, Any(), Any()).WasCalled(Times.Once);
+    
+        dotnet.Build(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
-
+    
     [Test]
     public async Task ShouldFailPipelineWhenModuleFails()
     {
-        var testing = new PipelineTesting(_ => new BuildModule(_options));
+        var dotnet = IDotNet.Mock();
+        var context = IModuleContext.CreateWithDotNetMock(dotnet);
+        var module = new BuildModule(_options);
 
-        testing
-            .Dotnet.Build(Any(), Any(), Any())
-            .Throws(new InvalidOperationException("Build failed."));
-
-        var ex = await Should.ThrowAsync<Exception>(testing.BuildAndRunAsync);
-        ex.Message.ShouldContain(nameof(BuildModule));
+        var exception = new InvalidOperationException("Build failed.");
+        dotnet.Build(Any(), Any(), Any())
+            .Throws(exception);
+    
+        var ex = await Should.ThrowAsync<InvalidOperationException>(module.TestExecuteAsync(context));
+        ex.Message.ShouldBe(exception.Message);
     }
 }
