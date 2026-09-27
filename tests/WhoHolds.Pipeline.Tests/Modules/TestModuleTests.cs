@@ -6,18 +6,24 @@ using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
-public sealed class TestModuleTests : DotNetModuleTestBase<TestModule>
+public sealed class TestModuleTests
 {
     [Test]
     public void ShouldDependOnBuildModule()
     {
-        ShouldHaveDependsOnAttribute<BuildModule>();
+        PipelineTesting.ShouldHaveDependsOnAttribute<TestModule, BuildModule>();
     }
 
     [Test]
-    public override async Task ShouldRunModule()
+    public async Task ShouldRunModule()
     {
-        var summary = await BuildAndRunAsync();
+        var testing = new PipelineTesting(
+            _ => new RestoreModule(),
+            _ => new BuildModule(),
+            _ => new TestModule()
+        );
+
+        var summary = await testing.BuildAndRunAsync();
 
         summary.Status.ShouldBe(Status.Successful);
 
@@ -29,17 +35,19 @@ public sealed class TestModuleTests : DotNetModuleTestBase<TestModule>
             Solution = Repo.Solution,
         };
 
-        _dotNet.Test(expectedOptions, Any(), Any()).WasCalled(Times.Once);
+        testing.Dotnet.Test(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
 
     [Test]
-    public override async Task ShouldFailPipelineWhenModuleFails()
+    public async Task ShouldFailPipelineWhenModuleFails()
     {
-        _dotNet
-            .Test(Any(), Any(), Any())
+        var testing = new PipelineTesting(_ => new TestModule());
+
+        testing
+            .Dotnet.Test(Any(), Any(), Any())
             .Throws(new InvalidOperationException("Running tests failed."));
 
-        var ex = await Should.ThrowAsync<Exception>(BuildAndRunAsync);
+        var ex = await Should.ThrowAsync<Exception>(testing.BuildAndRunAsync);
         ex.Message.ShouldContain(nameof(TestModule));
     }
 }

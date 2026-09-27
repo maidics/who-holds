@@ -6,28 +6,30 @@ using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
-public sealed class RestoreModulesTests : DotNetModuleTestBase<RestoreModule>
+public sealed class RestoreModulesTests
 {
+    private readonly PipelineTesting _testing = new(_ => new RestoreModule());
+
     [Test]
-    public override async Task ShouldRunModule()
+    public async Task ShouldRunModule()
     {
-        var summary = await BuildAndRunAsync();
+        var summary = await _testing.BuildAndRunAsync();
 
         summary.Status.ShouldBe(Status.Successful);
 
         var expectedOptions = new DotNetRestoreOptions { ProjectSolution = Repo.Solution };
 
-        _dotNet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
+        _testing.Dotnet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
 
     [Test]
-    public override async Task ShouldFailPipelineWhenModuleFails()
+    public async Task ShouldFailPipelineWhenModuleFails()
     {
-        _dotNet
-            .Restore(Any(), Any(), Any())
+        _testing
+            .Dotnet.Restore(Any(), Any(), Any())
             .Throws(new InvalidOperationException("Restore failed."));
 
-        var ex = await Should.ThrowAsync<Exception>(BuildAndRunAsync);
+        var ex = await Should.ThrowAsync<Exception>(_testing.BuildAndRunAsync);
         ex.Message.ShouldContain(nameof(RestoreModule));
     }
 }
