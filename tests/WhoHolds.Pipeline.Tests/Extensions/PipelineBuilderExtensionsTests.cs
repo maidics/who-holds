@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using ModularPipelines;
 using ModularPipelines.Interfaces;
 using ModularPipelines.Modules;
@@ -11,6 +13,7 @@ using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Services;
+using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
@@ -41,6 +44,82 @@ public sealed class PipelineBuilderExtensionTests
     }
 
     [Test]
+    [MethodDataSource(
+        nameof(AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
+    )]
+    public async Task AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
+        Dictionary<string, string?> values
+    )
+    {
+        _builder.Configuration.Sources.Clear();
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPipelineSettings();
+
+        await Should.ThrowAsync<OptionsValidationException>(_builder.BuildAsync);
+    }
+
+    public static IEnumerable<
+        Func<Dictionary<string, string?>>
+    > AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
+    {
+        yield return () =>
+            new()
+            {
+                ["GITHUB_REF_TYPE"] = "tag",
+                ["GITHUB_REF_NAME"] = "ref-name",
+                ["Pipeline:GitHubTagRef"] = "tag",
+            };
+        yield return () =>
+            new()
+            {
+                ["Pipeline:Configuration"] = "config",
+                ["GITHUB_REF_NAME"] = "ref-name",
+                ["Pipeline:GitHubTagRef"] = "tag",
+            };
+        yield return () =>
+            new()
+            {
+                ["Pipeline:Configuration"] = "config",
+                ["GITHUB_REF_TYPE"] = "tag",
+                ["Pipeline:GitHubTagRef"] = "tag",
+            };
+        yield return () =>
+            new()
+            {
+                ["Pipeline:Configuration"] = "config",
+                ["GITHUB_REF_TYPE"] = "tag",
+                ["GITHUB_REF_NAME"] = "ref-name",
+            };
+    }
+
+    [Test]
+    public void ShouldAddPipelineSettings()
+    {
+        _builder.Configuration.Sources.Clear();
+
+        var values = new Dictionary<string, string?>
+        {
+            ["Pipeline:Configuration"] = "config",
+            ["GITHUB_REF_TYPE"] = "tag",
+            ["GITHUB_REF_NAME"] = "ref-name",
+            ["Pipeline:GitHubTagRef"] = "tag",
+        };
+
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPipelineSettings();
+
+        var provider = _builder.Services.BuildServiceProvider();
+
+        var settings = provider.GetRequiredService<IOptions<PipelineSettings>>().Value;
+        settings.Configuration.ShouldBe(values["Pipeline:Configuration"]);
+        settings.GitHubRefType.ShouldBe(values["GITHUB_REF_TYPE"]);
+        settings.GitHubRefName.ShouldBe(values["GITHUB_REF_NAME"]);
+        settings.GitHubTagRef.ShouldBe(values["Pipeline:GitHubTagRef"]);
+        settings.Solution.ShouldBe("WhoHolds.slnx");
+        settings.IsTagPush.ShouldBeTrue();
+    }
+
+    [Test]
     public void ShouldAddServices()
     {
         _builder.AddServices();
@@ -67,10 +146,9 @@ public sealed class PipelineBuilderExtensionTests
     {
         _builder.AddRequirements();
 
-        _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(4);
+        _builder.Services.Count(d => d.ServiceType == typeof(IPipelineRequirement)).ShouldBe(3);
 
         ContainsService<IPipelineRequirement, WindowsRequirement>().ShouldBeTrue();
-        ContainsService<IPipelineRequirement, ConfigurationRequirement>().ShouldBeTrue();
         ContainsService<IPipelineRequirement, VersionTagFormatRequirement>().ShouldBeTrue();
         ContainsService<IPipelineRequirement, CppBuildToolRequirement>().ShouldBeTrue();
     }

@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
-using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.GlobalHooks;
+using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.GlobalHooks;
@@ -10,22 +10,13 @@ namespace WhoHolds.Pipeline.Tests.GlobalHooks;
 public sealed class LoggingGlobalHooksTests
 {
     [Test]
-    [Arguments(null, null)]
-    [Arguments("", "")]
-    [Arguments("tag", "v1.0.0")]
-    public async Task OnPipelineStartAsyncShouldLog(string? refType, string? refName)
+    public async Task OnPipelineStartAsyncShouldLog()
     {
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    [Repo.GitHubRefTypeEnvVar] = refType,
-                    [Repo.GitHubRefNameEnvVar] = refName,
-                }
-            )
-            .Build();
+        var options = Options.Create(
+            new PipelineSettings { GitHubRefName = "ref-name", GitHubRefType = "ref-type" }
+        );
 
-        var hooks = new LoggingGlobalHooks(config);
+        var hooks = new LoggingGlobalHooks(options);
 
         var logger = new FakeModuleLogger();
 
@@ -37,7 +28,7 @@ public sealed class LoggingGlobalHooksTests
         logger.Collector.Count.ShouldBe(1);
         logger.Collector.LatestRecord.Level.ShouldBe(LogLevel.Information);
         logger.Collector.LatestRecord.Message.ShouldBe(
-            $"Running pipeline for {refType ?? "(null)"} ref: '{refName ?? "(null)"}'."
+            $"Running pipeline for {options.Value.GitHubRefType} ref: '{options.Value.GitHubRefName}'."
         );
     }
 }

@@ -1,22 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using ModularPipelines.Interfaces;
-using WhoHolds.Pipeline.Constants;
+using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.GlobalHooks;
 
-public sealed class LoggingGlobalHooks(IConfiguration configuration) : IPipelineGlobalHooks
+public sealed class LoggingGlobalHooks(IOptions<PipelineSettings> options) : IPipelineGlobalHooks
 {
     public Task OnPipelineStartAsync(IPipelineHookContext context)
     {
-        var refType = configuration.GetValue<string>(Repo.GitHubRefTypeEnvVar);
-        var refName = configuration.GetValue<string>(Repo.GitHubRefNameEnvVar);
-
         context.Logger.LogInformation(
             "Running pipeline for {RefType} ref: '{RefName}'.",
-            refType,
-            refName
+            options.Value.GitHubRefType,
+            options.Value.GitHubRefName
         );
 
         return Task.CompletedTask;

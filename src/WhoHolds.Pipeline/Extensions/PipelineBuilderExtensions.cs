@@ -9,6 +9,7 @@ using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Services;
+using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Extensions;
 
@@ -36,6 +37,29 @@ public static class PipelineBuilderExtensions
             return builder;
         }
 
+        public PipelineBuilder AddSettings()
+        {
+            return builder.AddPipelineSettings();
+        }
+
+        public PipelineBuilder AddPipelineSettings()
+        {
+            var config = builder.Configuration;
+
+            builder
+                .Services.AddOptions<PipelineSettings>()
+                .Bind(config.GetSection("Pipeline"))
+                .Configure(settings =>
+                {
+                    settings.GitHubRefType = config["GITHUB_REF_TYPE"] ?? string.Empty;
+                    settings.GitHubRefName = config["GITHUB_REF_NAME"] ?? string.Empty;
+                })
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            return builder;
+        }
+
         public PipelineBuilder AddServices()
         {
             builder.Services.AddSingleton<ICppBuildToolLocator>(_ => new CppBuildToolLocator(
@@ -56,7 +80,6 @@ public static class PipelineBuilderExtensions
         {
             return builder
                 .AddRequirement<WindowsRequirement>()
-                .AddRequirement<ConfigurationRequirement>()
                 .AddRequirement<VersionTagFormatRequirement>()
                 .AddRequirement<CppBuildToolRequirement>();
         }
