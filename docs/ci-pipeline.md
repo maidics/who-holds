@@ -29,11 +29,11 @@ Settings classes are validated on startup via annotations.
 
 ### Requirements
 
-| Step | Requirement                                                                                           | Runs | Description                                                                                                                                               |
-|------|-------------------------------------------------------------------------------------------------------|-|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1.   | `WindowsRequirement`                                                                                  | Always | The pipeline must run on Windows.                                                                                                                         |
-| 2.   | [`VersionTagFormatRequirement`](../src/WhoHolds.Pipeline/Requirements/VersionTagFormatRequirement.cs) | On tag push | Verifies git tag name by 'GITHUB_REF_NAME' using a source generated regex. The tag name must have the following format: vMAJOR.MINOR.PATCH (e.g. v1.0.0). 
-| 3.   | [`CppBuildToolsRequirement`](../src/WhoHolds.Pipeline/Requirements/CppBuildToolsRequirement.cs)       | On tag push | Ensures that Desktop Development with C++ is installed on host.                                                                                           |
+| Step | Requirement                                                                                         | Runs | Description                                                                                                                                               |
+|------|-----------------------------------------------------------------------------------------------------|-|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1.   | `WindowsRequirement`                                                                                | Always | The pipeline must run on Windows.                                                                                                                         |
+| 2.   | [`VersionTagRequirement`](../src/WhoHolds.Pipeline/Requirements/VersionTagRequirement.cs) | On tag push | Verifies git tag name by 'GITHUB_REF_NAME' using a source generated regex. The tag name must have the following format: vMAJOR.MINOR.PATCH (e.g. v1.0.0). 
+| 3.   | [`CppBuildToolRequirement`](../src/WhoHolds.Pipeline/Requirements/CppBuildToolRequirement.cs)       | On tag push | Ensures that Desktop Development with C++ is installed on host.                                                                                           |
 
 **`IPipelineRequirement` has no skip mechanic like `Module` does so returning early is the right choice for conditional requirements.**
 
