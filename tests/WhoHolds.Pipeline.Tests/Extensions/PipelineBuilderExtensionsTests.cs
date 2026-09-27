@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -44,7 +44,56 @@ public sealed class PipelineBuilderExtensionTests
     }
 
     [Test]
-    public void ShouldAddSettings()
+    [MethodDataSource(
+        nameof(AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
+    )]
+    public async Task AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
+        Dictionary<string, string?> values
+    )
+    {
+        _builder.Configuration.Sources.Clear();
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPipelineSettings();
+
+        await Should.ThrowAsync<OptionsValidationException>(_builder.BuildAsync);
+    }
+
+    public static IEnumerable<
+        Func<Dictionary<string, string?>>
+    > AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
+    {
+        yield return () =>
+            new()
+            {
+                ["GITHUB_REF_TYPE"] = "tag",
+                ["GITHUB_REF_NAME"] = "ref-name",
+                ["Pipeline:GitHubTagRef"] = "tag",
+            };
+        yield return () =>
+            new()
+            {
+                ["Pipeline:Configuration"] = "config",
+                ["GITHUB_REF_NAME"] = "ref-name",
+                ["Pipeline:GitHubTagRef"] = "tag",
+            };
+        yield return () =>
+            new()
+            {
+                ["Pipeline:Configuration"] = "config",
+                ["GITHUB_REF_TYPE"] = "tag",
+                ["Pipeline:GitHubTagRef"] = "tag",
+            };
+        yield return () =>
+            new()
+            {
+                ["Pipeline:Configuration"] = "config",
+                ["GITHUB_REF_TYPE"] = "tag",
+                ["GITHUB_REF_NAME"] = "ref-name",
+            };
+    }
+
+    [Test]
+    public void ShouldAddPipelineSettings()
     {
         _builder.Configuration.Sources.Clear();
 
@@ -57,7 +106,7 @@ public sealed class PipelineBuilderExtensionTests
         };
 
         _builder.Configuration.AddInMemoryCollection(values);
-        _builder.AddSettings();
+        _builder.AddPipelineSettings();
 
         var provider = _builder.Services.BuildServiceProvider();
 

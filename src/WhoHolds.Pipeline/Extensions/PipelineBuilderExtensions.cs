@@ -39,6 +39,11 @@ public static class PipelineBuilderExtensions
 
         public PipelineBuilder AddSettings()
         {
+            return builder.AddPipelineSettings();
+        }
+
+        public PipelineBuilder AddPipelineSettings()
+        {
             var config = builder.Configuration;
 
             builder
