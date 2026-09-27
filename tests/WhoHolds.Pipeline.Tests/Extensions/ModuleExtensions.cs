@@ -1,7 +1,6 @@
 using System.Reflection;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Services;
 using ModularPipelines.Modules;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
