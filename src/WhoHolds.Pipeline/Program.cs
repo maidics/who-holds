@@ -6,6 +6,7 @@ var builder = Pipeline.CreateBuilder(args);
 builder
     .ConfigurePipeline()
     .AddJsonConfiguration()
+    .AddSettings()
     .AddServices()
     .AddGlobalHooks()
     .AddRequirements()
