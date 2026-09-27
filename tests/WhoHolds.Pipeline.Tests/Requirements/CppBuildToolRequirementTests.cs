@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Requirements;
+using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Requirements;
@@ -13,15 +15,11 @@ public sealed class CppBuildToolRequirementTests
 {
     private static Task<RequirementDecision> EvaluateAsync(
         CppBuildToolLookupResult result,
-        string tag = Repo.GitHubTagRef,
+        string refType = "tag",
         FakeModuleLogger? logger = null
     )
     {
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string?> { [Repo.GitHubRefTypeEnvVar] = tag }
-            )
-            .Build();
+        var options = Options.Create(new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" });
 
         IPipelineHookContextMock context = null!;
 
@@ -31,7 +29,7 @@ public sealed class CppBuildToolRequirementTests
             context.Logger.Returns(logger);
         }
 
-        return new CppBuildToolRequirement(new TestCppBuildToolLocator(result), config).MustAsync(
+        return new CppBuildToolRequirement(new TestCppBuildToolLocator(result), options).MustAsync(
             context?.Object!
         );
     }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Requirements;
+using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Requirements;
@@ -12,13 +14,9 @@ public sealed class VersionTagFormatRequirementTests
     [Test]
     public async Task ShouldReturnEarlyOnNonTagPush()
     {
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string?> { [Repo.GitHubRefTypeEnvVar] = "not-tag" }
-            )
-            .Build();
+        var options = Options.Create(new PipelineSettings { GitHubRefType = "not-tag", GitHubTagRef = "tag" });
 
-        var requirement = new VersionTagFormatRequirement(config);
+        var requirement = new VersionTagFormatRequirement(options);
 
         var logger = new FakeModuleLogger();
 
@@ -45,24 +43,23 @@ public sealed class VersionTagFormatRequirementTests
     [Arguments("v1.02.3")]
     [Arguments("v1.2.03")]
     [Arguments("v1.2.3-rc.1")]
-    public async Task ShouldReturnFailedWhenTagIsNotValid(string tag)
+    public async Task ShouldReturnFailedWhenTagIsNotValid(string refName)
     {
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    [Repo.GitHubRefTypeEnvVar] = Repo.GitHubTagRef,
-                    [Repo.GitHubRefNameEnvVar] = tag,
-                }
-            )
-            .Build();
+        var options = Options.Create(
+            new PipelineSettings
+            {
+                GitHubRefType = "tag",
+                GitHubTagRef = "tag",
+                GitHubRefName = refName,
+            }
+        );
 
-        var requirement = new VersionTagFormatRequirement(config);
+        var requirement = new VersionTagFormatRequirement(options);
 
         var result = await requirement.MustAsync(null!);
         result.Success.ShouldBeFalse();
         result.Reason.ShouldNotBeNull();
-        result.Reason.ShouldContain($"Invalid tag: '{tag}'");
+        result.Reason.ShouldContain($"Invalid tag: '{refName}'");
     }
 
     [Test]
@@ -70,17 +67,16 @@ public sealed class VersionTagFormatRequirementTests
     [Arguments("v1.2.0")]
     public async Task ShouldPassIfTagIsValid(string tag)
     {
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    [Repo.GitHubRefTypeEnvVar] = Repo.GitHubTagRef,
-                    [Repo.GitHubRefNameEnvVar] = tag,
-                }
-            )
-            .Build();
+        var options = Options.Create(
+            new PipelineSettings
+            {
+                GitHubRefType = "tag",
+                GitHubTagRef = "tag",
+                GitHubRefName = tag,
+            }
+        );
 
-        var requirement = new VersionTagFormatRequirement(config);
+        var requirement = new VersionTagFormatRequirement(options);
 
         var result = await requirement.MustAsync(null!);
         result.Success.ShouldBeTrue();

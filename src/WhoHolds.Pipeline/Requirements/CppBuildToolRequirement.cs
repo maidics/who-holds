@@ -1,22 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Requirements;
 using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Interfaces;
+using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Requirements;
 
 public sealed class CppBuildToolRequirement(
     ICppBuildToolLocator locator,
-    IConfiguration configuration
+    IOptions<PipelineSettings> options
 ) : IPipelineRequirement
 {
     public async Task<RequirementDecision> MustAsync(IPipelineHookContext context)
     {
-        if (!configuration.IsTagPush())
+        if (!options.Value.IsTagPush)
         {
             context.Logger.LogSkippingRequirementOnNonTagPush<CppBuildToolRequirement>();
             return RequirementDecision.Passed;
