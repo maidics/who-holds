@@ -1,13 +1,19 @@
-﻿using ModularPipelines.DotNet.Options;
+﻿using Microsoft.Extensions.Options;
+using ModularPipelines.DotNet.Options;
 using ModularPipelines.Enums;
 using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Modules;
+using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
 public sealed class TestModuleTests
 {
+    private static readonly IOptions<PipelineSettings> _options = Options.Create(
+        new PipelineSettings { Configuration = "test" }
+    );
+
     [Test]
     public void ShouldDependOnBuildModule()
     {
@@ -18,9 +24,9 @@ public sealed class TestModuleTests
     public async Task ShouldRunModule()
     {
         var testing = new PipelineTesting(
-            _ => new RestoreModule(),
-            _ => new BuildModule(),
-            _ => new TestModule()
+            _ => new RestoreModule(_options),
+            _ => new BuildModule(_options),
+            _ => new TestModule(_options)
         );
 
         var summary = await testing.BuildAndRunAsync();
@@ -31,8 +37,8 @@ public sealed class TestModuleTests
         {
             NoRestore = true,
             NoBuild = true,
-            Configuration = Repo.Configuration,
-            Solution = Repo.Solution,
+            Configuration = _options.Value.Configuration,
+            Solution = _options.Value.Solution,
         };
 
         testing.Dotnet.Test(expectedOptions, Any(), Any()).WasCalled(Times.Once);
@@ -41,7 +47,7 @@ public sealed class TestModuleTests
     [Test]
     public async Task ShouldFailPipelineWhenModuleFails()
     {
-        var testing = new PipelineTesting(_ => new TestModule());
+        var testing = new PipelineTesting(_ => new TestModule(_options));
 
         testing
             .Dotnet.Test(Any(), Any(), Any())
