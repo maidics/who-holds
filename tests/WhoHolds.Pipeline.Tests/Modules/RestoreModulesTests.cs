@@ -5,6 +5,7 @@ using ModularPipelines.DotNet.Services;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.Extensions;
+using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
@@ -38,11 +39,11 @@ public sealed class RestoreModulesTests
         var module = new RestoreModule(_options);
 
         var exception = new InvalidOperationException("Restore failed.");
-        dotnet
-            .Restore(Any(), Any(), Any())
-            .Throws(exception);
+        dotnet.Restore(Any(), Any(), Any()).Throws(exception);
 
-        var ex = await Should.ThrowAsync<InvalidOperationException>(() => module.TestExecuteAsync(context)); // ignore error
+        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
+            module.TestExecuteAsync(context)
+        ); // ignore error
         ex.Message.ShouldBe(exception.Message);
     }
 }

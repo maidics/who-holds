@@ -1,9 +1,8 @@
 using System.Reflection;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Services;
 using ModularPipelines.Modules;
 
-namespace WhoHolds.Pipeline.Tests.Extensions;
+namespace WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 public static class ModuleExtensions
 {
@@ -33,11 +32,10 @@ public static class ModuleExtensions
         }
     }
 
-    extension<TModule>(TModule) where TModule : class, IModule
+    extension<TModule>(TModule)
+        where TModule : class, IModule
     {
-        public static ModularPipelines.Attributes.DependsOnAttribute<TDependency> ShouldHaveDependsOnAttribute<
-            TDependency
-        >()
+        public static ModularPipelines.Attributes.DependsOnAttribute<TDependency> ShouldHaveDependsOnAttribute<TDependency>()
             where TDependency : class, IModule
         {
             var attr =
