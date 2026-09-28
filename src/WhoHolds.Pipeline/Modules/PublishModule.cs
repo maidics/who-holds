@@ -5,6 +5,7 @@ using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
+using ModularPipelines.Logging;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
 using WhoHolds.Pipeline.Interfaces;
@@ -41,6 +42,8 @@ public sealed class PublishModule : Module<PublishedBuild>
         CancellationToken cancellationToken
     )
     {
+        EraseOutputDirectory(context.Logger);
+
         var version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
 
         var options = new DotNetPublishOptions
@@ -73,5 +76,46 @@ public sealed class PublishModule : Module<PublishedBuild>
         );
 
         return new PublishedBuild(exeName, _publishSettings.OutputDirectory, version);
+    }
+
+    private void EraseOutputDirectory(IModuleLogger logger)
+    {
+        if (!Directory.Exists(_publishSettings.OutputDirectory))
+            return;
+
+        var dir = new DirectoryInfo(_publishSettings.OutputDirectory);
+        var files = dir.EnumerateFiles().ToList();
+        var subdirectories = dir.EnumerateDirectories().ToList();
+
+        if (files.Count == 0 && subdirectories.Count == 0)
+            return;
+
+        if (files.Count > 0)
+        {
+            logger.LogInformation(
+                "Removing {FileCount} files from publish output directory: {FileNames}.",
+                files.Count,
+                string.Join(", ", files.Select(f => f.Name))
+            );
+
+            foreach (var file in files)
+            {
+                file.Delete();
+            }
+        }
+
+        if (subdirectories.Count > 0)
+        {
+            logger.LogInformation(
+                "Removing {SubdirectoryCount} subdirectories from publish output directory: {SubdirectoryNames}",
+                subdirectories.Count,
+                string.Join(", ", subdirectories.Select(s => s.Name))
+            );
+
+            foreach (var subDir in subdirectories)
+            {
+                subDir.Delete();
+            }
+        }
     }
 }
