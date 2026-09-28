@@ -1,6 +1,6 @@
 # Publish
 
-Publish action may be used in development to manually test a new feature of the app or to ensure native AOT still builds (`dotnet build` produces a debug app).
+Publish action is done in CI via `PublishModule`, check: [`ci-pipeline.md`](ci-pipeline.md). It may also be used in development to manually test a new feature of the app or to ensure native AOT still builds (`dotnet build` produces a debug app).
 
 ## Requirements
 
