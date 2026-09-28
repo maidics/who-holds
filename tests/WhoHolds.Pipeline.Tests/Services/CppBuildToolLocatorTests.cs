@@ -18,8 +18,6 @@ public sealed class CppBuildToolLocatorTests
             new CppBuildToolSettings
             {
                 ProgramFilesX86 = string.Empty,
-                VisualStudioSubfolder = string.Empty,
-                InstallerSubfolder = string.Empty,
                 VsWhere = AppContext.BaseDirectory,
             }
         );
@@ -42,8 +40,6 @@ public sealed class CppBuildToolLocatorTests
         var options = Options.Create(
             new CppBuildToolSettings
             {
-                InstallerSubfolder = string.Empty,
-                VisualStudioSubfolder = string.Empty,
                 ProgramFilesX86 = string.Empty,
                 VsWhere = file,
                 VsWhereArguments = [],
