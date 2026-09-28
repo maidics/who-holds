@@ -138,9 +138,16 @@ public sealed class PipelineBuilderExtensionTests
         Func<Dictionary<string, string?>>
     > AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
     {
-        yield return () => new() { ["Runtime"] = "runtime" };
-
-        yield return () => new() { ["OutputDirectory"] = "output-dir" };
+        yield return () =>
+            new()
+            {
+                ["Publish:OutputDirectory"] = "output-dir",
+                ["Publish:ProjectPath"] = "project-path",
+            };
+        yield return () =>
+            new() { ["Publish:Runtime"] = "runtime", ["Publish:ProjectPath"] = "project-path" };
+        yield return () =>
+            new() { ["Publish:Runtime"] = "runtime", ["Publish:OutputDirectory"] = "output-dir" };
     }
 
     [Test]
@@ -152,6 +159,7 @@ public sealed class PipelineBuilderExtensionTests
         {
             ["Publish:Runtime"] = "runtime",
             ["Publish:OutputDirectory"] = "output-dir",
+            ["Publish:ProjectPath"] = "project-path",
         };
 
         _builder.Configuration.AddInMemoryCollection(values);
