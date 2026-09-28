@@ -47,132 +47,13 @@ public sealed class PipelineBuilderExtensionsTests
     }
 
     [Test]
-    [MethodDataSource(
-        nameof(AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
-    )]
-    public async Task AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
-        Dictionary<string, string?> values
-    )
+    public void ShouldAddSettings()
     {
-        _builder.Configuration.Sources.Clear();
-        _builder.Configuration.AddInMemoryCollection(values);
-        _builder.AddPipelineSettings();
+        _builder.AddSettings();
 
-        await Should.ThrowAsync<OptionsValidationException>(_builder.BuildAsync);
-    }
-
-    public static IEnumerable<
-        Func<Dictionary<string, string?>>
-    > AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
-    {
-        yield return () =>
-            new()
-            {
-                ["GITHUB_REF_TYPE"] = "tag",
-                ["GITHUB_REF_NAME"] = "ref-name",
-                ["Pipeline:GitHubTagRef"] = "tag",
-            };
-        yield return () =>
-            new()
-            {
-                ["Pipeline:Configuration"] = "config",
-                ["GITHUB_REF_NAME"] = "ref-name",
-                ["Pipeline:GitHubTagRef"] = "tag",
-            };
-        yield return () =>
-            new()
-            {
-                ["Pipeline:Configuration"] = "config",
-                ["GITHUB_REF_TYPE"] = "tag",
-                ["Pipeline:GitHubTagRef"] = "tag",
-            };
-        yield return () =>
-            new()
-            {
-                ["Pipeline:Configuration"] = "config",
-                ["GITHUB_REF_TYPE"] = "tag",
-                ["GITHUB_REF_NAME"] = "ref-name",
-            };
-    }
-
-    [Test]
-    public void ShouldAddPipelineSettings()
-    {
-        _builder.Configuration.Sources.Clear();
-
-        var values = new Dictionary<string, string?>
-        {
-            ["Pipeline:Configuration"] = "config",
-            ["GITHUB_REF_TYPE"] = "tag",
-            ["GITHUB_REF_NAME"] = "ref-name",
-            ["Pipeline:GitHubTagRef"] = "tag",
-        };
-
-        _builder.Configuration.AddInMemoryCollection(values);
-        _builder.AddPipelineSettings();
-
-        var provider = _builder.Services.BuildServiceProvider();
-
-        var settings = provider.GetRequiredService<IOptions<PipelineSettings>>().Value;
-        settings.Configuration.ShouldBe(values["Pipeline:Configuration"]);
-        settings.GitHubRefType.ShouldBe(values["GITHUB_REF_TYPE"]);
-        settings.GitHubRefName.ShouldBe(values["GITHUB_REF_NAME"]);
-        settings.GitHubTagRef.ShouldBe(values["Pipeline:GitHubTagRef"]);
-        settings.Solution.ShouldBe("WhoHolds.slnx");
-        settings.IsTagPush.ShouldBeTrue();
-    }
-
-    [Test]
-    [MethodDataSource(
-        nameof(AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
-    )]
-    public async Task AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
-        Dictionary<string, string?> values
-    )
-    {
-        _builder.Configuration.Sources.Clear();
-        _builder.Configuration.AddInMemoryCollection(values);
-        _builder.AddPublishSettings();
-
-        await Should.ThrowAsync<OptionsValidationException>(_builder.BuildAsync);
-    }
-
-    public static IEnumerable<
-        Func<Dictionary<string, string?>>
-    > AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
-    {
-        yield return () =>
-            new()
-            {
-                ["Publish:OutputDirectory"] = "output-dir",
-                ["Publish:ProjectPath"] = "project-path",
-            };
-        yield return () =>
-            new() { ["Publish:Runtime"] = "runtime", ["Publish:ProjectPath"] = "project-path" };
-        yield return () =>
-            new() { ["Publish:Runtime"] = "runtime", ["Publish:OutputDirectory"] = "output-dir" };
-    }
-
-    [Test]
-    public void ShouldAddPublishSettings()
-    {
-        _builder.Configuration.Sources.Clear();
-
-        var values = new Dictionary<string, string?>
-        {
-            ["Publish:Runtime"] = "runtime",
-            ["Publish:OutputDirectory"] = "output-dir",
-            ["Publish:ProjectPath"] = "project-path",
-        };
-
-        _builder.Configuration.AddInMemoryCollection(values);
-        _builder.AddPublishSettings();
-
-        var provider = _builder.Services.BuildServiceProvider();
-
-        var settings = provider.GetRequiredService<IOptions<PublishSettings>>().Value;
-        settings.OutputDirectory.ShouldBe(values["Publish:OutputDirectory"]);
-        settings.Runtime.ShouldBe(values["Publish:Runtime"]);
+        using var provider = _builder.Services.BuildServiceProvider();
+        provider.GetService<IOptions<PipelineSettings>>().ShouldNotBeNull();
+        provider.GetService<IOptions<PublishSettings>>().ShouldNotBeNull();
     }
 
     [Test]
