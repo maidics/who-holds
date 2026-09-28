@@ -60,9 +60,9 @@ public sealed class PublishModule : Module<PublishedBuild>
 
         await context.DotNet().Publish(options, cancellationToken: cancellationToken);
 
-        var exeFiles = Directory.GetFiles(_publishSettings.OutputDirectory, "*.exe"); // TODO: do testing
+        var exeFiles = Directory.GetFiles(_publishSettings.OutputDirectory, "*.exe");
 
-        if (exeFiles.Length != 0)
+        if (exeFiles.Length != 1)
             throw new InvalidOperationException(
                 $"Published .exe file count should be exactly one, found: {exeFiles.Length}."
             );
