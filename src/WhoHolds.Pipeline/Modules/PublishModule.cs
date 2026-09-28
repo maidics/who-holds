@@ -12,7 +12,7 @@ using WhoHolds.Pipeline.Settings;
 namespace WhoHolds.Pipeline.Modules;
 
 [DependsOn<TestModule>]
-public sealed class PublishModule : Module<string> // TODO: call in PipelineExtensions, do tests
+public sealed class PublishModule : Module<string>
 {
     private readonly PipelineSettings _pipelineSettings;
     private readonly PublishSettings _publishSettings;

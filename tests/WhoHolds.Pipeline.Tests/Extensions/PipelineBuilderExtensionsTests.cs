@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ModularPipelines;
+using ModularPipelines.Exceptions;
+using ModularPipelines.Extensions;
 using ModularPipelines.Interfaces;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
@@ -14,10 +16,11 @@ using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Services;
 using WhoHolds.Pipeline.Settings;
+using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
-public sealed class PipelineBuilderExtensionTests
+public sealed class PipelineBuilderExtensionsTests
 {
     private readonly PipelineBuilder _builder = ModularPipelines.Pipeline.CreateBuilder();
 
@@ -210,8 +213,15 @@ public sealed class PipelineBuilderExtensionTests
     public async Task ShouldAddModules()
     {
         _builder.AddModules();
+        _builder.Services.AddSingleton<IReleaseVersionResolver, ReleaseVersionResolver>(); // required for PublishModule
 
-        List<Type> expected = [typeof(RestoreModule), typeof(BuildModule), typeof(TestModule)];
+        List<Type> expected =
+        [
+            typeof(RestoreModule),
+            typeof(BuildModule),
+            typeof(TestModule),
+            typeof(PublishModule),
+        ];
 
         await using var pipeline = await _builder.BuildAsync();
 

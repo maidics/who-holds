@@ -102,7 +102,8 @@ public static class PipelineBuilderExtensions
             return builder
                 .AddModule<RestoreModule>()
                 .AddModule<BuildModule>()
-                .AddModule<TestModule>();
+                .AddModule<TestModule>()
+                .AddModule<PublishModule>();
         }
     }
 }
