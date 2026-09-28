@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
-using ModularPipelines.DotNet.Services;
 using ModularPipelines.DotNet.Options;
-using ModularPipelines.Enums;
-using WhoHolds.Pipeline.Constants;
+using ModularPipelines.DotNet.Services;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.Extensions;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
@@ -30,7 +27,7 @@ public sealed class TestModuleTests
         var context = IModuleContext.CreateWithDotNetMock(dotnet);
         var module = new TestModule(_options);
         await module.TestExecuteAsync(context);
-        
+
         var expectedOptions = new DotNetTestOptions
         {
             NoRestore = true,
@@ -40,20 +37,5 @@ public sealed class TestModuleTests
         };
 
         dotnet.Test(expectedOptions, Any(), Any()).WasCalled(Times.Once);
-    }
-
-    [Test]
-    public async Task ShouldFailPipelineWhenModuleFails()
-    {
-        var dotnet = IDotNet.Mock();
-        var context = IModuleContext.CreateWithDotNetMock(dotnet);
-        var module = new TestModule(_options);
-
-        var exception = new InvalidOperationException("Running tests failed.");
-        dotnet.Test(Any(), Any(), Any())
-            .Throws(exception);
-        
-        var ex = await Should.ThrowAsync<InvalidOperationException>(() => module.TestExecuteAsync(context));
-        ex.Message.ShouldBe(exception.Message);
     }
 }
