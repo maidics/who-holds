@@ -39,7 +39,8 @@ public static class PipelineBuilderExtensions
         public PipelineBuilder AddSettings()
         {
             builder
-                .Services.AddPipelineSettings(builder.Configuration)
+                .Services.AddCppBuildToolSettings(builder.Configuration)
+                .AddPipelineSettings(builder.Configuration)
                 .AddPublishSettings(builder.Configuration);
 
             return builder;

@@ -52,6 +52,7 @@ public sealed class PipelineBuilderExtensionsTests
         _builder.AddSettings();
 
         using var provider = _builder.Services.BuildServiceProvider();
+        provider.GetService<IOptions<CppBuildToolSettings>>().ShouldNotBeNull();
         provider.GetService<IOptions<PipelineSettings>>().ShouldNotBeNull();
         provider.GetService<IOptions<PublishSettings>>().ShouldNotBeNull();
     }
