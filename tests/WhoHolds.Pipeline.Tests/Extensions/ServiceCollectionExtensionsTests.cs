@@ -17,6 +17,51 @@ public sealed class ServiceCollectionExtensionsTests
 
     [Test]
     [MethodDataSource(
+        nameof(AddCppBuildToolSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
+    )]
+    public void AddCppBuildToolSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
+        Dictionary<string, string?> values
+    )
+    {
+        var config = BuildConfiguration(values);
+
+        _services.AddCppBuildToolSettings(config);
+
+        using var provider = _services.BuildServiceProvider();
+
+        Should.Throw<OptionsValidationException>(() =>
+            provider.GetRequiredService<IStartupValidator>().Validate()
+        );
+    }
+
+    public static IEnumerable<
+        Func<Dictionary<string, string?>>
+    > AddCppBuildToolSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
+    {
+        yield return () =>
+            new()
+            {
+                ["CppBuildTool:VsWhere"] = "vs-where",
+                ["CppBuildTool:VsWhereArguments:0"] = "vs-where-args",
+            };
+        yield return () =>
+            new()
+            {
+                ["CppBuildTool:VsWhereSubdirectory"] = "vs-where-subdirectory",
+                ["CppBuildTool:VsWhereArguments:0"] = "vs-where-args",
+            };
+        yield return () =>
+            new()
+            {
+                ["CppBuildTool:VsWhere"] = "vs-where",
+                ["CppBuildTool:VsWhereSubdirectory"] = "vs-where-subdirectory",
+            };
+    }
+
+    // AddCppBuildToolSetting binds only from appsettings section -> asserting happy path not required
+
+    [Test]
+    [MethodDataSource(
         nameof(AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
     )]
     public void AddPipelineSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
