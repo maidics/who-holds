@@ -2,7 +2,7 @@ using ModularPipelines.Context;
 using ModularPipelines.Context.Domains;
 using ModularPipelines.DotNet.Services;
 
-namespace WhoHolds.Pipeline.Tests.Extensions;
+namespace WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 public static class ModuleContextExtensions
 {

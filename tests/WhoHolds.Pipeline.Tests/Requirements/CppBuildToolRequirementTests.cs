@@ -17,7 +17,9 @@ public sealed class CppBuildToolRequirementTests
         FakeModuleLogger? logger = null
     )
     {
-        var options = Options.Create(new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" });
+        var options = Options.Create(
+            new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" }
+        );
 
         IPipelineHookContextMock context = null!;
 

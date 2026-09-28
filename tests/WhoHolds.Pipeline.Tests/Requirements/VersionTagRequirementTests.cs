@@ -12,7 +12,9 @@ public sealed class VersionTagFormatRequirementTests
     [Test]
     public async Task ShouldReturnEarlyOnNonTagPush()
     {
-        var options = Options.Create(new PipelineSettings { GitHubRefType = "not-tag", GitHubTagRef = "tag" });
+        var options = Options.Create(
+            new PipelineSettings { GitHubRefType = "not-tag", GitHubTagRef = "tag" }
+        );
 
         var requirement = new VersionTagFormatRequirement(options);
 
