@@ -16,7 +16,7 @@ public sealed record PipelineSettings
     public string GitHubRefName { get; set; } = string.Empty;
 
     [Required]
-    public string GitHubTagRef { get; set; } = "tag";
+    public string GitHubTagRef { get; set; } = string.Empty;
 
     public string Solution { get; } = nameof(WhoHolds) + ".slnx";
 }

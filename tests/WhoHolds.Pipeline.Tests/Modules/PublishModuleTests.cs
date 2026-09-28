@@ -12,7 +12,15 @@ public sealed class PublishModuleTests
     private static IOptions<PipelineSettings> CreatePipelineOptions(
         string refType,
         string refName
-    ) => Options.Create(new PipelineSettings { GitHubRefType = refType, GitHubRefName = refName });
+    ) =>
+        Options.Create(
+            new PipelineSettings
+            {
+                GitHubRefType = refType,
+                GitHubRefName = refName,
+                GitHubTagRef = "tag",
+            }
+        );
 
     private static readonly IOptions<PublishSettings> _publishOptions = Options.Create(
         new PublishSettings
