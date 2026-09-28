@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
@@ -10,6 +11,7 @@ using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;
 
+[DependsOn<TestModule>]
 public sealed class PublishModule : Module<string> // TODO: call in PipelineExtensions, do tests
 {
     private readonly PipelineSettings _pipelineSettings;
