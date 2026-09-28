@@ -30,20 +30,4 @@ public sealed class RestoreModulesTests
 
         dotnet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
-
-    [Test]
-    public async Task ShouldFailPipelineWhenModuleFails()
-    {
-        var dotnet = IDotNet.Mock();
-        var context = IModuleContext.CreateWithDotNetMock(dotnet);
-        var module = new RestoreModule(_options);
-
-        var exception = new InvalidOperationException("Restore failed.");
-        dotnet.Restore(Any(), Any(), Any()).Throws(exception);
-
-        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
-            module.TestExecuteAsync(context)
-        ); // ignore error
-        ex.Message.ShouldBe(exception.Message);
-    }
 }

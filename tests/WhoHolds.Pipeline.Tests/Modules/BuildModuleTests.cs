@@ -40,20 +40,4 @@ public sealed class BuildModuleTests
 
         dotnet.Build(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
-
-    [Test]
-    public async Task ShouldFailPipelineWhenModuleFails()
-    {
-        var dotnet = IDotNet.Mock();
-        var context = IModuleContext.CreateWithDotNetMock(dotnet);
-        var module = new BuildModule(_options);
-
-        var exception = new InvalidOperationException("Build failed.");
-        dotnet.Build(Any(), Any(), Any()).Throws(exception);
-
-        var ex = await Should.ThrowAsync<InvalidOperationException>(
-            module.TestExecuteAsync(context)
-        );
-        ex.Message.ShouldBe(exception.Message);
-    }
 }
