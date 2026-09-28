@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
@@ -7,12 +8,13 @@ using ModularPipelines.DotNet.Options;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
 using WhoHolds.Pipeline.Interfaces;
+using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;
 
 [DependsOn<TestModule>]
-public sealed class PublishModule : Module<string>
+public sealed class PublishModule : Module<PublishedBuild>
 {
     private readonly PipelineSettings _pipelineSettings;
     private readonly PublishSettings _publishSettings;
@@ -34,7 +36,7 @@ public sealed class PublishModule : Module<string>
         return ModuleConfiguration.Create().WithSkipWhen(_ => !_pipelineSettings.IsTagPush).Build();
     }
 
-    protected override async Task<string?> ExecuteAsync(
+    protected override async Task<PublishedBuild?> ExecuteAsync(
         IModuleContext context,
         CancellationToken cancellationToken
     )
@@ -55,6 +57,21 @@ public sealed class PublishModule : Module<string>
 
         await context.DotNet().Publish(options, cancellationToken: cancellationToken);
 
-        return _publishSettings.OutputDirectory;
+        var exeFiles = Directory.GetFiles(_publishSettings.OutputDirectory, "*.exe"); // TODO: do testing
+
+        if (exeFiles.Length != 0)
+            throw new InvalidOperationException(
+                $"Published .exe file count should be exactly one, found: {exeFiles.Length}."
+            );
+
+        string exeName = Path.GetFileName(exeFiles[0]);
+
+        context.Logger.LogInformation(
+            "Published {FileName} file with {Version} version.",
+            exeName,
+            version
+        );
+
+        return new PublishedBuild(exeName, _publishSettings.OutputDirectory, version);
     }
 }
