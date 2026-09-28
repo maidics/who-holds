@@ -17,7 +17,7 @@ public sealed class CppBuildToolRequirementTests
         FakeModuleLogger? logger = null
     )
     {
-        var options = Options.Create(
+        var pipelineOptions = Options.Create(
             new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" }
         );
 
@@ -29,9 +29,13 @@ public sealed class CppBuildToolRequirementTests
             context.Logger.Returns(logger);
         }
 
-        return new CppBuildToolRequirement(new TestCppBuildToolLocator(result), options).MustAsync(
-            context?.Object!
-        );
+        var cppBuildToolOptions = Options.Create(new CppBuildToolSettings { VsWhere = "test" });
+
+        return new CppBuildToolRequirement(
+            new TestCppBuildToolLocator(result),
+            pipelineOptions,
+            cppBuildToolOptions
+        ).MustAsync(context?.Object!);
     }
 
     [Test]
