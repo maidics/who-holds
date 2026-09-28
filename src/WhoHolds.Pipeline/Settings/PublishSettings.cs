@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WhoHolds.Pipeline.Settings;
 
-public sealed record PublishSettings // TODO: add ProjectPath to tests
+public sealed record PublishSettings
 {
     [Required]
     public string Runtime { get; set; } = string.Empty;
