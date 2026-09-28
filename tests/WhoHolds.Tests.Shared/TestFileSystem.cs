@@ -34,6 +34,13 @@ public sealed class TestFileSystem : IAsyncInitializer, IAsyncDisposable
         return path;
     }
 
+    public string CreateSubdirectory(string? name = null)
+    {
+        var path = Path.Combine(TempDir, name ?? Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(path);
+        return path;
+    }
+
     public static FileStream HoldFile(string filePath)
     {
         return new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
