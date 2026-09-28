@@ -1,41 +1,26 @@
-﻿using ModularPipelines.Context;
+﻿using Microsoft.Extensions.Options;
+using ModularPipelines.Context;
 using ModularPipelines.Options;
-using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Models;
+using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Services;
 
-public sealed class CppBuildToolLocator(string vswherePath) : ICppBuildToolLocator
+public sealed class CppBuildToolLocator(IOptions<CppBuildToolSettings> options)
+    : ICppBuildToolLocator
 {
-    public static string DefaultPath { get; } =
-        Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-            "Microsoft Visual Studio",
-            "Installer",
-            Repo.VsWhere
-        );
-
     public async Task<CppBuildToolLookupResult> LocateAsync(IPipelineContext context)
     {
-        if (!File.Exists(vswherePath))
+        if (!File.Exists(options.Value.VsWhereFullPath))
         {
             return new CppBuildToolLookupResult(VsWhereFound: false, InstallationPath: null);
         }
 
         var result = await context.Shell.Command.ExecuteCommandLineTool(
-            new GenericCommandLineToolOptions(vswherePath)
+            new GenericCommandLineToolOptions(options.Value.VsWhereFullPath)
             {
-                Arguments =
-                [
-                    "-latest",
-                    "-products",
-                    "*",
-                    "-requires",
-                    "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
-                    "-property",
-                    "installationPath",
-                ],
+                Arguments = options.Value.VsWhereArguments,
             }
         );
 

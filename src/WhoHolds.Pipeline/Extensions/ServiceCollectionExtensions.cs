@@ -8,6 +8,17 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
+        public IServiceCollection AddCppBuildToolSettings(IConfiguration configuration) // TODO: test this
+        {
+            services
+                .AddOptions<CppBuildToolSettings>()
+                .Bind(configuration.GetSection("CppBuildTool"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            return services;
+        }
+
         public IServiceCollection AddPipelineSettings(IConfiguration configuration)
         {
             services

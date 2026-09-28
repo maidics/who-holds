@@ -1,9 +1,10 @@
-﻿using ModularPipelines.Context;
+﻿using Microsoft.Extensions.Options;
+using ModularPipelines.Context;
 using ModularPipelines.Context.Domains;
 using ModularPipelines.Context.Domains.Shell;
 using ModularPipelines.Models;
-using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Services;
+using WhoHolds.Pipeline.Settings;
 using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Pipeline.Tests.Services;
@@ -11,23 +12,17 @@ namespace WhoHolds.Pipeline.Tests.Services;
 public sealed class CppBuildToolLocatorTests
 {
     [Test]
-    public void DefaultPathShouldBeCorrect()
+    public async Task ShouldReturnNotFoundIfVsWhereIsNotFound()
     {
-        Path.GetFileName(CppBuildToolLocator.DefaultPath).ShouldBe(Repo.VsWhere);
-
-        CppBuildToolLocator.DefaultPath.ShouldEndWith(
-            Path.Combine("Microsoft Visual Studio", "Installer", Repo.VsWhere)
+        var options = Options.Create(
+            new CppBuildToolSettings
+            {
+                ProgramFilesX86 = string.Empty,
+                VsWhere = AppContext.BaseDirectory,
+            }
         );
 
-        Path.Exists(CppBuildToolLocator.DefaultPath).ShouldBeTrue();
-    }
-
-    [Test]
-    public async Task ShouldReturnNotFoundIfVsWhereNotFound()
-    {
-        var path = Path.Combine(AppContext.BaseDirectory, Repo.VsWhere);
-
-        var locator = new CppBuildToolLocator(path);
+        var locator = new CppBuildToolLocator(options);
 
         var result = await locator.LocateAsync(null!);
         result.VsWhereFound.ShouldBeFalse();
@@ -42,7 +37,16 @@ public sealed class CppBuildToolLocatorTests
 
         var file = fs.CreateTestFile();
 
-        var locator = new CppBuildToolLocator(file);
+        var options = Options.Create(
+            new CppBuildToolSettings
+            {
+                ProgramFilesX86 = string.Empty,
+                VsWhere = file,
+                VsWhereArguments = [],
+            }
+        );
+
+        var locator = new CppBuildToolLocator(options);
 
         const string stdout = nameof(stdout);
 
@@ -51,7 +55,7 @@ public sealed class CppBuildToolLocatorTests
             .ExecuteCommandLineTool(Any(), Any(), Any())
             .Returns(
                 new CommandResult(
-                    commandInput: Repo.VsWhere,
+                    commandInput: file,
                     workingDirectory: AppContext.BaseDirectory,
                     standardOutput: stdout,
                     standardError: string.Empty,

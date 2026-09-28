@@ -39,7 +39,8 @@ public static class PipelineBuilderExtensions
         public PipelineBuilder AddSettings()
         {
             builder
-                .Services.AddPipelineSettings(builder.Configuration)
+                .Services.AddCppBuildToolSettings(builder.Configuration)
+                .AddPipelineSettings(builder.Configuration)
                 .AddPublishSettings(builder.Configuration);
 
             return builder;
@@ -47,9 +48,7 @@ public static class PipelineBuilderExtensions
 
         public PipelineBuilder AddServices()
         {
-            builder.Services.AddSingleton<ICppBuildToolLocator>(_ => new CppBuildToolLocator(
-                CppBuildToolLocator.DefaultPath
-            ));
+            builder.Services.AddSingleton<ICppBuildToolLocator, CppBuildToolLocator>();
 
             builder.Services.AddSingleton<IReleaseVersionResolver, ReleaseVersionResolver>();
 

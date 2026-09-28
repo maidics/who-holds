@@ -2,7 +2,6 @@
 using ModularPipelines.Context;
 using ModularPipelines.Models;
 using ModularPipelines.Requirements;
-using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Settings;
@@ -11,12 +10,13 @@ namespace WhoHolds.Pipeline.Requirements;
 
 public sealed class CppBuildToolRequirement(
     ICppBuildToolLocator locator,
-    IOptions<PipelineSettings> options
+    IOptions<PipelineSettings> pipelineOptions,
+    IOptions<CppBuildToolSettings> cppBuildToolOptions
 ) : IPipelineRequirement
 {
     public async Task<RequirementDecision> MustAsync(IPipelineHookContext context)
     {
-        if (!options.Value.IsTagPush)
+        if (!pipelineOptions.Value.IsTagPush)
         {
             context.Logger.LogSkippingRequirementOnNonTagPush<CppBuildToolRequirement>();
             return RequirementDecision.Passed;
@@ -26,7 +26,7 @@ public sealed class CppBuildToolRequirement(
 
         if (!result.VsWhereFound)
             return RequirementDecision.Failed(
-                $"{Repo.VsWhere} not found. Install Visual Studio or Build Tools with the 'Desktop development with C++' workload."
+                $"{cppBuildToolOptions.Value.VsWhere} not found. Install Visual Studio or Build Tools with the 'Desktop development with C++' workload."
             );
 
         if (result.InstallationPath is null)
