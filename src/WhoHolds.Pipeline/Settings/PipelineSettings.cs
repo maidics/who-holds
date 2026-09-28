@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WhoHolds.Pipeline.Settings;
 
-public sealed record PipelineSettings // TODO: remove ConfigurationRequirement
+public sealed record PipelineSettings
 {
     [Required]
     public string Configuration { get; set; } = string.Empty;

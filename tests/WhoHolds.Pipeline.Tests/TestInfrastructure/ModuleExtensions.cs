@@ -1,4 +1,5 @@
 using System.Reflection;
+using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
 
@@ -29,6 +30,14 @@ public static class ModuleExtensions
             );
 
             return (Task<T?>)task!;
+        }
+
+        public ModuleConfiguration GetConfiguration()
+        {
+            var configure = typeof(Module<T>).GetMethod("Configure", BindingFlags.Instance | BindingFlags.NonPublic);
+            configure.ShouldNotBeNull();
+
+            return (ModuleConfiguration)configure.Invoke(module, BindingFlags.DoNotWrapExceptions, binder: null, [], culture: null)!;
         }
     }
 

@@ -39,7 +39,7 @@ public static class PipelineBuilderExtensions
 
         public PipelineBuilder AddSettings()
         {
-            return builder.AddPipelineSettings();
+            return builder.AddPipelineSettings().AddPublishSettings();
         }
 
         public PipelineBuilder AddPipelineSettings()
@@ -54,6 +54,19 @@ public static class PipelineBuilderExtensions
                     settings.GitHubRefType = config["GITHUB_REF_TYPE"] ?? string.Empty;
                     settings.GitHubRefName = config["GITHUB_REF_NAME"] ?? string.Empty;
                 })
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            return builder;
+        }
+
+        public PipelineBuilder AddPublishSettings()
+        {
+            var config = builder.Configuration;
+
+            builder
+                .Services.AddOptions<PublishSettings>()
+                .Bind(config.GetSection("Publish"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
@@ -89,7 +102,8 @@ public static class PipelineBuilderExtensions
             return builder
                 .AddModule<RestoreModule>()
                 .AddModule<BuildModule>()
-                .AddModule<TestModule>();
+                .AddModule<TestModule>()
+                .AddModule<PublishModule>();
         }
     }
 }

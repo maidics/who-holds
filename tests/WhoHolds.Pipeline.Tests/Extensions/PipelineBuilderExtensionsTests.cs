@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ModularPipelines;
+using ModularPipelines.Exceptions;
+using ModularPipelines.Extensions;
 using ModularPipelines.Interfaces;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
@@ -14,10 +16,11 @@ using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Services;
 using WhoHolds.Pipeline.Settings;
+using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
-public sealed class PipelineBuilderExtensionTests
+public sealed class PipelineBuilderExtensionsTests
 {
     private readonly PipelineBuilder _builder = ModularPipelines.Pipeline.CreateBuilder();
 
@@ -120,6 +123,59 @@ public sealed class PipelineBuilderExtensionTests
     }
 
     [Test]
+    [MethodDataSource(
+        nameof(AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource)
+    )]
+    public async Task AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissing(
+        Dictionary<string, string?> values
+    )
+    {
+        _builder.Configuration.Sources.Clear();
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPublishSettings();
+
+        await Should.ThrowAsync<OptionsValidationException>(_builder.BuildAsync);
+    }
+
+    public static IEnumerable<
+        Func<Dictionary<string, string?>>
+    > AddPublishSettingsShouldThrowIfAnyRequiredConfigurationIsMissingSource()
+    {
+        yield return () =>
+            new()
+            {
+                ["Publish:OutputDirectory"] = "output-dir",
+                ["Publish:ProjectPath"] = "project-path",
+            };
+        yield return () =>
+            new() { ["Publish:Runtime"] = "runtime", ["Publish:ProjectPath"] = "project-path" };
+        yield return () =>
+            new() { ["Publish:Runtime"] = "runtime", ["Publish:OutputDirectory"] = "output-dir" };
+    }
+
+    [Test]
+    public void ShouldAddPublishSettings()
+    {
+        _builder.Configuration.Sources.Clear();
+
+        var values = new Dictionary<string, string?>
+        {
+            ["Publish:Runtime"] = "runtime",
+            ["Publish:OutputDirectory"] = "output-dir",
+            ["Publish:ProjectPath"] = "project-path",
+        };
+
+        _builder.Configuration.AddInMemoryCollection(values);
+        _builder.AddPublishSettings();
+
+        var provider = _builder.Services.BuildServiceProvider();
+
+        var settings = provider.GetRequiredService<IOptions<PublishSettings>>().Value;
+        settings.OutputDirectory.ShouldBe(values["Publish:OutputDirectory"]);
+        settings.Runtime.ShouldBe(values["Publish:Runtime"]);
+    }
+
+    [Test]
     public void ShouldAddServices()
     {
         _builder.AddServices();
@@ -157,8 +213,15 @@ public sealed class PipelineBuilderExtensionTests
     public async Task ShouldAddModules()
     {
         _builder.AddModules();
+        _builder.Services.AddSingleton<IReleaseVersionResolver, ReleaseVersionResolver>(); // required for PublishModule
 
-        List<Type> expected = [typeof(RestoreModule), typeof(BuildModule), typeof(TestModule)];
+        List<Type> expected =
+        [
+            typeof(RestoreModule),
+            typeof(BuildModule),
+            typeof(TestModule),
+            typeof(PublishModule),
+        ];
 
         await using var pipeline = await _builder.BuildAsync();
 
