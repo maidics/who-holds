@@ -24,6 +24,12 @@ public sealed class PublishModuleTests
     );
 
     [Test]
+    public void ShouldDependOnTestModule()
+    {
+        PublishModule.ShouldHaveDependsOnAttribute<PublishModule, TestModule>();
+    }
+
+    [Test]
     [Arguments("not-tag", true)]
     [Arguments("tag", false)]
     public async Task ShouldSkipOnNonTagPush(string refType, bool shouldSkip)
