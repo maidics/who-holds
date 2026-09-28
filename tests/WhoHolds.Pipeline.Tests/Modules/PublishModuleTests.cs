@@ -53,7 +53,7 @@ public sealed class PublishModuleTests
     [Test]
     public async Task ShouldRunModule()
     {
-        const string version = "v1.0.0";
+        const string version = "1.0.0";
         var pipelineOptions = CreatePipelineOptions("tag", version);
         var versionResolver = new FakeReleaseVersionResolver(version);
         var module = new PublishModule(pipelineOptions, _publishOptions, versionResolver);
