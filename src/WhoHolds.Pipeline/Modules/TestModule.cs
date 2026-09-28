@@ -4,7 +4,6 @@ using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
 using ModularPipelines.Modules;
-using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;

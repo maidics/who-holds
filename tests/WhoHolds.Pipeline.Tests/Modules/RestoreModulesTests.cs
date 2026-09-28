@@ -4,7 +4,6 @@ using ModularPipelines.DotNet.Options;
 using ModularPipelines.DotNet.Services;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.Extensions;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;

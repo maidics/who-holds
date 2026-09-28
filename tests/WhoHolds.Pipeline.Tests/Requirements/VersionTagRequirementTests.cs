@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
-using WhoHolds.Pipeline.Constants;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
@@ -14,7 +12,9 @@ public sealed class VersionTagFormatRequirementTests
     [Test]
     public async Task ShouldReturnEarlyOnNonTagPush()
     {
-        var options = Options.Create(new PipelineSettings { GitHubRefType = "not-tag", GitHubTagRef = "tag" });
+        var options = Options.Create(
+            new PipelineSettings { GitHubRefType = "not-tag", GitHubTagRef = "tag" }
+        );
 
         var requirement = new VersionTagFormatRequirement(options);
 
