@@ -9,7 +9,6 @@ using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Services;
-using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Extensions;
 
@@ -39,36 +38,9 @@ public static class PipelineBuilderExtensions
 
         public PipelineBuilder AddSettings()
         {
-            return builder.AddPipelineSettings().AddPublishSettings();
-        }
-
-        public PipelineBuilder AddPipelineSettings()
-        {
-            var config = builder.Configuration;
-
             builder
-                .Services.AddOptions<PipelineSettings>()
-                .Bind(config.GetSection("Pipeline"))
-                .Configure(settings =>
-                {
-                    settings.GitHubRefType = config["GITHUB_REF_TYPE"] ?? string.Empty;
-                    settings.GitHubRefName = config["GITHUB_REF_NAME"] ?? string.Empty;
-                })
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-
-            return builder;
-        }
-
-        public PipelineBuilder AddPublishSettings()
-        {
-            var config = builder.Configuration;
-
-            builder
-                .Services.AddOptions<PublishSettings>()
-                .Bind(config.GetSection("Publish"))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
+                .Services.AddPipelineSettings(builder.Configuration)
+                .AddPublishSettings(builder.Configuration);
 
             return builder;
         }
