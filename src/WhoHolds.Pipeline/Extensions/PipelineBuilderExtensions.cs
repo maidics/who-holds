@@ -74,7 +74,8 @@ public static class PipelineBuilderExtensions
                 .AddModule<RestoreModule>()
                 .AddModule<BuildModule>()
                 .AddModule<TestModule>()
-                .AddModule<PublishModule>();
+                .AddModule<PublishModule>()
+                .AddModule<SmokeTestModule>();
         }
     }
 }
