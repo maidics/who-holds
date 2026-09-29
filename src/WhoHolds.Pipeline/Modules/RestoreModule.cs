@@ -8,7 +8,7 @@ using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;
 
-public sealed class RestoreModule : Module // TODO: document glue module adr: public since only tests reference this project
+public sealed class RestoreModule : Module
 {
     private readonly PipelineSettings _settings;
 
