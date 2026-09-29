@@ -47,3 +47,5 @@ Settings classes are validated on startup via annotations.
 | 4. | [`PublishModule`](../src/WhoHolds.Pipeline/Modules/PublishModule.cs) | `TestModule` | On tag push | Builds native AOT exe: [WhoHolds.Cli](../src/WhoHolds.Cli).
 
 **Module skipping is defined in `Configure` method override.**
+
+**`ExecuteModuleAsync` is glue only.** All logic lives in public static helpers so it can be unit tested. New modules should follow this pattern.
