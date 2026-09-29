@@ -50,7 +50,7 @@ public sealed class TagPushPipelineTests
             {
                 ["GITHUB_REF_TYPE"] = "tag",
                 ["GITHUB_REF_NAME"] = "v1.0.0",
-                ["Publish:OutputPath"] = _fileSystem.TempDir,
+                ["Publish:OutputDirectory"] = _fileSystem.TempDir,
             }
         );
 
