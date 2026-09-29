@@ -114,7 +114,7 @@ public sealed class PublishModule : Module<PublishedBuild>
 
             foreach (var subDir in subdirectories)
             {
-                subDir.Delete();
+                subDir.Delete(recursive: true);
             }
         }
     }
