@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using Microsoft.Extensions.Options;
 using ModularPipelines.DotNet.Services;
@@ -49,6 +49,41 @@ public sealed class PublishModuleTests
         config.SkipCondition.ShouldNotBeNull();
         var result = await config.SkipCondition.Invoke(null!);
         result.ShouldSkip.ShouldBe(shouldSkip);
+    }
+
+    private static readonly string BasePath = Path.Combine(Path.GetTempPath(), "who-holds-repo");
+
+    [Test]
+    public void ResolveOutputDirectoryShouldResolveRelativePathAgainstBasePath()
+    {
+        var result = PublishModule.ResolveOutputDirectory("artifacts/publish", BasePath);
+
+        result.ShouldBe(Path.Combine(BasePath, "artifacts", "publish"));
+        Path.IsPathFullyQualified(result).ShouldBeTrue();
+    }
+
+    [Test]
+    public void ResolveOutputDirectoryShouldNormalizeParentSegments()
+    {
+        var result = PublishModule.ResolveOutputDirectory("../publish", BasePath);
+
+        result.ShouldBe(Path.Combine(Path.GetDirectoryName(BasePath)!, "publish"));
+    }
+
+    [Test]
+    public void ResolveOutputDirectoryShouldKeepAbsolutePath()
+    {
+        var absolute = Path.Combine(Path.GetTempPath(), "absolute-publish");
+
+        PublishModule.ResolveOutputDirectory(absolute, BasePath).ShouldBe(absolute);
+    }
+
+    [Test]
+    public void ResolveOutputDirectoryShouldThrowIfBasePathIsNotAbsolute()
+    {
+        Should.Throw<ArgumentException>(() =>
+            PublishModule.ResolveOutputDirectory("artifacts/publish", "relative-base")
+        );
     }
 
     [Test]

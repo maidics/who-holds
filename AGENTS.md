@@ -12,7 +12,7 @@ WhoHolds is a CLI application built with .NET for resolving holder processes to 
 - Choose the closest topic from [References](#references) or the targeted website containing the documents and fetch that document before choosing APIs or commands. Start with one page; fetch another only when the task needs it. Skip pages already available in the conversation unless they need refreshing. 
 - You may find that a feature requires Windows but the host machine has Linux. In this case a VM with Windows Server is set up with the required tools and is accessible with the `ssh winvm` command or scripts inside [`windows-server-vm`](scripts/windows-server-vm).
 - Run focused build or test when making code changes.
-- After you finish your changes, check the References table if the related topic to your changes requires its document to be changed - in this case update the document. **Only update documents that are marked with _Yes_ in the 'Keep updated' column.**
+- After any change, check the References table whether the touched topic requires documentation update. Only the documents in the table that are marked _Yes_ under the _Keep updated_ column are required to be kept up-to-date.
 
 ---
 
