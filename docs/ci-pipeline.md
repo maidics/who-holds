@@ -48,4 +48,4 @@ Settings classes are validated on startup via annotations.
 
 **Module skipping is defined in `Configure` method override.**
 
-**`ExecuteModuleAsync` is glue only.** All logic lives in public static helpers so it can be unit tested. New modules should follow this pattern.
+**`ExecuteModuleAsync` and `ExecuteAsync` is glue only.** All logic lives in public static helpers so it can be unit tested. New modules should follow this pattern.
