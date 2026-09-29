@@ -24,7 +24,7 @@ public sealed class BuildModuleTests
     public async Task ShouldRunModule()
     {
         var dotnet = IDotNet.Mock();
-        var context = IModuleContext.CreateWithDotNetMock(dotnet);
+        var context = IModuleContext.Create(dotnet);
         var module = new BuildModule(_options);
         await module.TestExecuteAsync(context);
 

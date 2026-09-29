@@ -18,7 +18,7 @@ public sealed class RestoreModulesTests
     public async Task ShouldRunModule()
     {
         var dotnet = IDotNet.Mock();
-        var context = IModuleContext.CreateWithDotNetMock(dotnet);
+        var context = IModuleContext.Create(dotnet);
         var module = new RestoreModule(_options);
         await module.TestExecuteAsync(context);
 
