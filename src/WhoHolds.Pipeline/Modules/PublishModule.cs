@@ -43,7 +43,12 @@ public sealed class PublishModule : Module<PublishedBuild>
         CancellationToken cancellationToken
     )
     {
-        EraseOutputDirectory(_publishSettings.OutputDirectory, context.Logger);
+        var outputDirectory = ResolveOutputDirectory(
+            _publishSettings.OutputDirectory,
+            Environment.CurrentDirectory
+        );
+
+        EraseOutputDirectory(outputDirectory, context.Logger);
 
         var version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
 
@@ -51,13 +56,22 @@ public sealed class PublishModule : Module<PublishedBuild>
             _publishSettings.ProjectPath,
             _pipelineSettings.Configuration,
             _publishSettings.Runtime,
-            _publishSettings.OutputDirectory,
+            outputDirectory,
             version,
             context.DotNet(),
             cancellationToken
         );
 
-        return CreatePublishedBuild(_publishSettings.OutputDirectory, context.Logger, version);
+        return CreatePublishedBuild(outputDirectory, context.Logger, version);
+    }
+
+    /// <summary>
+    /// Resolves the configured (usually relative) output directory once, so erase, publish and
+    /// the <see cref="PublishedBuild"/> handed to dependent modules all use the same absolute path.
+    /// </summary>
+    public static string ResolveOutputDirectory(string outputDirectory, string basePath)
+    {
+        return Path.GetFullPath(outputDirectory, basePath);
     }
 
     public static void EraseOutputDirectory(string outputDirectory, IModuleLogger logger)

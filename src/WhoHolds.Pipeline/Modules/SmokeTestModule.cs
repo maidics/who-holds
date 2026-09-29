@@ -27,7 +27,7 @@ public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
         var publishedBuild = EnsurePublished(await context.GetModule<PublishModule>());
 
         var result = await ExecuteVersionCommandAsync(
-            publishedBuild.FileName,
+            publishedBuild,
             context.Shell.Command,
             cancellationToken
         );
@@ -49,13 +49,18 @@ public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
     }
 
     public static async Task<CommandResult> ExecuteVersionCommandAsync(
-        string tool,
+        PublishedBuild publishedBuild,
         ICommandContext context,
         CancellationToken cancellationToken
     )
     {
+        // Must be the full path: the bare file name would be looked up in the current directory
+        // and on PATH instead of the publish output directory.
         return await context.ExecuteCommandLineTool(
-            new GenericCommandLineToolOptions(tool) { Arguments = ["--version"] },
+            new GenericCommandLineToolOptions(publishedBuild.FilePath)
+            {
+                Arguments = ["--version"],
+            },
             cancellationToken: cancellationToken
         );
     }

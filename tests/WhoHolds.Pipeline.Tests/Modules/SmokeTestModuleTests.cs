@@ -52,17 +52,22 @@ public sealed class SmokeTestModuleTests
     }
 
     [Test]
-    public async Task ExecuteVersionCommandAsyncShouldExecuteVersionCommand()
+    public async Task ExecuteVersionCommandAsyncShouldExecuteVersionCommandOnPublishedFilePath()
     {
-        const string tool = nameof(tool);
+        var publishedBuild = new PublishedBuild("wh.exe", AppContext.BaseDirectory, "1.0.0");
         var context = ICommandContext.Mock();
 
-        await SmokeTestModule.ExecuteVersionCommandAsync(tool, context, CancellationToken.None);
+        await SmokeTestModule.ExecuteVersionCommandAsync(
+            publishedBuild,
+            context,
+            CancellationToken.None
+        );
 
         context
             .ExecuteCommandLineTool(
                 o =>
-                    o is { Tool: tool, Arguments: not null }
+                    o.Tool == publishedBuild.FilePath
+                    && o.Arguments is not null
                     && o.Arguments.Count() == 1
                     && o.Arguments.First() == "--version",
                 Any(),
