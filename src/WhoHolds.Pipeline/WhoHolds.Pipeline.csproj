@@ -13,5 +13,6 @@
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
     <PackageReference Include="ModularPipelines" />
     <PackageReference Include="ModularPipelines.DotNet" />
+    <PackageReference Include="ModularPipelines.GitHub" />
   </ItemGroup>
 </Project>
