@@ -3,6 +3,7 @@ using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
+using ModularPipelines.DotNet.Services;
 using ModularPipelines.Modules;
 using WhoHolds.Pipeline.Settings;
 
@@ -23,14 +24,29 @@ public sealed class TestModule : Module
         CancellationToken cancellationToken
     )
     {
+        await TestAsync(
+            _settings.Configuration,
+            _settings.Solution,
+            context.DotNet(),
+            cancellationToken
+        );
+    }
+
+    public static async Task TestAsync(
+        string configuration,
+        string solution,
+        IDotNet dotnet,
+        CancellationToken cancellationToken
+    )
+    {
         var options = new DotNetTestOptions
         {
             NoRestore = true,
             NoBuild = true,
-            Configuration = _settings.Configuration,
-            Solution = _settings.Solution,
+            Configuration = configuration,
+            Solution = solution,
         };
 
-        await context.DotNet().Test(options, cancellationToken: cancellationToken);
+        await dotnet.Test(options, cancellationToken: cancellationToken);
     }
 }

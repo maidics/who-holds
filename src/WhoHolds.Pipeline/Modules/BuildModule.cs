@@ -3,6 +3,7 @@ using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
+using ModularPipelines.DotNet.Services;
 using ModularPipelines.Modules;
 using WhoHolds.Pipeline.Settings;
 
@@ -23,14 +24,29 @@ public sealed class BuildModule : Module
         CancellationToken cancellationToken
     )
     {
+        await BuildAsync(
+            _settings.Solution,
+            _settings.Configuration,
+            context.DotNet(),
+            cancellationToken
+        );
+    }
+
+    public static async Task BuildAsync(
+        string solution,
+        string configuration,
+        IDotNet dotnet,
+        CancellationToken cancellationToken
+    )
+    {
         var options = new DotNetBuildOptions
         {
             NoRestore = true,
             Nologo = true,
-            ProjectSolution = _settings.Solution,
-            Configuration = _settings.Configuration,
+            ProjectSolution = solution,
+            Configuration = configuration,
         };
 
-        await context.DotNet().Build(options, cancellationToken: cancellationToken);
+        await dotnet.Build(options, cancellationToken: cancellationToken);
     }
 }

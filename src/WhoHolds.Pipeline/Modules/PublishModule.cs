@@ -5,6 +5,7 @@ using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
+using ModularPipelines.DotNet.Services;
 using ModularPipelines.Logging;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
@@ -42,48 +43,29 @@ public sealed class PublishModule : Module<PublishedBuild>
         CancellationToken cancellationToken
     )
     {
-        EraseOutputDirectory(context.Logger);
+        EraseOutputDirectory(_publishSettings.OutputDirectory, context.Logger);
 
         var version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
 
-        var options = new DotNetPublishOptions
-        {
-            NoRestore = false,
-            NoBuild = false,
-            Nologo = true,
-            ProjectSolution = _publishSettings.ProjectPath,
-            Configuration = _pipelineSettings.Configuration,
-            Runtime = _publishSettings.Runtime,
-            Output = _publishSettings.OutputDirectory,
-            Properties = [new KeyValue("Version", version)],
-        };
-
-        await context.DotNet().Publish(options, cancellationToken: cancellationToken);
-
-        var exeFiles = Directory.GetFiles(_publishSettings.OutputDirectory, "*.exe");
-
-        if (exeFiles.Length != 1)
-            throw new InvalidOperationException(
-                $"Published .exe file count should be exactly one, found: {exeFiles.Length}."
-            );
-
-        string exeName = Path.GetFileName(exeFiles[0]);
-
-        context.Logger.LogInformation(
-            "Published {FileName} file with {Version} version.",
-            exeName,
-            version
+        await PublishAsync(
+            _publishSettings.ProjectPath,
+            _pipelineSettings.Configuration,
+            _publishSettings.Runtime,
+            _publishSettings.OutputDirectory,
+            version,
+            context.DotNet(),
+            cancellationToken
         );
 
-        return new PublishedBuild(exeName, _publishSettings.OutputDirectory, version);
+        return CreatePublishedBuild(_publishSettings.OutputDirectory, context.Logger, version);
     }
 
-    private void EraseOutputDirectory(IModuleLogger logger)
+    public static void EraseOutputDirectory(string outputDirectory, IModuleLogger logger)
     {
-        if (!Directory.Exists(_publishSettings.OutputDirectory))
+        if (!Directory.Exists(outputDirectory))
             return;
 
-        var dir = new DirectoryInfo(_publishSettings.OutputDirectory);
+        var dir = new DirectoryInfo(outputDirectory);
         var files = dir.EnumerateFiles().ToList();
         var subdirectories = dir.EnumerateDirectories().ToList();
 
@@ -117,5 +99,54 @@ public sealed class PublishModule : Module<PublishedBuild>
                 subDir.Delete(recursive: true);
             }
         }
+    }
+
+    public static async Task PublishAsync(
+        string projectPath,
+        string configuration,
+        string runtime,
+        string outputDirectory,
+        string version,
+        IDotNet dotnet,
+        CancellationToken cancellationToken
+    )
+    {
+        var options = new DotNetPublishOptions
+        {
+            NoRestore = false,
+            NoBuild = false,
+            Nologo = true,
+            ProjectSolution = projectPath,
+            Configuration = configuration,
+            Runtime = runtime,
+            Output = outputDirectory,
+            Properties = [new KeyValue("Version", version)],
+        };
+
+        await dotnet.Publish(options, cancellationToken: cancellationToken);
+    }
+
+    public static PublishedBuild CreatePublishedBuild(
+        string outputDirectory,
+        IModuleLogger logger,
+        string version
+    )
+    {
+        var exeFiles = Directory.GetFiles(outputDirectory, "*.exe");
+
+        if (exeFiles.Length != 1)
+            throw new InvalidOperationException(
+                $"Published .exe file count should be exactly one, found: {exeFiles.Length}."
+            );
+
+        string exeName = Path.GetFileName(exeFiles[0]);
+
+        logger.LogInformation(
+            "Published {FileName} file with {Version} version.",
+            exeName,
+            version
+        );
+
+        return new PublishedBuild(exeName, outputDirectory, version);
     }
 }

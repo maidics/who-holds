@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using Microsoft.Extensions.Options;
-using ModularPipelines.Context;
 using ModularPipelines.DotNet.Services;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
@@ -57,7 +56,7 @@ public sealed class PublishModuleTests
     [Arguments(0, 0)]
     [Arguments(2, 0)]
     [Arguments(0, 2)]
-    public async Task ShouldEraseOutputDirectoryIfContainsFilesOrSubdirectories(
+    public async Task EraseOutputDirectoryShouldEraseOutputDirectoryIfContainsFilesOrSubdirectories(
         int fileCount,
         int subdirectoryCount
     )
@@ -73,27 +72,9 @@ public sealed class PublishModuleTests
         for (int i = 0; i < subdirectoryCount; i++)
             subdirectories.Add(fs.CreateSubdirectory());
 
-        var pipelineOptions = CreatePipelineOptions("tag", "ref-name");
-
-        var publishOptions = Options.Create(
-            new PublishSettings
-            {
-                OutputDirectory = fs.TempDir,
-                ProjectPath = "project",
-                Runtime = "runtime",
-            }
-        );
-
-        var versionResolver = new FakeReleaseVersionResolver("version");
-
-        var module = new PublishModule(pipelineOptions, publishOptions, versionResolver);
-
         var logger = new FakeModuleLogger();
-        var dotnet = IDotNet.Mock();
-        dotnet.Publish(Any(), Any(), Any()).Throws(new NotSupportedException());
-        var context = IModuleContext.Create(dotnet, logger);
 
-        await Should.ThrowAsync<NotSupportedException>(() => module.TestExecuteAsync(context));
+        PublishModule.EraseOutputDirectory(fs.TempDir, logger);
 
         var logs = logger.Collector.GetSnapshot();
         var logCount = (fileCount > 0 ? 1 : 0) + (subdirectoryCount > 0 ? 1 : 0);
@@ -126,7 +107,9 @@ public sealed class PublishModuleTests
         IEnumerable<string> expectedPaths
     )
     {
-        var log = logs.SingleOrDefault(l => l.Message.StartsWith(messagePrefix, StringComparison.Ordinal));
+        var log = logs.SingleOrDefault(l =>
+            l.Message.StartsWith(messagePrefix, StringComparison.Ordinal)
+        );
         log.ShouldNotBeNull();
         log.Level.ShouldBe(LogLevel.Information);
 
@@ -138,86 +121,23 @@ public sealed class PublishModuleTests
     }
 
     [Test]
-    [Arguments(0)]
-    [Arguments(2)]
-    public async Task ShouldThrowIfPublishedExeCountIsNotOne(int exeCount)
+    public async Task PublishAsyncShouldPublish()
     {
-        await using var fs = new TestFileSystem();
-        await fs.InitializeAsync();
-
-        var pipelineOptions = CreatePipelineOptions("tag", "ref-name");
-
-        var publishOptions = Options.Create(
-            new PublishSettings
-            {
-                OutputDirectory = fs.TempDir,
-                ProjectPath = "project",
-                Runtime = "runtime",
-            }
-        );
-
-        var versionResolver = new FakeReleaseVersionResolver("version");
-
-        var module = new PublishModule(pipelineOptions, publishOptions, versionResolver);
-
-        // The output directory is erased before publishing, so the files have to be created by the publish call.
+        const string projectPath = nameof(projectPath);
+        const string configuration = nameof(configuration);
+        const string runtime = nameof(runtime);
+        const string outputDirectory = nameof(outputDirectory);
+        const string version = nameof(version);
         var dotnet = IDotNet.Mock();
-        dotnet
-            .Publish(Any(), Any(), Any())
-            .Callback(() =>
-            {
-                for (int i = 0; i < exeCount; i++)
-                    fs.CreateTestFile($"test{i}.exe");
-            });
-        var context = IModuleContext.Create(dotnet);
 
-        var ex = await Should.ThrowAsync<InvalidOperationException>(() =>
-            module.TestExecuteAsync(context)
-        );
-        ex.Message.ShouldBe(
-            $"Published .exe file count should be exactly one, found: {exeCount}."
-        );
-    }
-
-    [Test]
-    public async Task ShouldRunModule()
-    {
-        await using var fs = new TestFileSystem();
-        await fs.InitializeAsync();
-
-        const string version = "1.0.0";
-
-        var pipelineOptions = CreatePipelineOptions("tag", version);
-
-        var publishOptions = Options.Create(
-            new PublishSettings
-            {
-                OutputDirectory = fs.TempDir,
-                Runtime = "runtime",
-                ProjectPath = "project",
-            }
-        );
-
-        var versionResolver = new FakeReleaseVersionResolver(version);
-
-        var module = new PublishModule(pipelineOptions, publishOptions, versionResolver);
-
-        // The output directory is erased before publishing, so the file has to be created by the publish call.
-        var dotnet = IDotNet.Mock();
-        dotnet.Publish(Any(), Any(), Any()).Callback(() => fs.CreateTestFile("test.exe"));
-        var logger = new FakeModuleLogger();
-        var context = IModuleContext.Create(dotnet, logger);
-
-        var result = await module.TestExecuteAsync(context);
-        result.ShouldNotBeNull();
-        result.Directory.ShouldBe(fs.TempDir);
-        result.FileName.ShouldBe("test.exe");
-        result.Version.ShouldBe(version);
-
-        logger.Collector.Count.ShouldBe(1);
-        logger.Collector.LatestRecord.Level.ShouldBe(LogLevel.Information);
-        logger.Collector.LatestRecord.Message.ShouldBe(
-            $"Published test.exe file with {version} version."
+        await PublishModule.PublishAsync(
+            projectPath,
+            configuration,
+            runtime,
+            outputDirectory,
+            version,
+            dotnet,
+            CancellationToken.None
         );
 
         dotnet
@@ -226,10 +146,10 @@ public sealed class PublishModuleTests
                     o.NoRestore == false
                     && o.NoBuild == false
                     && o.Nologo == true
-                    && o.ProjectSolution == publishOptions.Value.ProjectPath
-                    && o.Configuration == pipelineOptions.Value.Configuration
-                    && o.Runtime == publishOptions.Value.Runtime
-                    && o.Output == publishOptions.Value.OutputDirectory
+                    && o.ProjectSolution == projectPath
+                    && o.Configuration == configuration
+                    && o.Runtime == runtime
+                    && o.Output == outputDirectory
                     && o.Properties is not null
                     && o.Properties.Count() == 1
                     && o.Properties.FirstOrDefault(p => p.Key == "Version" && p.Value == version)
@@ -238,5 +158,49 @@ public sealed class PublishModuleTests
                 Any()
             )
             .WasCalled(Times.Once);
+    }
+
+    [Test]
+    [Arguments(0)]
+    [Arguments(2)]
+    [Arguments(10)]
+    public async Task CreatePublishBuildShouldThrowIfOutputDirectoryDoesNotContainExactlyOneExeFile(
+        int fileCount
+    )
+    {
+        await using var fs = new TestFileSystem();
+        await fs.InitializeAsync();
+
+        for (int i = 0; i < fileCount; i++)
+            fs.CreateTestFile(Guid.NewGuid().ToString("N") + ".exe");
+
+        var ex = Should.Throw<InvalidOperationException>(() =>
+            PublishModule.CreatePublishedBuild(fs.TempDir, new FakeModuleLogger(), "version")
+        );
+        ex.Message.ShouldBe(
+            $"Published .exe file count should be exactly one, found: {fileCount}."
+        );
+    }
+
+    [Test]
+    public async Task CreatePublishBuildShouldReturnPublishBuild()
+    {
+        await using var fs = new TestFileSystem();
+        await fs.InitializeAsync();
+
+        var exe = fs.CreateTestFile(Guid.NewGuid().ToString("N") + ".exe");
+        var exeName = Path.GetFileName(exe);
+        var logger = new FakeModuleLogger();
+        const string version = nameof(version);
+
+        var publishedBuild = PublishModule.CreatePublishedBuild(fs.TempDir, logger, version);
+        publishedBuild.FileName.ShouldBe(exeName);
+        publishedBuild.FilePath.ShouldBe(exe);
+        publishedBuild.Version.ShouldBe(version);
+        publishedBuild.Directory.ShouldBe(fs.TempDir);
+
+        logger.Collector.Count.ShouldBe(1);
+        logger.LatestRecord.Level.ShouldBe(LogLevel.Information);
+        logger.LatestRecord.Message.ShouldBe($"Published {exeName} file with {version} version.");
     }
 }

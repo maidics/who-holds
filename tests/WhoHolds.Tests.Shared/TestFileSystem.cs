@@ -4,7 +4,15 @@ namespace WhoHolds.Tests.Shared;
 
 public sealed class TestFileSystem : IAsyncInitializer, IAsyncDisposable
 {
-    public string TempDir { get; private set; } = null!;
+    public string TempDir
+    {
+        get =>
+            field
+            ?? throw new InvalidOperationException(
+                $"{nameof(TestFileSystem)}.{nameof(InitializeAsync)} must be called first."
+            );
+        private set;
+    } = null!;
 
     public Task InitializeAsync()
     {
