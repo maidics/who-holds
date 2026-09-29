@@ -1,31 +1,21 @@
-﻿using Microsoft.Extensions.Options;
-using ModularPipelines.Context;
-using ModularPipelines.DotNet.Options;
+﻿using ModularPipelines.DotNet.Options;
 using ModularPipelines.DotNet.Services;
 using WhoHolds.Pipeline.Modules;
-using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;
 
 public sealed class RestoreModulesTests
 {
-    private static readonly IOptions<PipelineSettings> _options = Options.Create(
-        new PipelineSettings()
-    );
-
     [Test]
-    public async Task ShouldRunModule()
+    public async Task RestoreAsyncShouldRestore()
     {
         var dotnet = IDotNet.Mock();
-        var context = IModuleContext.Create(dotnet);
-        var module = new RestoreModule(_options);
-        await module.TestExecuteAsync(context);
 
-        var expectedOptions = new DotNetRestoreOptions
-        {
-            ProjectSolution = _options.Value.Solution,
-        };
+        const string solution = nameof(solution);
+
+        var expectedOptions = new DotNetRestoreOptions { ProjectSolution = solution };
+
+        await RestoreModule.RestoreAsync(dotnet, solution, CancellationToken.None);
 
         dotnet.Restore(expectedOptions, Any(), Any()).WasCalled(Times.Once);
     }
