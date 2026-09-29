@@ -34,7 +34,7 @@ public sealed class TagPushPipelineTests
 
         var locator = ICppBuildToolLocator.Mock();
         locator
-            .LocateAsync(null!)
+            .LocateAsync(Any())
             .ReturnsAsync(() =>
                 Task.FromResult(new CppBuildToolLookupResult(true, "test-installation-path"))
             );
@@ -43,6 +43,8 @@ public sealed class TagPushPipelineTests
         builder.Services.AddSingleton<IReleaseVersionResolver, ReleaseVersionResolver>();
 
         builder.Configuration.Sources.Clear();
+        builder.AddJsonConfiguration();
+
         builder.Configuration.AddInMemoryCollection(
             new Dictionary<string, string?>
             {
@@ -52,7 +54,6 @@ public sealed class TagPushPipelineTests
             }
         );
 
-        builder.AddJsonConfiguration();
         builder.AddSettings();
 
         var commandContext = ICommandContext.Mock();
