@@ -2,8 +2,11 @@
 using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
+using ModularPipelines.Context.Domains.Shell;
+using ModularPipelines.Models;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
+using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;
@@ -21,29 +24,53 @@ public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
         CancellationToken cancellationToken
     )
     {
-        var result = await context.GetModule<PublishModule>();
-        var publishBuild = result.ValueOrDefault;
-        ArgumentNullException.ThrowIfNull(publishBuild);
+        var publishedBuild = EnsurePublished(await context.GetModule<PublishModule>());
 
-        if (!File.Exists(publishBuild.FilePath))
-            throw new FileNotFoundException(
-                $"Published file not found at path: '{publishBuild.FilePath}'."
-            );
-
-        var commandResult = await context.Shell.Command.ExecuteCommandLineTool(
-            new GenericCommandLineToolOptions(publishBuild.FilePath) { Arguments = ["--version"] },
-            cancellationToken: cancellationToken
+        var result = await ExecuteVersionCommandAsync(
+            publishedBuild.FileName,
+            context.Shell.Command,
+            cancellationToken
         );
 
-        var trimmed = commandResult.StandardOutput.Trim();
-        var parts = trimmed.Split("+");
+        ThrowIfVersionOutputInvalid(result.StandardOutput, publishedBuild.Version);
+    }
 
-        if (
-            parts.Length != 2
-            || !string.Equals(parts[0], publishBuild.Version, StringComparison.Ordinal)
-        )
+    public static PublishedBuild EnsurePublished(ModuleResult<PublishedBuild?> result)
+    {
+        var publishedBuild = result.ValueOrDefault;
+        ArgumentNullException.ThrowIfNull(publishedBuild);
+
+        if (!File.Exists(publishedBuild.FilePath))
+            throw new FileNotFoundException(
+                $"Published file not found at path: '{publishedBuild.FilePath}'."
+            );
+
+        return publishedBuild;
+    }
+
+    public static async Task<CommandResult> ExecuteVersionCommandAsync(
+        string tool,
+        ICommandContext context,
+        CancellationToken cancellationToken
+    )
+    {
+        return await context.ExecuteCommandLineTool(
+            new GenericCommandLineToolOptions(tool) { Arguments = ["--version"] },
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static void ThrowIfVersionOutputInvalid(
+        ReadOnlySpan<char> stdout,
+        string expectedVersion
+    )
+    {
+        var plus = stdout.IndexOf("+");
+
+        if (!(plus >= 0 && stdout[..plus].Equals(expectedVersion, StringComparison.Ordinal)))
             throw new InvalidOperationException(
-                $"Unexpected version output: '{trimmed}'. Expected format: '{{version}}+{{git commit sha}}'."
+                $"Unexpected version output: '{stdout.Trim().ToString()}'. "
+                    + $"Expected format: '{{version}}+{{git commit sha}}'."
             );
     }
 }
