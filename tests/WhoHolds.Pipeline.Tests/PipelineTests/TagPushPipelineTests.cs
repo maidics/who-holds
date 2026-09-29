@@ -98,6 +98,8 @@ public sealed class TagPushPipelineTests
     public static async Task TearDownAsync()
     {
         await _fileSystem.DisposeAsync();
-        await _pipeline.DisposeAsync();
+
+        if (_pipeline is not null)
+            await _pipeline.DisposeAsync();
     }
 }
