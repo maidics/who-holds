@@ -2,6 +2,7 @@
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
+using ModularPipelines.DotNet.Services;
 using ModularPipelines.Modules;
 using WhoHolds.Pipeline.Settings;
 
@@ -21,8 +22,17 @@ public sealed class RestoreModule : Module
         CancellationToken cancellationToken
     )
     {
-        var options = new DotNetRestoreOptions { ProjectSolution = _settings.Solution };
+        await RestoreAsync(context.DotNet(), _settings.Solution, cancellationToken);
+    }
 
-        await context.DotNet().Restore(options, cancellationToken: cancellationToken);
+    public static async Task RestoreAsync(
+        IDotNet dotnet,
+        string solution,
+        CancellationToken cancellationToken
+    )
+    {
+        var options = new DotNetRestoreOptions { ProjectSolution = solution };
+
+        await dotnet.Restore(options, cancellationToken: cancellationToken);
     }
 }
