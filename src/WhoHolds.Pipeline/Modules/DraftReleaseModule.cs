@@ -50,9 +50,9 @@ public sealed class DraftReleaseModule : Module
         await UploadAssetAsync(
             release,
             context.Logger,
+            result.FilePath,
             owner,
             repo,
-            result.FilePath,
             releaseClient,
             cancellationToken
         );
