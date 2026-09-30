@@ -16,20 +16,17 @@ public sealed class SmokeTestModuleTests
     }
 
     [Test]
-    [Arguments("tag", false)]
-    [Arguments("not-tag", true)]
-    public async Task ShouldSkipOnNonTagRefPushes(string refName, bool shouldSkip)
+    [Arguments("not-tag")]
+    [Arguments("tag")]
+    public async Task ShouldSkipOnNonTagPush(string refType)
     {
-        var options = Options.Create(
-            new PipelineSettings { GitHubRefType = refName, GitHubTagRef = "tag" }
+        var pipelineOptions = Options.Create(
+            new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" }
         );
 
-        var module = new SmokeTestModule(options);
-
+        var module = new SmokeTestModule(pipelineOptions);
         var config = module.GetConfiguration();
-        config.SkipCondition.ShouldNotBeNull();
-        var result = await config.SkipCondition(null!);
-        result.ShouldSkip.ShouldBe(shouldSkip);
+        await config.ShouldSkipOnTagPushAsync(pipelineOptions.Value.IsTagPush);
     }
 
     [Test]

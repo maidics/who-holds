@@ -17,7 +17,7 @@ public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
 {
     protected override ModuleConfiguration Configure()
     {
-        return ModuleConfiguration.Create().WithSkipWhen(_ => !options.Value.IsTagPush).Build();
+        return ModuleConfiguration.Create().WithTagPushSkip(options.Value.IsTagPush).Build();
     }
 
     protected override async Task ExecuteModuleAsync(

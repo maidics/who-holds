@@ -5,7 +5,6 @@ using ModularPipelines.Logging;
 using Octokit;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.Extensions;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 using WhoHolds.Tests.Shared;
 
@@ -20,9 +19,9 @@ public sealed class DraftReleaseModuleTests
     }
 
     [Test]
-    [Arguments("not-tag", true)]
-    [Arguments("tag", false)]
-    public async Task ShouldSkipOnNonTagPush(string refType, bool shouldSkip)
+    [Arguments("not-tag")]
+    [Arguments("tag")]
+    public async Task ShouldSkipOnNonTagPush(string refType)
     {
         var pipelineOptions = Options.Create(
             new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" }
@@ -30,9 +29,7 @@ public sealed class DraftReleaseModuleTests
 
         var module = new DraftReleaseModule(pipelineOptions);
         var config = module.GetConfiguration();
-        config.SkipCondition.ShouldNotBeNull();
-        var result = await config.SkipCondition.Invoke(null!);
-        result.ShouldSkip.ShouldBe(shouldSkip);
+        await config.ShouldSkipOnTagPushAsync(pipelineOptions.Value.IsTagPush);
     }
 
     [Test]

@@ -1,10 +1,7 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ModularPipelines;
-using ModularPipelines.Exceptions;
-using ModularPipelines.Extensions;
 using ModularPipelines.Interfaces;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
@@ -16,7 +13,6 @@ using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Services;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Extensions;
 
