@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using ModularPipelines.Context;
 using ModularPipelines.Models;
+using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Requirements;
 using WhoHolds.Pipeline.Settings;
@@ -31,8 +32,11 @@ public sealed class CppBuildToolRequirementTests
 
         var cppBuildToolOptions = Options.Create(new CppBuildToolSettings { VsWhere = "test" });
 
+        var resolver = ICppBuildToolLocator.Mock();
+        resolver.LocateAsync(Any()).ReturnsAsync(() => Task.FromResult(result));
+
         return new CppBuildToolRequirement(
-            new TestCppBuildToolLocator(result),
+            resolver.Object,
             pipelineOptions,
             cppBuildToolOptions
         ).MustAsync(context?.Object!);
