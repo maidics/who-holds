@@ -11,7 +11,7 @@ on:
       - '.editorconfig'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -41,3 +41,5 @@ jobs:
 
       - name: Run pipeline
         run: dotnet run --project src/WhoHolds.Pipeline/WhoHolds.Pipeline.csproj --configuration Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
