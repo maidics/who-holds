@@ -31,9 +31,9 @@ public sealed class PublishModuleTests
     }
 
     [Test]
-    [Arguments("not-tag", true)]
-    [Arguments("tag", false)]
-    public async Task ShouldSkipOnNonTagPush(string refType, bool shouldSkip)
+    [Arguments("not-tag")]
+    [Arguments("tag")]
+    public async Task ShouldSkipOnNonTagPush(string refType)
     {
         var pipelineOptions = CreatePipelineOptions(refType, string.Empty);
         var publishOptions = Options.Create(
@@ -44,11 +44,10 @@ public sealed class PublishModuleTests
                 ProjectPath = "project",
             }
         );
+
         var module = new PublishModule(pipelineOptions, publishOptions, null!);
         var config = module.GetConfiguration();
-        config.SkipCondition.ShouldNotBeNull();
-        var result = await config.SkipCondition.Invoke(null!);
-        result.ShouldSkip.ShouldBe(shouldSkip);
+        await config.ShouldSkipOnTagPushAsync(pipelineOptions.Value.IsTagPush);
     }
 
     private static readonly string BasePath = Path.Combine(Path.GetTempPath(), "who-holds-repo");

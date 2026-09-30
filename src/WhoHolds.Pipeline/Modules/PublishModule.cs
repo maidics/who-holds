@@ -9,6 +9,7 @@ using ModularPipelines.DotNet.Services;
 using ModularPipelines.Logging;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
+using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Settings;
@@ -35,7 +36,7 @@ public sealed class PublishModule : Module<PublishedBuild>
 
     protected override ModuleConfiguration Configure()
     {
-        return ModuleConfiguration.Create().WithSkipWhen(_ => !_pipelineSettings.IsTagPush).Build();
+        return ModuleConfiguration.Create().WithTagPushSkip(_pipelineSettings.IsTagPush).Build();
     }
 
     protected override async Task<PublishedBuild?> ExecuteAsync(

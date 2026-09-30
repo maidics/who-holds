@@ -25,7 +25,7 @@ public sealed class DraftReleaseModule : Module // TODO: add to pipeline, do tes
 
     protected override ModuleConfiguration Configure()
     {
-        return ModuleConfiguration.Create().WithSkipWhen(_ => !_pipelineSettings.IsTagPush).Build();
+        return ModuleConfiguration.Create().WithTagPushSkip(_pipelineSettings.IsTagPush).Build();
     }
 
     protected override async Task ExecuteModuleAsync(
