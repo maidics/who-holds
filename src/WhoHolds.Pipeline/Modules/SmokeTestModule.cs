@@ -6,6 +6,7 @@ using ModularPipelines.Context.Domains.Shell;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
 using ModularPipelines.Options;
+using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Settings;
 
@@ -24,7 +25,7 @@ public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
         CancellationToken cancellationToken
     )
     {
-        var publishedBuild = EnsurePublished(await context.GetModule<PublishModule>());
+        var publishedBuild = (await context.GetModule<PublishModule>()).EnsurePublished();
 
         var result = await ExecuteVersionCommandAsync(
             publishedBuild,
@@ -33,19 +34,6 @@ public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
         );
 
         ThrowIfVersionOutputInvalid(result.StandardOutput, publishedBuild.Version);
-    }
-
-    public static PublishedBuild EnsurePublished(ModuleResult<PublishedBuild?> result)
-    {
-        var publishedBuild = result.ValueOrDefault;
-        ArgumentNullException.ThrowIfNull(publishedBuild);
-
-        if (!File.Exists(publishedBuild.FilePath))
-            throw new FileNotFoundException(
-                $"Published file not found at path: '{publishedBuild.FilePath}'."
-            );
-
-        return publishedBuild;
     }
 
     public static async Task<CommandResult> ExecuteVersionCommandAsync(

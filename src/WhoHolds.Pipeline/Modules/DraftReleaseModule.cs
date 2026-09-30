@@ -3,6 +3,8 @@ using ModularPipelines.Attributes;
 using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.Modules;
+using Octokit;
+using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;
@@ -27,8 +29,7 @@ public sealed class DraftReleaseModule : Module // TODO: add to pipeline, do tes
         CancellationToken cancellationToken
     )
     {
-        var result = await context.GetModule<PublishModule>();
-        ArgumentNullException.ThrowIfNull(result.ValueOrDefault); // TODO: put ensure published into a helper outside of SmokeTestModule
+        var result = (await context.GetModule<PublishModule>()).EnsurePublished();
 
         var tag = _pipelineSettings.GitHubRefName;
 
