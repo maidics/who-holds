@@ -5,7 +5,7 @@ namespace WhoHolds.Pipeline.Extensions;
 
 public static class ModuleConfigurationBuilderExtensions
 {
-    extension(ModuleConfigurationBuilder builder) // TODO: call this in tag push modules
+    extension(ModuleConfigurationBuilder builder)
     {
         public ModuleConfigurationBuilder WithTagPushSkip(bool isTagPush) =>
             builder.WithSkipWhen(_ =>
