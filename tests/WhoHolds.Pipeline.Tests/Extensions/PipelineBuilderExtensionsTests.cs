@@ -38,7 +38,7 @@ public sealed class PipelineBuilderExtensionsTests
     public void ShouldAddJsonConfiguration()
     {
         // _builder does not respect .Environment.EnvironmentName
-        // because of this the environment is set in Testing
+        // because of this the environment is set in Testing.cs
         _builder.AddJsonConfiguration();
 
         var json = _builder.Configuration.Sources.OfType<JsonConfigurationSource>().Single();
@@ -99,6 +99,7 @@ public sealed class PipelineBuilderExtensionsTests
             typeof(TestModule),
             typeof(PublishModule),
             typeof(SmokeTestModule),
+            typeof(DraftReleaseModule),
         ];
 
         await using var pipeline = await _builder.BuildAsync();
