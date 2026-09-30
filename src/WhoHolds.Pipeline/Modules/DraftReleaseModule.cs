@@ -14,7 +14,7 @@ using WhoHolds.Pipeline.Settings;
 namespace WhoHolds.Pipeline.Modules;
 
 [DependsOn<SmokeTestModule>]
-public sealed class DraftReleaseModule : Module // TODO: add to pipeline, do tests
+public sealed class DraftReleaseModule : Module
 {
     private readonly PipelineSettings _pipelineSettings;
 
@@ -43,7 +43,7 @@ public sealed class DraftReleaseModule : Module // TODO: add to pipeline, do tes
             owner,
             repo,
             releaseClient,
-            _pipelineSettings.GitHubTagRef,
+            _pipelineSettings.GitHubRefName,
             context.Logger
         );
 
