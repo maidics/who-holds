@@ -11,7 +11,7 @@ using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Services;
 using WhoHolds.Tests.Shared;
 
-namespace WhoHolds.Pipeline.Tests.PipelineTests;
+namespace WhoHolds.Pipeline.Tests;
 
 public sealed class TagPushPipelineTests
 {

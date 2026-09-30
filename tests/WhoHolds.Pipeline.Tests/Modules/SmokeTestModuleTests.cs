@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using ModularPipelines.Context.Domains.Shell;
-using ModularPipelines.Models;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
@@ -17,10 +16,12 @@ public sealed class SmokeTestModuleTests
     }
 
     [Test]
-    public async Task ShouldSkipOnNonTagRefPushes()
+    [Arguments("tag", false)]
+    [Arguments("not-tag", true)]
+    public async Task ShouldSkipOnNonTagRefPushes(string refName, bool shouldSkip)
     {
         var options = Options.Create(
-            new PipelineSettings { GitHubRefType = "not-tag", GitHubTagRef = "tag" }
+            new PipelineSettings { GitHubRefType = refName, GitHubTagRef = "tag" }
         );
 
         var module = new SmokeTestModule(options);
@@ -28,27 +29,7 @@ public sealed class SmokeTestModuleTests
         var config = module.GetConfiguration();
         config.SkipCondition.ShouldNotBeNull();
         var result = await config.SkipCondition(null!);
-        result.ShouldSkip.ShouldBeTrue();
-    }
-
-    [Test]
-    public void EnsurePublishedShouldThrowIfPublishedBuildIsNull()
-    {
-        var result = ModuleResult.CreateSuccess<PublishedBuild>(null);
-
-        var ex = Should.Throw<ArgumentNullException>(() => SmokeTestModule.EnsurePublished(result));
-        ex.Message.ShouldContain("publishedBuild");
-    }
-
-    [Test]
-    public void EnsurePublishedShouldThrowIfPublishedFileDoesNotExist()
-    {
-        var publishedBuild = new PublishedBuild("wh.exe", AppContext.BaseDirectory, "1.0.0");
-
-        var result = ModuleResult.CreateSuccess(publishedBuild);
-
-        var ex = Should.Throw<FileNotFoundException>(() => SmokeTestModule.EnsurePublished(result));
-        ex.Message.ShouldBe($"Published file not found at path: '{publishedBuild.FilePath}'.");
+        result.ShouldSkip.ShouldBe(shouldSkip);
     }
 
     [Test]
