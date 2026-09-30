@@ -5,7 +5,6 @@ using ModularPipelines.Logging;
 using Octokit;
 using WhoHolds.Pipeline.Modules;
 using WhoHolds.Pipeline.Settings;
-using WhoHolds.Pipeline.Tests.Extensions;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 using WhoHolds.Tests.Shared;
 
