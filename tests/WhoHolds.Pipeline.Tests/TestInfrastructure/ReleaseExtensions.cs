@@ -1,12 +1,17 @@
 ﻿using Octokit;
 
-namespace WhoHolds.Pipeline.Tests.Extensions;
+namespace WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 public static class ReleaseExtensions
 {
     extension(Release)
     {
-        public static Release Create(string tagName = "v1.0.0", bool draft = false, long id = 1, List<ReleaseAsset>? assets = null) =>
+        public static Release Create(
+            string tagName = "v1.0.0",
+            bool draft = false,
+            long id = 1,
+            List<ReleaseAsset>? assets = null
+        ) =>
             new(
                 url: "",
                 htmlUrl: "",

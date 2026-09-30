@@ -1,6 +1,6 @@
 ﻿using Octokit;
 
-namespace WhoHolds.Pipeline.Tests.Extensions;
+namespace WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 public static class ReleaseAssetExtensions
 {
