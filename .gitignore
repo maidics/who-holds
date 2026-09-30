@@ -483,3 +483,6 @@ $RECYCLE.BIN/
 
 # Debugging Windows features on Linux
 windows-server-vm/
+
+# VS Code
+.vscode
