@@ -8,16 +8,12 @@ public static class WhoHolds
 {
     public static Result<HolderProcess[]> File(string file)
     {
-        var path = Path.IsPathFullyQualified(file)
-            ? file
-            : Path.GetFullPath(file, Environment.CurrentDirectory);
+        var resolutionResult = PathUtils.ResolveFullPath(file);
 
-        var fileCheckResult = PathUtils.CheckFilePath(path);
+        if (!resolutionResult.Succeeded)
+            return Result.Failure(resolutionResult.Errors);
 
-        if (!fileCheckResult.Succeeded)
-            return Result.Failure(fileCheckResult.Errors);
-
-        using var session = new RestartManagerSession([path]);
+        using var session = new RestartManagerSession([resolutionResult.Value]);
         var startResult = session.Start();
 
         if (!startResult.Succeeded)
