@@ -14,9 +14,27 @@ public sealed class TestFileSystem : IAsyncInitializer, IAsyncDisposable
         private set;
     } = null!;
 
+    private readonly bool _useTempSubdirectory = true;
+
+    public TestFileSystem() { }
+
+    public TestFileSystem(bool useTempSubdirectory)
+    {
+        _useTempSubdirectory = useTempSubdirectory;
+    }
+
     public Task InitializeAsync()
     {
-        TempDir = Directory.CreateTempSubdirectory("who-holds-tests-").FullName;
+        TempDir = _useTempSubdirectory
+            ? Directory.CreateTempSubdirectory("who-holds-tests-").FullName
+            : Directory
+                .CreateDirectory(
+                    Path.Combine(
+                        Environment.CurrentDirectory,
+                        $"who-holds-tests-{Guid.NewGuid():N}"
+                    )
+                )
+                .FullName;
 
         return Task.CompletedTask;
     }

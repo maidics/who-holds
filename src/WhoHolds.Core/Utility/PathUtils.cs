@@ -4,14 +4,16 @@ namespace WhoHolds.Core.Utility;
 
 internal static class PathUtils
 {
-    public static Result CheckFilePath(string path)
+    public static Result<string> ResolveFullPath(string path)
     {
         try
         {
             var attributes = File.GetAttributes(path);
-            return attributes.HasFlag(FileAttributes.Directory)
-                ? Result.Failure("Given path is a directory.")
-                : Result.Success();
+
+            if (attributes.HasFlag(FileAttributes.Directory))
+                return Result.Failure("Given path is a directory.");
+
+            return Result.Success(Path.GetFullPath(path));
         }
         catch (FileNotFoundException)
         {

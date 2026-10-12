@@ -40,7 +40,7 @@ public sealed class GetFileHoldersCommandTests
 
         var arg = command.Arguments[0];
         arg.Description.ShouldBe(
-            "Absolute file path to a single file to list its holder processes."
+            "Absolute or relative file path to a single file to list its holder processes."
         );
         arg.Arity.ShouldBe(ArgumentArity.ExactlyOne);
     }

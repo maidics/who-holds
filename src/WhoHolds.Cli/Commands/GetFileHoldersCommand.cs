@@ -7,7 +7,8 @@ public sealed class GetFileHoldersCommand : RootCommand
 {
     private readonly Argument<string> _filePath = new("filePath")
     {
-        Description = "Absolute file path to a single file to list its holder processes.",
+        Description =
+            "Absolute or relative file path to a single file to list its holder processes.",
         Arity = ArgumentArity.ExactlyOne,
     };
 

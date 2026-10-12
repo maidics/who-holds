@@ -1,18 +1,29 @@
 ﻿# WhoHolds Agent Guide
 
-WhoHolds is a CLI application built with .NET for resolving holder processes to a specified file.
-
 ---
 
-## Working with this repository
+Use the specified SDK version in [`global.json`](global.json). Solution uses central package management: [`Directory.Packages.props`](Directory.Packages.props).
 
-- Check the [Directory.Build.props](Directory.Build.props) for package versions, target frameworks, and the SDK/test runner in [`global.json`](global.json). Preserve the project's versions unless an upgrade is requested or necessary and explained.
-- Documents that are not listed in the table under [References](#references) should not be read or changed by AI Agents.
+## Working in this repository
+
 - Release targets Native AOT, because of this: reflection is not used in source-code. Reflection may be used in tests.
-- Choose the closest topic from [References](#references) or the targeted website containing the documents and fetch that document before choosing APIs or commands. Start with one page; fetch another only when the task needs it. Skip pages already available in the conversation unless they need refreshing. 
-- You may find that a feature requires Windows but the host machine has Linux. In this case a VM with Windows Server is set up with the required tools and is accessible with the `ssh winvm` command or scripts inside [`windows-server-vm`](scripts/windows-server-vm).
-- Run focused build or test when making code changes.
+- Choose the closest topic from [References](#references) or the targeted website containing the documents and fetch that document before choosing APIs or commands.
+- Local/CLI Agents only: you may find that a feature requires Windows but the host machine has Linux. In this case a VM with Windows Server is set up with the required tools and is accessible with the `ssh winvm` command or scripts inside [`windows-server-vm`](scripts/windows-server-vm).
 - After any change, check the References table whether the touched topic requires documentation update. Only the documents in the table that are marked _Yes_ under the _Keep updated_ column are required to be kept up-to-date.
+
+## Validation
+
+- Run tests relevant to the change before pushing code.
+
+## Git workflow
+
+- When asked to open an issue do not create a branch or push changes - open the issue.
+- Do not subscribe to the PR or do scheduled check ins unless you're explicitly asked by the user.
+- Use conventional naming when it comes to commits and branches; only add a commit body for non trivial cases.
+- This is not a must, but try to keep commits atomic (e.g. no mixing of feat, fix, chore changes inside commits) - this improves readability of your feature branch.
+- Never use the Claude Code Web default branch: `claude/`, create a new branch for your changes.
+- Use a feature branch and a ready-for-review PR by default. Create drafts only when requested.
+- Trivial documentation and typo changes may go directly into main.
 
 ---
 

@@ -6,22 +6,25 @@ namespace WhoHolds.Core.Tests.Utility;
 
 internal sealed class PathUtilsTests
 {
-    [ClassDataSource<TestFileSystem>]
-    public required TestFileSystem Testing { get; init; }
-
     [Test]
-    public void CheckFilePathShouldReturnRuleViolationWhenPathIsADirectory()
+    public async Task ResolveFullPathShouldReturnFailureWhenPathIsADirectory()
     {
-        var result = PathUtils.CheckFilePath(Testing.TempDir);
+        await using var fileSystem = new TestFileSystem();
+        await fileSystem.InitializeAsync();
+
+        var result = PathUtils.ResolveFullPath(fileSystem.TempDir);
         result.ShouldBeResultedTo(false, "Given path is a directory.");
     }
 
     [Test]
-    public void CheckFilePathShouldReturnNotFoundIfFileNotFound()
+    public async Task ResolveFullPathShouldReturnFailureIfFileNotFound()
     {
-        var nonExisting = Path.Combine(Testing.TempDir, Guid.NewGuid().ToString());
+        await using var fileSystem = new TestFileSystem();
+        await fileSystem.InitializeAsync();
 
-        var result = PathUtils.CheckFilePath(nonExisting);
+        var nonExisting = Path.Combine(fileSystem.TempDir, Guid.NewGuid().ToString());
+
+        var result = PathUtils.ResolveFullPath(nonExisting);
         result.ShouldBeResultedTo(false, "File not found.");
     }
 
@@ -31,18 +34,38 @@ internal sealed class PathUtilsTests
     [Arguments("")]
     [Arguments("file\0.txt")]
     [Arguments("a<b.txt")] // illegal file name characters on Windows
-    public void CheckFilePathShouldRuleViolationForInvalidFilePaths(string path)
+    public void ResolveFullPathShouldReturnFailureForInvalidFilePaths(string path)
     {
-        var result = PathUtils.CheckFilePath(path);
+        var result = PathUtils.ResolveFullPath(path);
         result.ShouldBeResultedTo(false, "Invalid file path.");
     }
 
     [Test]
-    public void ShouldReturnSucceededForValidFilePath()
+    public async Task ShouldReturnSucceededForValidFullyQualifiedFilePath()
     {
-        var path = Testing.CreateTestFile();
+        await using var fileSystem = new TestFileSystem();
+        await fileSystem.InitializeAsync();
 
-        var result = PathUtils.CheckFilePath(path);
+        var path = fileSystem.CreateTestFile();
+
+        var result = PathUtils.ResolveFullPath(path);
         result.ShouldBeResultedTo(true);
+        result.Value.ShouldBe(path);
+    }
+
+    [Test]
+    public async Task ShouldReturnSucceededForValidRelativeFilePath()
+    {
+        await using var fileSystem = new TestFileSystem(false);
+        await fileSystem.InitializeAsync();
+
+        var file = fileSystem.CreateTestFile();
+
+        var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
+        Path.IsPathFullyQualified(relative).ShouldBeFalse();
+
+        var result = PathUtils.ResolveFullPath(relative);
+        result.ShouldBeResultedTo(true);
+        result.Value.ShouldBe(file);
     }
 }
