@@ -42,17 +42,32 @@ internal sealed class WhoHoldsTests
     [Test]
     public void FileMethodToFileShouldReturnHolderProcessesToRelativePath()
     {
-        var file = Testing.CreateTestFile();
-        using var hold = TestFileSystem.HoldFile(file);
+        // TestFileSystem uses %TEMP%, which can be on another drive than the working directory
+        // (e.g. C: vs D: on CI runners); no relative path exists across drives.
+        var dir = Directory.CreateDirectory(
+            Path.Combine(Environment.CurrentDirectory, $"who-holds-tests-{Guid.NewGuid():N}")
+        );
 
-        var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
-        Path.IsPathFullyQualified(relative).ShouldBeFalse();
+        try
+        {
+            var file = Path.Combine(dir.FullName, "held.txt");
+            File.Create(file).Dispose();
 
-        var result = WhoHolds.File(relative);
-        result.ShouldBeResultedTo(true);
+            var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
+            Path.IsPathFullyQualified(relative).ShouldBeFalse();
 
-        var processes = result.Value;
-        processes.Length.ShouldBe(1);
-        processes[0].ProcessId.ShouldBe(Environment.ProcessId);
+            using var hold = TestFileSystem.HoldFile(file);
+
+            var result = WhoHolds.File(relative);
+            result.ShouldBeResultedTo(true);
+
+            var processes = result.Value;
+            processes.Length.ShouldBe(1);
+            processes[0].ProcessId.ShouldBe(Environment.ProcessId);
+        }
+        finally
+        {
+            dir.Delete(recursive: true);
+        }
     }
 }
