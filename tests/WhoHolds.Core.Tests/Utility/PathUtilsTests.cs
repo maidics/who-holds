@@ -17,7 +17,7 @@ internal sealed class PathUtilsTests
     }
 
     [Test]
-    public async Task ResolveFullPathShouldFailureIfFileNotFound()
+    public async Task ResolveFullPathShouldReturnFailureIfFileNotFound()
     {
         await using var fileSystem = new TestFileSystem();
         await fileSystem.InitializeAsync();
