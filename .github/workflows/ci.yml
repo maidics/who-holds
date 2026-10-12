@@ -9,6 +9,7 @@ on:
       - 'LICENSE'
       - '.gitignore'
       - '.editorconfig'
+      - 'renovate.json'
 
 permissions:
   contents: write
