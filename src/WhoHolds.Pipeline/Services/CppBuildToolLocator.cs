@@ -14,7 +14,7 @@ public sealed class CppBuildToolLocator(IOptions<CppBuildToolSettings> options)
     {
         if (!File.Exists(options.Value.VsWhereFullPath))
         {
-            return new CppBuildToolLookupResult(VsWhereFound: false, InstallationPath: null);
+            return new CppBuildToolLookupResult(VsWhereFound: false, Installed: false);
         }
 
         var result = await context.Shell.Command.ExecuteCommandLineTool(
@@ -28,7 +28,7 @@ public sealed class CppBuildToolLocator(IOptions<CppBuildToolSettings> options)
 
         return new CppBuildToolLookupResult(
             VsWhereFound: true,
-            string.IsNullOrEmpty(path) ? null : path
+            Installed: !string.IsNullOrEmpty(path)
         );
     }
 }
