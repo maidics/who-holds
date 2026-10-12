@@ -6,20 +6,23 @@ namespace WhoHolds.Core.Tests.Utility;
 
 internal sealed class PathUtilsTests
 {
-    [ClassDataSource<TestFileSystem>]
-    public required TestFileSystem Testing { get; init; }
-
     [Test]
-    public void ResolveFullPathShouldReturnFailureWhenPathIsADirectory()
+    public async Task ResolveFullPathShouldReturnFailureWhenPathIsADirectory()
     {
-        var result = PathUtils.ResolveFullPath(Testing.TempDir);
+        await using var fileSystem = new TestFileSystem();
+        await fileSystem.InitializeAsync();
+
+        var result = PathUtils.ResolveFullPath(fileSystem.TempDir);
         result.ShouldBeResultedTo(false, "Given path is a directory.");
     }
 
     [Test]
-    public void ResolveFullPathShouldFailureIfFileNotFound()
+    public async Task ResolveFullPathShouldFailureIfFileNotFound()
     {
-        var nonExisting = Path.Combine(Testing.TempDir, Guid.NewGuid().ToString());
+        await using var fileSystem = new TestFileSystem();
+        await fileSystem.InitializeAsync();
+
+        var nonExisting = Path.Combine(fileSystem.TempDir, Guid.NewGuid().ToString());
 
         var result = PathUtils.ResolveFullPath(nonExisting);
         result.ShouldBeResultedTo(false, "File not found.");
@@ -38,35 +41,29 @@ internal sealed class PathUtilsTests
     }
 
     [Test]
-    public void ShouldReturnSucceededForValidFullyQualifiedFilePath()
+    public async Task ShouldReturnSucceededForValidFullyQualifiedFilePath()
     {
-        var path = Testing.CreateTestFile();
+        await using var fileSystem = new TestFileSystem();
+        await fileSystem.InitializeAsync();
+
+        var path = fileSystem.CreateTestFile();
 
         var result = PathUtils.ResolveFullPath(path);
         result.ShouldBeResultedTo(true);
     }
 
     [Test]
-    public void ShouldReturnSucceededForValidRelativeFilePath()
+    public async Task ShouldReturnSucceededForValidRelativeFilePath()
     {
-        var dir = Directory.CreateDirectory(
-            Path.Combine(Environment.CurrentDirectory, $"who-holds-tests-{Guid.NewGuid():N}")
-        );
+        await using var fileSystem = new TestFileSystem(false);
+        await fileSystem.InitializeAsync();
 
-        try
-        {
-            var file = Path.Combine(dir.FullName, "test.txt");
-            File.Create(file).Dispose();
+        var file = fileSystem.CreateTestFile();
 
-            var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
-            Path.IsPathFullyQualified(relative).ShouldBeFalse();
+        var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
+        Path.IsPathFullyQualified(relative).ShouldBeFalse();
 
-            var result = PathUtils.ResolveFullPath(relative);
-            result.ShouldBeResultedTo(true);
-        }
-        finally
-        {
-            dir.Delete(recursive: true);
-        }
+        var result = PathUtils.ResolveFullPath(relative);
+        result.ShouldBeResultedTo(true);
     }
 }

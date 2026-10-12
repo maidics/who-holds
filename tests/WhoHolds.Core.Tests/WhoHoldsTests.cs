@@ -5,20 +5,23 @@ namespace WhoHolds.Core.Tests;
 
 internal sealed class WhoHoldsTests
 {
-    [ClassDataSource<TestFileSystem>]
-    public required TestFileSystem Testing { get; init; }
-
     [Test] // since this uses PathUtils covering one case is enough
-    public void FileMethodToFileShouldReturnNotFoundIfFileNotFound()
+    public async Task FileMethodToFileShouldReturnNotFoundIfFileNotFound()
     {
-        var result = WhoHolds.File(Path.Combine(Testing.TempDir, Guid.NewGuid().ToString()));
+        await using var fileSystem = new TestFileSystem(false);
+        await fileSystem.InitializeAsync();
+
+        var result = WhoHolds.File(Path.Combine(fileSystem.TempDir, Guid.NewGuid().ToString()));
         result.ShouldBeResultedTo(false, "File not found.");
     }
 
     [Test]
-    public void FileMethodToFileShouldReturnEmptyArrayIfNothingHoldsFile()
+    public async Task FileMethodToFileShouldReturnEmptyArrayIfNothingHoldsFile()
     {
-        var file = Testing.CreateTestFile();
+        await using var fileSystem = new TestFileSystem(false);
+        await fileSystem.InitializeAsync();
+
+        var file = fileSystem.CreateTestFile();
 
         var result = WhoHolds.File(file);
         result.ShouldBeResultedTo(true);
@@ -26,10 +29,13 @@ internal sealed class WhoHoldsTests
     }
 
     [Test] // because it orchestrates the search with RestartManagerSession covering one case where it returns something is enough as well
-    public void FileMethodToFileShouldReturnHolderProcessesToAbsolutePath()
+    public async Task FileMethodToFileShouldReturnHolderProcessesToAbsolutePath()
     {
-        var file = Testing.CreateTestFile();
-        using var hold = TestFileSystem.HoldFile(file);
+        await using var fileSystem = new TestFileSystem(false);
+        await fileSystem.InitializeAsync();
+
+        var file = fileSystem.CreateTestFile();
+        await using var hold = TestFileSystem.HoldFile(file);
 
         var result = WhoHolds.File(file);
         result.ShouldBeResultedTo(true);
@@ -40,34 +46,25 @@ internal sealed class WhoHoldsTests
     }
 
     [Test]
-    public void FileMethodToFileShouldReturnHolderProcessesToRelativePath()
+    public async Task FileMethodToFileShouldReturnHolderProcessesToRelativePath()
     {
         // TestFileSystem uses %TEMP%, which can be on another drive than the working directory
         // (e.g. C: vs D: on CI runners); no relative path exists across drives.
-        var dir = Directory.CreateDirectory(
-            Path.Combine(Environment.CurrentDirectory, $"who-holds-tests-{Guid.NewGuid():N}")
-        );
+        await using var fileSystem = new TestFileSystem(false);
+        await fileSystem.InitializeAsync();
 
-        try
-        {
-            var file = Path.Combine(dir.FullName, "held.txt");
-            File.Create(file).Dispose();
+        var file = fileSystem.CreateTestFile();
 
-            var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
-            Path.IsPathFullyQualified(relative).ShouldBeFalse();
+        var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
+        Path.IsPathFullyQualified(relative).ShouldBeFalse();
 
-            using var hold = TestFileSystem.HoldFile(file);
+        await using var hold = TestFileSystem.HoldFile(file);
 
-            var result = WhoHolds.File(relative);
-            result.ShouldBeResultedTo(true);
+        var result = WhoHolds.File(relative);
+        result.ShouldBeResultedTo(true);
 
-            var processes = result.Value;
-            processes.Length.ShouldBe(1);
-            processes[0].ProcessId.ShouldBe(Environment.ProcessId);
-        }
-        finally
-        {
-            dir.Delete(recursive: true);
-        }
+        var processes = result.Value;
+        processes.Length.ShouldBe(1);
+        processes[0].ProcessId.ShouldBe(Environment.ProcessId);
     }
 }
