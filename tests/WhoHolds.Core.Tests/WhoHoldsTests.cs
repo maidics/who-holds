@@ -26,7 +26,7 @@ internal sealed class WhoHoldsTests
     }
 
     [Test] // because it orchestrates the search with RestartManagerSession covering one case where it returns something is enough as well
-    public void FileMethodToFileShouldReturnHolderProcesses()
+    public void FileMethodToFileShouldReturnHolderProcessesToAbsolutePath()
     {
         var file = Testing.CreateTestFile();
         using var hold = TestFileSystem.HoldFile(file);
