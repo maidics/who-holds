@@ -15,7 +15,7 @@ public static class WhoHolds
         if (!fileCheckResult.Succeeded)
             return Result.Failure(fileCheckResult.Errors);
 
-        using var session = new RestartManagerSession([file]);
+        using var session = new RestartManagerSession([fullPath]);
         var startResult = session.Start();
 
         if (!startResult.Succeeded)
