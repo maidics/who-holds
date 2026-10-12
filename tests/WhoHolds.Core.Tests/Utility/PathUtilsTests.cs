@@ -45,4 +45,28 @@ internal sealed class PathUtilsTests
         var result = PathUtils.ResolveFullPath(path);
         result.ShouldBeResultedTo(true);
     }
+
+    [Test]
+    public void ShouldReturnSucceededForValidRelativeFilePath()
+    {
+        var dir = Directory.CreateDirectory(
+            Path.Combine(Environment.CurrentDirectory, $"who-holds-tests-{Guid.NewGuid():N}")
+        );
+
+        try
+        {
+            var file = Path.Combine(dir.FullName, "test.txt");
+            File.Create(file).Dispose();
+
+            var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
+            Path.IsPathFullyQualified(relative).ShouldBeFalse();
+
+            var result = PathUtils.ResolveFullPath(relative);
+            result.ShouldBeResultedTo(true);
+        }
+        finally
+        {
+            dir.Delete(recursive: true);
+        }
+    }
 }
