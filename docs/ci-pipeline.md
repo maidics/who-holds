@@ -46,6 +46,7 @@ Settings classes are validated on startup via annotations.
 | 3. | [`TestModule`](../src/WhoHolds.Pipeline/Modules/TestModule.cs) | `BuildModule` | Always | Runs all the tests from the build output.
 | 4. | [`PublishModule`](../src/WhoHolds.Pipeline/Modules/PublishModule.cs) | `TestModule` | On tag push | Builds native AOT executable: [WhoHolds.Cli](../src/WhoHolds.Cli). `Publish:OutputDirectory` is resolved once to an absolute path (against the working directory, i.e. the repository root) and passed on in `PublishedBuild`, which rejects relative paths.
 | 5. | [`SmokeTestModule`](../src/WhoHolds.Pipeline/Modules/SmokeTestModule.cs) | `PublishModule` | On tag push | Invokes `--version` command on the published `.exe` file by its full path. Ensures the output folder contains only one `.exe` file and its version is correct. |
+| 6. | [`DraftReleaseModule`](../src/WhoHolds.Pipeline/Modules/DraftReleaseModule.cs) | `SmokeTestModule` | On tag push | Drafts a GitHub release and uploads the published `.exe` artifact. |
 
 **Module skipping is defined in `Configure` method override.**
 
