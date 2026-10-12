@@ -8,7 +8,7 @@ internal sealed class WhoHoldsTests
     [Test] // since this uses PathUtils covering one case is enough
     public async Task FileMethodToFileShouldReturnNotFoundIfFileNotFound()
     {
-        await using var fileSystem = new TestFileSystem(false);
+        await using var fileSystem = new TestFileSystem();
         await fileSystem.InitializeAsync();
 
         var result = WhoHolds.File(Path.Combine(fileSystem.TempDir, Guid.NewGuid().ToString()));
@@ -18,7 +18,7 @@ internal sealed class WhoHoldsTests
     [Test]
     public async Task FileMethodToFileShouldReturnEmptyArrayIfNothingHoldsFile()
     {
-        await using var fileSystem = new TestFileSystem(false);
+        await using var fileSystem = new TestFileSystem();
         await fileSystem.InitializeAsync();
 
         var file = fileSystem.CreateTestFile();
@@ -31,7 +31,7 @@ internal sealed class WhoHoldsTests
     [Test] // because it orchestrates the search with RestartManagerSession covering one case where it returns something is enough as well
     public async Task FileMethodToFileShouldReturnHolderProcessesToAbsolutePath()
     {
-        await using var fileSystem = new TestFileSystem(false);
+        await using var fileSystem = new TestFileSystem();
         await fileSystem.InitializeAsync();
 
         var file = fileSystem.CreateTestFile();
