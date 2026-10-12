@@ -50,6 +50,7 @@ internal sealed class PathUtilsTests
 
         var result = PathUtils.ResolveFullPath(path);
         result.ShouldBeResultedTo(true);
+        result.Value.ShouldBe(path);
     }
 
     [Test]
@@ -65,5 +66,6 @@ internal sealed class PathUtilsTests
 
         var result = PathUtils.ResolveFullPath(relative);
         result.ShouldBeResultedTo(true);
+        result.Value.ShouldBe(file);
     }
 }
