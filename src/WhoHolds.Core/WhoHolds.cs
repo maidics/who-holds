@@ -8,7 +8,9 @@ public static class WhoHolds
 {
     public static Result<HolderProcess[]> File(string file)
     {
-        var fileCheckResult = PathUtils.CheckFilePath(file);
+        var fullPath = Path.GetFullPath(file, Environment.CurrentDirectory);
+
+        var fileCheckResult = PathUtils.CheckFilePath(fullPath);
 
         if (!fileCheckResult.Succeeded)
             return Result.Failure(fileCheckResult.Errors);
