@@ -10,7 +10,7 @@ WhoHolds is a command-line tool for Windows that shows which processes are holdi
 ## Usage
 
 ```
-wh.exe <absolute-file-path> [OPTIONS]
+wh.exe <file-path> [OPTIONS]
 ```
 
 ## Arguments
@@ -39,9 +39,9 @@ When run with JSON output, every command returns an object with the same shape:
 
 #### Value types by command
 
-| Command                    | Value Type                                                            |
-|----------------------------|-----------------------------------------------------------------------|
-| `wh <absolute-file-path> ` | [`HolderProcess[]`](src/WhoHolds.Core/Common/Models/HolderProcess.cs) |
+| Command           | Value Type                                                            |
+|-------------------|-----------------------------------------------------------------------|
+| `wh <file-path> ` | [`HolderProcess[]`](src/WhoHolds.Core/Common/Models/HolderProcess.cs) |
 
 **Example:**
 
