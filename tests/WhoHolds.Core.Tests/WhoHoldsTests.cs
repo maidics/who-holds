@@ -38,4 +38,21 @@ internal sealed class WhoHoldsTests
         processes.Length.ShouldBe(1);
         processes[0].ProcessId.ShouldBe(Environment.ProcessId);
     }
+
+    [Test]
+    public void FileMethodToFileShouldReturnHolderProcessesToRelativePath()
+    {
+        var file = Testing.CreateTestFile();
+        using var hold = TestFileSystem.HoldFile(file);
+
+        var relative = Path.GetRelativePath(Environment.CurrentDirectory, file);
+        Path.IsPathFullyQualified(relative).ShouldBeFalse();
+
+        var result = WhoHolds.File(relative);
+        result.ShouldBeResultedTo(true);
+
+        var processes = result.Value;
+        processes.Length.ShouldBe(1);
+        processes[0].ProcessId.ShouldBe(Environment.ProcessId);
+    }
 }
