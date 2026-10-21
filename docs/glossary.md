@@ -39,3 +39,12 @@ such as its name (file path) or type. Used to resolve a raw handle into a human-
 ## NtQuerySystemInformation
 
 An NT native API function (`ntdll.dll`) that retrieves various kinds of system-wide information.
+
+## Mapped file
+
+A file copied to the process's memory to write to. It's a windows onto the file, not a copy of it. OS writes the dirty pages to disk periodically. Benefits:
+- Reduces I/O bursts,
+- Disks write whole blocks: many small writes are done under one write,
+- Some writes never need to happen: a temp file that's created, written and deleted within seconds may never touch the disk at all,
+- Batching is efficient: the OS can sort and merge dirty pages into larger sequential writes, which disks handle much better,
+- The program does not block: I/O scheduled by OS in the background.
