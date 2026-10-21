@@ -6,7 +6,7 @@ public sealed record HolderProcess(
     string? ApplicationName,
     string? ServiceShortName, // only set for services
     string ApplicationType, // interop enum
-    List<string> ApplicationStatus, // interop flag enum => descibes history of actions taken by Restart Manager on the application
+    List<string> ApplicationStatus, // interop flag enum => describes history of actions taken by Restart Manager on the application
     int? SessionId, // session can be unknown (-1) => null
     bool Restartable
 )
