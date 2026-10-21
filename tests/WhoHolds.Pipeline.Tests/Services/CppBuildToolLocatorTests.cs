@@ -26,7 +26,7 @@ public sealed class CppBuildToolLocatorTests
 
         var result = await locator.LocateAsync(null!);
         result.VsWhereFound.ShouldBeFalse();
-        result.InstallationPath.ShouldBeNull();
+        result.Installed.ShouldBeFalse();
     }
 
     [Test]
@@ -75,6 +75,6 @@ public sealed class CppBuildToolLocatorTests
 
         var result = await locator.LocateAsync(context);
         result.VsWhereFound.ShouldBeTrue();
-        result.InstallationPath.ShouldBe(stdout);
+        result.Installed.ShouldBeTrue();
     }
 }

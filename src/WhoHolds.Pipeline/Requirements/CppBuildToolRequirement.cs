@@ -29,7 +29,7 @@ public sealed class CppBuildToolRequirement(
                 $"{cppBuildToolOptions.Value.VsWhere} not found. Install Visual Studio or Build Tools with the 'Desktop development with C++' workload."
             );
 
-        if (result.InstallationPath is null)
+        if (!result.Installed)
             return RequirementDecision.Failed(
                 "C++ build tools (MSVC x64) not found. Native AOT publish requires the 'Desktop development with C++' workload."
             );

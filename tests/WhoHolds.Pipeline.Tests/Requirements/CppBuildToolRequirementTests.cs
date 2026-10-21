@@ -64,21 +64,21 @@ public sealed class CppBuildToolRequirementTests
     [Test]
     public async Task ShouldReturnFailedWhenVsWhereIsNotFound()
     {
-        var decision = await EvaluateAsync(new CppBuildToolLookupResult(false, null));
+        var decision = await EvaluateAsync(new CppBuildToolLookupResult(false, false));
         decision.Success.ShouldBeFalse();
     }
 
     [Test]
     public async Task ShouldReturnFailedWhenVsWhereIsFoundButCppToolsAreMissing()
     {
-        var decision = await EvaluateAsync(new CppBuildToolLookupResult(true, null));
+        var decision = await EvaluateAsync(new CppBuildToolLookupResult(true, false));
         decision.Success.ShouldBeFalse();
     }
 
     [Test]
     public async Task ShouldReturnSuccessWhenVsWhereAndCppToolsAreFound()
     {
-        var decision = await EvaluateAsync(new CppBuildToolLookupResult(true, "test"));
+        var decision = await EvaluateAsync(new CppBuildToolLookupResult(true, true));
         decision.Success.ShouldBeTrue();
     }
 }
