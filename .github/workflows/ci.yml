@@ -44,3 +44,12 @@ jobs:
         run: dotnet run --project src/WhoHolds.Pipeline/WhoHolds.Pipeline.csproj --configuration Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload publish output
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with: 
+          name: who-holds-win-x64
+          path: artifacts/publish/
+          if-no-files-found: ignore
+          retention-days: 4
