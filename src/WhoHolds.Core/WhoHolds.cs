@@ -24,6 +24,8 @@ public static class WhoHolds
         if (!getResult.Succeeded)
             return Result.Failure(getResult.Errors);
 
+        // TODO: resolve process path here - pass to ToHolderProcess()
+
         var processes = getResult.Value.Select(p => p.ToHolderProcess()).ToArray();
 
         return Result.Success(processes);
