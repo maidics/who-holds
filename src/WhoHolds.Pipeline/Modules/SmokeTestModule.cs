@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using ModularPipelines.Attributes;
-using ModularPipelines.Configuration;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.Context.Domains.Shell;
 using ModularPipelines.Models;
@@ -8,18 +6,12 @@ using ModularPipelines.Modules;
 using ModularPipelines.Options;
 using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Models;
-using WhoHolds.Pipeline.Settings;
 
 namespace WhoHolds.Pipeline.Modules;
 
 [DependsOn<PublishModule>]
-public sealed class SmokeTestModule(IOptions<PipelineSettings> options) : Module
+public sealed class SmokeTestModule : Module
 {
-    protected override ModuleConfiguration Configure()
-    {
-        return ModuleConfiguration.Create().WithTagPushSkip(options.Value.IsTagPush).Build();
-    }
-
     protected override async Task ExecuteModuleAsync(
         IModuleContext context,
         CancellationToken cancellationToken

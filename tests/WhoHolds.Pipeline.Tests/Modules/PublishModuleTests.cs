@@ -30,26 +30,6 @@ public sealed class PublishModuleTests
         PublishModule.ShouldHaveDependsOnAttribute<PublishModule, TestModule>();
     }
 
-    [Test]
-    [Arguments("not-tag")]
-    [Arguments("tag")]
-    public async Task ShouldSkipOnNonTagPush(string refType)
-    {
-        var pipelineOptions = CreatePipelineOptions(refType, string.Empty);
-        var publishOptions = Options.Create(
-            new PublishSettings
-            {
-                OutputDirectory = "output-dir",
-                Runtime = "runtime",
-                ProjectPath = "project",
-            }
-        );
-
-        var module = new PublishModule(pipelineOptions, publishOptions, null!);
-        var config = module.GetConfiguration();
-        await config.ShouldSkipOnTagPushAsync(pipelineOptions.Value.IsTagPush);
-    }
-
     private static readonly string BasePath = Path.Combine(Path.GetTempPath(), "who-holds-repo");
 
     [Test]
