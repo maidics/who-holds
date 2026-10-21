@@ -48,3 +48,9 @@ A file copied to the process's memory to write to. It's a windows onto the file,
 - Some writes never need to happen: a temp file that's created, written and deleted within seconds may never touch the disk at all,
 - Batching is efficient: the OS can sort and merge dirty pages into larger sequential writes, which disks handle much better,
 - The program does not block: I/O scheduled by OS in the background.
+
+## C header file (`.h`)
+
+A `.h` file in C and C++ is a header file declares what the library offers: functions, structs, constants, enums without implementation. A C program includes the header so the compiler knows how to call the function, and the linker connects the call to the DLL.
+
+.NET cannot read headers, so P/Invoke means rewriting the header declarations by hand in C#.
