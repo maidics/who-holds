@@ -44,7 +44,7 @@ public sealed class PublishModule : Module<PublishedBuild>
 
         EraseOutputDirectory(outputDirectory, context.Logger);
 
-        string version = "0.0.0-pr.";
+        string version = "0.0.0-dev";
 
         if (_pipelineSettings.IsTagPush)
             version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
