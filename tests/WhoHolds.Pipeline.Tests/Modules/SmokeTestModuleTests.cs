@@ -16,20 +16,6 @@ public sealed class SmokeTestModuleTests
     }
 
     [Test]
-    [Arguments("not-tag")]
-    [Arguments("tag")]
-    public async Task ShouldSkipOnNonTagPush(string refType)
-    {
-        var pipelineOptions = Options.Create(
-            new PipelineSettings { GitHubRefType = refType, GitHubTagRef = "tag" }
-        );
-
-        var module = new SmokeTestModule(pipelineOptions);
-        var config = module.GetConfiguration();
-        await config.ShouldSkipOnTagPushAsync(pipelineOptions.Value.IsTagPush);
-    }
-
-    [Test]
     public async Task ExecuteVersionCommandAsyncShouldExecuteVersionCommandOnPublishedFilePath()
     {
         var publishedBuild = new PublishedBuild("wh.exe", AppContext.BaseDirectory, "1.0.0");

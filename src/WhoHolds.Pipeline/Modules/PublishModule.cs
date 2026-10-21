@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ModularPipelines.Attributes;
-using ModularPipelines.Configuration;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
@@ -9,7 +8,6 @@ using ModularPipelines.DotNet.Services;
 using ModularPipelines.Logging;
 using ModularPipelines.Models;
 using ModularPipelines.Modules;
-using WhoHolds.Pipeline.Extensions;
 using WhoHolds.Pipeline.Interfaces;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Settings;
@@ -34,11 +32,6 @@ public sealed class PublishModule : Module<PublishedBuild>
         _publishSettings = publishOptions.Value;
     }
 
-    protected override ModuleConfiguration Configure()
-    {
-        return ModuleConfiguration.Create().WithTagPushSkip(_pipelineSettings.IsTagPush).Build();
-    }
-
     protected override async Task<PublishedBuild?> ExecuteAsync(
         IModuleContext context,
         CancellationToken cancellationToken
@@ -51,7 +44,10 @@ public sealed class PublishModule : Module<PublishedBuild>
 
         EraseOutputDirectory(outputDirectory, context.Logger);
 
-        var version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
+        string version = "0.0.0-dev";
+
+        if (_pipelineSettings.IsTagPush)
+            version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
 
         await PublishAsync(
             _publishSettings.ProjectPath,
