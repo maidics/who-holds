@@ -44,7 +44,10 @@ public sealed class PublishModule : Module<PublishedBuild>
 
         EraseOutputDirectory(outputDirectory, context.Logger);
 
-        var version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
+        string version = "0.0.0-pr.";
+
+        if (_pipelineSettings.IsTagPush)
+            version = _versionResolver.Resolve(_pipelineSettings.GitHubRefName);
 
         await PublishAsync(
             _publishSettings.ProjectPath,
