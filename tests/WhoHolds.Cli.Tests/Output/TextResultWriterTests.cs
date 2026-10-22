@@ -49,6 +49,7 @@ public sealed class TextResultWriterTests
             string.Empty,
             [],
             null,
+            null,
             false
         );
         var second = new HolderProcess(
@@ -58,6 +59,7 @@ public sealed class TextResultWriterTests
             null,
             string.Empty,
             [],
+            null,
             null,
             false
         );

@@ -24,9 +24,22 @@ public static class WhoHolds
         if (!getResult.Succeeded)
             return Result.Failure(getResult.Errors);
 
-        // TODO: resolve process path here - pass to ToHolderProcess()
+        List<string> pathErrors = []; // TODO: add errors to result after rearchitecture
 
-        var processes = getResult.Value.Select(p => p.ToHolderProcess()).ToArray();
+        var processes = getResult
+            .Value.Select(p =>
+            {
+                var pathResult = ProcessPathResolver.Resolve(p);
+
+                if (pathResult.Succeeded)
+                {
+                    return p.ToHolderProcess(pathResult.Value);
+                }
+
+                pathErrors.AddRange(pathResult.Errors);
+                return p.ToHolderProcess(null);
+            })
+            .ToArray();
 
         return Result.Success(processes);
     }

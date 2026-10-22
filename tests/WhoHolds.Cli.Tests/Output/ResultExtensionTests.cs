@@ -24,6 +24,7 @@ public sealed class ResultExtensionTests
             string.Empty,
             [],
             null,
+            null,
             false
         );
 
