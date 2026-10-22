@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using ModularPipelines.Context.Domains.Shell;
+﻿using ModularPipelines.Context.Domains.Shell;
 using WhoHolds.Pipeline.Models;
 using WhoHolds.Pipeline.Modules;
-using WhoHolds.Pipeline.Settings;
 using WhoHolds.Pipeline.Tests.TestInfrastructure;
 
 namespace WhoHolds.Pipeline.Tests.Modules;

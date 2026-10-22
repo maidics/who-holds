@@ -1,24 +1,21 @@
 ﻿using System.Reflection;
-using WhoHolds.Core.Interop;
-using WhoHolds.Core.Interop.Enums;
+using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.RestartManagerLibrary;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
 [NotInParallel] // due to rm session handles: rm gives out handles starting from 0 so parallelizing these can lead to flaky tests
-internal abstract class NativeMethodTestBase(string method)
+internal abstract class NativeMethodTestBase(Type library, string method)
 {
-    protected readonly MethodInfo _methodInfo = GetMethodInfo(method);
+    protected readonly MethodInfo _methodInfo = GetMethodInfo(library, method);
 
-    private static MethodInfo GetMethodInfo(string method)
+    private static MethodInfo GetMethodInfo(Type library, string method)
     {
-        var m = typeof(NativeMethods).GetMethod(
-            method,
-            BindingFlags.NonPublic | BindingFlags.Static
-        );
+        var m = library.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Static);
 
         if (m is null)
             throw new ArgumentException(
-                $"{nameof(NativeMethods)} internal static method not found: {method}."
+                $"{library.Name} internal static method not found: {method}."
             );
 
         return m;
@@ -50,7 +47,7 @@ internal abstract class NativeMethodTestBase(string method)
 
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine(
-            $"[cleanup] {nameof(NativeMethods.RmEndSession)} failed: {code} ({(uint)code})."
+            $"[cleanup] {nameof(RestartManager.RmEndSession)} failed: {code} ({(uint)code})."
         );
         Console.ForegroundColor = originalColor;
     }

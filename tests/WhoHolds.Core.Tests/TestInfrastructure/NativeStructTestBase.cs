@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.Interfaces;
+using WhoHolds.Core.Interop.Common;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 

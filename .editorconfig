@@ -377,3 +377,7 @@ dotnet_naming_style.camelcase.word_separator =
 dotnet_naming_style.camelcase.capitalization = camel_case
 
 dotnet_style_namespace_match_folder = true:suggestion
+
+# Interop library slices share the WhoHolds.Core.Interop namespace: a folder namespace would clash with the library class named after the folder
+[**/Interop/{Kernel32,NtDll,RestartManager}/**.cs]
+dotnet_style_namespace_match_folder = false

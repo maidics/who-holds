@@ -2,11 +2,27 @@
 
 ```
 Interop/
-├── NativeMethods.cs        # NtQuerySystemInformation, NtQueryObject, DuplicateHandle, NtClose
-├── Structs/
-│   ├── SystemHandleInfo.cs # mirrors the native SYSTEM_HANDLE_INFORMATION layout
-│   └── ObjectNameInfo.cs
-└── NtStatus.cs             # NTSTATUS result codes as an enum
+├── Libraries.cs                         # native library names: Libraries.Kernel32, Libraries.NtDll, Libraries.RestartManager
+├── Common/                              # interop concerns shared across libraries: INativeSized, FileTime, SystemErrorCode, NativeBuffer
+├── Kernel32/
+│   ├── Enums/                           # structs, enums, constants, exceptions and delegates belonging to the library, grouped by kind
+│   │   └── ProcessAccessRights.cs
+│   └── Kernel32.OpenProcess.cs          # one P/Invoke declaration per file on the static partial Kernel32 class
+├── NtDll/
+│   ├── Delegates/
+│   ├── Enums/
+│   ├── Exceptions/
+│   ├── Structs/
+│   │   └── SystemHandleEntryEx.cs
+│   └── NtDll.NtQuerySystemInfo.cs
+├── RestartManager/
+│   ├── Constants/
+│   ├── Enums/
+│   ├── Exceptions/
+│   ├── Structs/
+│   │   └── RmProcessInfo.cs
+│   └── RestartManager.RmStartSession.cs
+└── Services/                            # classes calling the declarations: RestartManagerSession, SystemQuery, ObjectTypes, ProcessPathResolver
 
 WhoHolds.Core/
 ├── Interop/
@@ -20,6 +36,12 @@ WhoHolds.Core/
 ├── HandleFinder.cs
 └── WhoHolds.Core.csproj
 ```
+
+## `Interop/`
+
+Vertically sliced by native library. A library folder holds a `static partial` class named after the library, split into one `<Library>.<Method>.cs` file per declaration at the folder root, plus the native types only that library uses, grouped by kind into `Structs/`, `Enums/`, `Constants/`, `Exceptions/` and `Delegates/`. Types used by more than one library go into `Common/`, and classes that call the declarations go into `Services/`.
+
+Library folders and their subfolders do not get their own namespace: `WhoHolds.Core.Interop.RestartManager` would clash with the `RestartManager` class, so their content lives in `WhoHolds.Core.Interop`. `Common/` and `Services/` follow the folder namespaces (`WhoHolds.Core.Interop.Common`, `WhoHolds.Core.Interop.Services`).
 
 ## `HandleFinder.cs`
 
