@@ -6,9 +6,10 @@ namespace WhoHolds.Core.Tests.Common.Models;
 public sealed class ResultTests
 {
     [Test]
-    public void ConstructorShouldThrowIfSucceededIsTrueAndErrorsIsNotEmpty()
+    public void ConstructorShouldNotThrowIfSucceededIsTrueAndErrorsIsNotEmpty()
     {
-        Should.Throw<ArgumentException>(() => new Result(true, "test"));
+        var result = new Result(true, "test");
+        result.ShouldBeResultedTo(true, "test");
     }
 
     [Test]
@@ -54,7 +55,9 @@ public sealed class ResultTests
     [Test]
     public void GenericResultConstructorShouldThrowIfSucceededIsTrueAndErrorIsNotEmpty()
     {
-        Should.Throw<ArgumentException>(() => new Result<int>(true, 10, "test"));
+        var result = new Result<int>(true, 10, "test");
+        result.Value.ShouldBe(10);
+        result.ShouldBeResultedTo(true, "test");
     }
 
     [Test]

@@ -26,5 +26,12 @@ public sealed class TextResultWriter : IResultWriter
         {
             stdout.WriteLine(holderProcess.ToString());
         }
+
+        stdout.WriteLine("Failures:");
+
+        foreach (var error in result.Errors)
+        {
+            stderr.WriteLine($"\t- {error}");
+        }
     }
 }

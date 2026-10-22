@@ -72,19 +72,4 @@ internal static class SystemQuery
         result = (int)r;
         return true;
     }
-
-    private const int _maxPathChars = 32_767;
-
-    public static Result<string> QueryImagePath(SafeProcessHandle process, int processId) // TODO: test this
-    {
-        Span<char> path = stackalloc char[_maxPathChars]; // the upper limit is known (32KB)
-        uint size = (uint)path.Length;
-
-        if (!Kernel32.QueryFullProcessImageNameW(process, 0, path, ref size))
-            return Result.Failure(
-                $"Failed to query image path for {processId} process: {((SystemErrorCode)Marshal.GetLastPInvokeError()).ToString()}."
-            );
-
-        return Result.Success(path[..(int)size].ToString());
-    }
 }

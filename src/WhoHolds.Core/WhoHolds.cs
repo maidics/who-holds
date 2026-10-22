@@ -25,7 +25,7 @@ public static class WhoHolds
             return Result.Failure(getResult.Errors);
 
         // TODO: test after this
-        List<string> pathErrors = []; // TODO: add errors to result after rearchitecture
+        List<string> pathErrors = [];
 
         var processes = getResult
             .Value.Select(p =>
@@ -42,6 +42,6 @@ public static class WhoHolds
             })
             .ToArray();
 
-        return Result.Success(processes);
+        return Result.Success(processes, pathErrors.ToArray());
     }
 }

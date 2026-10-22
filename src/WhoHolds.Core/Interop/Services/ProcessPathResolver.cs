@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.Kernel32Library;
@@ -9,6 +10,8 @@ namespace WhoHolds.Core.Interop.Services;
 
 internal static class ProcessPathResolver // TODO: test this
 {
+    private const int _maxPathChars = 32_767;
+
     public static Result<string> Resolve(RmProcessInfo holder)
     {
         using var process = Kernel32.OpenProcess(
@@ -19,21 +22,52 @@ internal static class ProcessPathResolver // TODO: test this
 
         if (process.IsInvalid)
         {
-            var errorCode = (SystemErrorCode)Marshal.GetLastPInvokeError();
-
             return Result.Failure(
-                $"{nameof(Kernel32.OpenProcess)} failed to open process:  {errorCode}."
+                GetKernel32FunctionFailureMessage(
+                    holder.AppName,
+                    holder.Process.dwProcessId,
+                    (SystemErrorCode)Marshal.GetLastPInvokeError(),
+                    nameof(Kernel32.OpenProcess)
+                )
             );
         }
 
         if (!Kernel32.GetProcessTimes(process, out var creationTime, out _, out _, out _))
             return Result.Failure(
-                $"Failed to get creation time of process: {holder.Process.dwProcessId}."
+                GetKernel32FunctionFailureMessage(
+                    holder.AppName,
+                    holder.Process.dwProcessId,
+                    (SystemErrorCode)Marshal.GetLastPInvokeError(),
+                    nameof(Kernel32.GetProcessTimes)
+                )
             );
 
         if (creationTime.ToDateTimeUtc() != holder.Process.ProcessStartTime.ToDateTimeUtc())
-            return Result.Failure("Process Id was reused, cannot resolve file path for process.");
+            return Result.Failure(
+                $"Process Id ({holder.Process.dwProcessId}) was reused, cannot resolve file path for process."
+            );
 
-        return SystemQuery.QueryImagePath(process, (int)holder.Process.dwProcessId);
+        Span<char> path = stackalloc char[_maxPathChars]; // the upper limit is known (32KB)
+        uint size = (uint)path.Length;
+
+        if (!Kernel32.QueryFullProcessImageNameW(process, 0, path, ref size))
+            return Result.Failure(
+                GetKernel32FunctionFailureMessage(
+                    holder.AppName,
+                    holder.Process.dwProcessId,
+                    (SystemErrorCode)Marshal.GetLastPInvokeError(),
+                    nameof(Kernel32.QueryFullProcessImageNameW)
+                )
+            );
+
+        return Result.Success<string>(path[..(int)size].ToString());
     }
+
+    private static string GetKernel32FunctionFailureMessage(
+        string? appName,
+        uint processId,
+        SystemErrorCode error,
+        string function
+    ) =>
+        $"Failed to resolve image path for {appName} (PID {processId}): {error} ({function} - {Libraries.Kernel32})";
 }

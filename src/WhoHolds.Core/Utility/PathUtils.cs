@@ -13,7 +13,7 @@ internal static class PathUtils
             if (attributes.HasFlag(FileAttributes.Directory))
                 return Result.Failure("Given path is a directory.");
 
-            return Result.Success(Path.GetFullPath(path));
+            return Result.Success<string>(Path.GetFullPath(path));
         }
         catch (FileNotFoundException)
         {
