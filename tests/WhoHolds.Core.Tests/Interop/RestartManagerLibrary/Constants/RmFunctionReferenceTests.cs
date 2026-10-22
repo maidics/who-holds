@@ -1,0 +1,111 @@
+﻿using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.RestartManagerLibrary;
+using WhoHolds.Core.Interop.RestartManagerLibrary.Constants;
+using WhoHolds.Core.Tests.TestInfrastructure;
+
+namespace WhoHolds.Core.Tests.Interop.RestartManagerLibrary.Constants;
+
+internal sealed class RmFunctionReferenceTests
+{
+    private const string _rmStartSession = nameof(RestartManager.RmStartSession);
+    private const string _rmRegisterResources = nameof(RestartManager.RmRegisterResources);
+    private const string _rmGetList = nameof(RestartManager.RmGetList);
+    private const string _rmEndSession = nameof(RestartManager.RmEndSession);
+
+    [Test]
+    public void ErrorCodeToResultShouldThrowIfFunctionIsUnknown()
+    {
+        Should.Throw<ArgumentException>(() =>
+            RmFunctionReference.ErrorCodeToResult(SystemErrorCode.ERROR_SUCCESS, "test")
+        );
+    }
+
+    [Test]
+    [Arguments(_rmStartSession)]
+    [Arguments(_rmRegisterResources)]
+    [Arguments(_rmGetList)]
+    [Arguments(_rmEndSession)]
+    public void ErrorCodeToResultShouldReturnSucceededResultForSuccessCode(string function)
+    {
+        var result = RmFunctionReference.ErrorCodeToResult(
+            SystemErrorCode.ERROR_SUCCESS,
+            _rmStartSession
+        );
+        ResultExtensions.ShouldBeResultedTo(result, true);
+    }
+
+    [Test]
+    [Arguments(_rmStartSession, SystemErrorCode.ERROR_MORE_DATA)]
+    [Arguments(_rmRegisterResources, SystemErrorCode.ERROR_MORE_DATA)]
+    [Arguments(_rmEndSession, SystemErrorCode.ERROR_MORE_DATA)]
+    public void ErrorCodeToResultShouldThrowIfFunctionDoesNotReturnTheGivenErrorCode(
+        string function,
+        SystemErrorCode code
+    )
+    {
+        Should.Throw<ArgumentException>(() =>
+            RmFunctionReference.ErrorCodeToResult(code, function)
+        );
+    }
+
+    [Test] // test error messages here
+    [MethodDataSource(nameof(ErrorCodeToResultShouldReturnCorrectErrorMessagesForCodeCases))]
+    public void ErrorCodeToResultShouldReturnCorrectErrorMessagesForCode(
+        string function,
+        SystemErrorCode code,
+        string error
+    )
+    {
+        var result = RmFunctionReference.ErrorCodeToResult(code, function);
+        ShouldBeStringTestExtensions.ShouldContain(result.Errors[0], error);
+        ShouldBeStringTestExtensions.ShouldContain(
+            result.Errors[1],
+            $"{function} returned {code}: {(uint)code}."
+        );
+    }
+
+    public static IEnumerable<(
+        string,
+        SystemErrorCode,
+        string
+    )> ErrorCodeToResultShouldReturnCorrectErrorMessagesForCodeCases()
+    {
+        yield return (_rmGetList, SystemErrorCode.ERROR_ACCESS_DENIED, "A path registered to the");
+        yield return (
+            _rmRegisterResources,
+            SystemErrorCode.ERROR_INVALID_HANDLE,
+            "Invalid handle passed to "
+        );
+        yield return (
+            _rmStartSession,
+            SystemErrorCode.ERROR_OUTOFMEMORY,
+            "not enough memory was available."
+        );
+        yield return (
+            _rmStartSession,
+            SystemErrorCode.ERROR_WRITE_FAULT,
+            "failed to write to the Registry."
+        );
+        yield return (
+            _rmStartSession,
+            SystemErrorCode.ERROR_SEM_TIMEOUT,
+            "could not obtain Registry write mutex in time."
+        );
+        yield return (
+            _rmStartSession,
+            SystemErrorCode.ERROR_BAD_ARGUMENTS,
+            "One or more arguments passed to"
+        );
+        yield return (
+            _rmGetList,
+            SystemErrorCode.ERROR_MORE_DATA,
+            "Failed to allocate for data returned from"
+        );
+        yield return (
+            _rmStartSession,
+            SystemErrorCode.ERROR_MAX_SESSIONS_REACHED,
+            "sessions have been reached (64)."
+        );
+        yield return (_rmGetList, SystemErrorCode.ERROR_CANCELLED, "The operation was canceled.");
+    }
+}

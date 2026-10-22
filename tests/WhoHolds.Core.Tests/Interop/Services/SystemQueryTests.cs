@@ -1,4 +1,6 @@
-﻿using WhoHolds.Core.Interop;
+﻿using WhoHolds.Core.Interop.NtDllLibrary.Enums;
+using WhoHolds.Core.Interop.NtDllLibrary.Exceptions;
+using WhoHolds.Core.Interop.NtDllLibrary.Structs;
 using WhoHolds.Core.Interop.Services;
 
 namespace WhoHolds.Core.Tests.Interop.Services;

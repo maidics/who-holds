@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.NtDllLibrary.Structs;
 
 namespace WhoHolds.Core.Tests.Interop.Common;
 

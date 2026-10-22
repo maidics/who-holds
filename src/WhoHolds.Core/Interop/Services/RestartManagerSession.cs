@@ -1,6 +1,10 @@
 ﻿using System.Diagnostics;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.RestartManagerLibrary;
+using WhoHolds.Core.Interop.RestartManagerLibrary.Constants;
+using WhoHolds.Core.Interop.RestartManagerLibrary.Enums;
+using WhoHolds.Core.Interop.RestartManagerLibrary.Structs;
 
 namespace WhoHolds.Core.Interop.Services;
 

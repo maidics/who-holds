@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using WhoHolds.Core.Interop.NtDllLibrary;
+using WhoHolds.Core.Interop.NtDllLibrary.Structs;
 
 namespace WhoHolds.Core.Interop.Services;
 

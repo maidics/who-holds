@@ -1,7 +1,9 @@
 ﻿using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.Kernel32Library;
+using WhoHolds.Core.Interop.Kernel32Library.Enums;
+using WhoHolds.Core.Interop.RestartManagerLibrary.Structs;
 
 namespace WhoHolds.Core.Interop.Services;
 

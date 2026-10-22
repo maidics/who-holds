@@ -2,6 +2,11 @@
 using Microsoft.Win32.SafeHandles;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.Kernel32Library;
+using WhoHolds.Core.Interop.NtDllLibrary.Delegates;
+using WhoHolds.Core.Interop.NtDllLibrary.Enums;
+using WhoHolds.Core.Interop.NtDllLibrary.Exceptions;
+using WhoHolds.Core.Interop.NtDllLibrary.Structs;
 using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Services;

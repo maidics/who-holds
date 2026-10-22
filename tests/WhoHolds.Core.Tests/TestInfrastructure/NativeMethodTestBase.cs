@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using WhoHolds.Core.Interop;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.RestartManagerLibrary;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
