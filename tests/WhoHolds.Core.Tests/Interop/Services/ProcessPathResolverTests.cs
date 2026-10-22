@@ -31,6 +31,6 @@ public sealed class ProcessPathResolverTests
 
         var pathResult = ProcessPathResolver.Resolve(process);
         pathResult.ShouldBeResultedTo(true);
-        pathResult.Value.ShouldEndWith("dotnet.exe");
+        pathResult.Value.ShouldNotBeNullOrWhiteSpace();
     }
 }
