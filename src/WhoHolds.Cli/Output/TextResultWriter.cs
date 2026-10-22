@@ -25,13 +25,13 @@ public sealed class TextResultWriter : IResultWriter
         foreach (var holderProcess in result.Value)
         {
             stdout.WriteLine(holderProcess.ToString());
+        }
 
-            stdout.WriteLine("Failures:");
+        stdout.WriteLine("Failures:");
 
-            foreach (var error in result.Errors)
-            {
-                stderr.WriteLine($"\t- {error}");
-            }
+        foreach (var error in result.Errors)
+        {
+            stderr.WriteLine($"\t- {error}");
         }
     }
 }
