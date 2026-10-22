@@ -42,7 +42,10 @@ internal sealed class WhoHoldsTests
 
         var processes = result.Value;
         processes.Length.ShouldBe(1);
-        processes[0].ProcessId.ShouldBe(Environment.ProcessId);
+
+        var process = processes[0];
+        process.ProcessId.ShouldBe(Environment.ProcessId);
+        process.ImagePath.ShouldEndWith("dotnet.exe");
     }
 
     [Test]
@@ -65,6 +68,9 @@ internal sealed class WhoHoldsTests
 
         var processes = result.Value;
         processes.Length.ShouldBe(1);
-        processes[0].ProcessId.ShouldBe(Environment.ProcessId);
+
+        var process = processes[0];
+        process.ProcessId.ShouldBe(Environment.ProcessId);
+        process.ImagePath.ShouldEndWith("dotnet.exe");
     }
 }
