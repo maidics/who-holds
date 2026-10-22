@@ -5,14 +5,23 @@ Interop/
 ├── Libraries.cs                         # native library names: Libraries.Kernel32, Libraries.NtDll, Libraries.RestartManager
 ├── Common/                              # interop concerns shared across libraries: INativeSized, FileTime, SystemErrorCode, NativeBuffer
 ├── Kernel32/
-│   ├── Kernel32.OpenProcess.cs          # one P/Invoke declaration per file on the static partial Kernel32 class
-│   └── ProcessAccessRights.cs           # structs, enums, constants and exceptions belonging to the library
+│   ├── Enums/                           # structs, enums, constants, exceptions and delegates belonging to the library, grouped by kind
+│   │   └── ProcessAccessRights.cs
+│   └── Kernel32.OpenProcess.cs          # one P/Invoke declaration per file on the static partial Kernel32 class
 ├── NtDll/
-│   ├── NtDll.NtQuerySystemInfo.cs
-│   └── SystemHandleEntryEx.cs
+│   ├── Delegates/
+│   ├── Enums/
+│   ├── Exceptions/
+│   ├── Structs/
+│   │   └── SystemHandleEntryEx.cs
+│   └── NtDll.NtQuerySystemInfo.cs
 ├── RestartManager/
-│   ├── RestartManager.RmStartSession.cs
-│   └── RmProcessInfo.cs
+│   ├── Constants/
+│   ├── Enums/
+│   ├── Exceptions/
+│   ├── Structs/
+│   │   └── RmProcessInfo.cs
+│   └── RestartManager.RmStartSession.cs
 └── Services/                            # classes calling the declarations: RestartManagerSession, SystemQuery, ObjectTypes, ProcessPathResolver
 
 WhoHolds.Core/
@@ -30,9 +39,9 @@ WhoHolds.Core/
 
 ## `Interop/`
 
-Vertically sliced by native library. A library folder holds a `static partial` class named after the library, split into one `<Library>.<Method>.cs` file per declaration, plus the native types only that library uses. Types used by more than one library go into `Common/`, and classes that call the declarations go into `Services/`.
+Vertically sliced by native library. A library folder holds a `static partial` class named after the library, split into one `<Library>.<Method>.cs` file per declaration at the folder root, plus the native types only that library uses, grouped by kind into `Structs/`, `Enums/`, `Constants/`, `Exceptions/` and `Delegates/`. Types used by more than one library go into `Common/`, and classes that call the declarations go into `Services/`.
 
-Library folders do not get their own namespace: `WhoHolds.Core.Interop.RestartManager` would clash with the `RestartManager` class, so their content lives in `WhoHolds.Core.Interop`. `Common/` and `Services/` follow the folder namespaces (`WhoHolds.Core.Interop.Common`, `WhoHolds.Core.Interop.Services`).
+Library folders and their subfolders do not get their own namespace: `WhoHolds.Core.Interop.RestartManager` would clash with the `RestartManager` class, so their content lives in `WhoHolds.Core.Interop`. `Common/` and `Services/` follow the folder namespaces (`WhoHolds.Core.Interop.Common`, `WhoHolds.Core.Interop.Services`).
 
 ## `HandleFinder.cs`
 
