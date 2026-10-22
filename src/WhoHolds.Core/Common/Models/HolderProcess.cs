@@ -7,6 +7,7 @@ public sealed record HolderProcess(
     string? ServiceShortName, // only set for services
     string ApplicationType, // interop enum
     List<string> ApplicationStatus, // interop flag enum => describes history of actions taken by Restart Manager on the application
+    string? ImagePath,
     int? SessionId, // session can be unknown (-1) => null
     bool Restartable
 )
@@ -20,6 +21,7 @@ public sealed record HolderProcess(
             + $"\n\t- Application type: {ApplicationType}"
             + $"\n\t- Application statuses: {string.Join(", ", ApplicationStatus)}"
             + $"\n\t- Service: {ServiceShortName}"
+            + $"\n\t- Image path: {ImagePath}"
             + $"\n\t- Session id: {SessionId}"
             + $"\n\t- Restartable: {Restartable}";
     }
@@ -33,6 +35,7 @@ public sealed record HolderProcess(
             + $"\n\t- Application type: holder application type (UnknownApp, MainWindow, OtherWindow, Service, Explorer, Console, Critical)"
             + $"\n\t- Application statuses: history of actions taken by the Restart Manager"
             + $"\n\t- Service: service short name (null if holder is not a service)"
+            + $"\n\t- Image path: full path of the executable file the process was started from"
             + $"\n\t- Session id: terminal session id of the process (null if Restart Manager cannot determine it)"
             + $"\n\t- Restartable: true if the process can be restarted by the Restart Manager, otherwise false";
     }

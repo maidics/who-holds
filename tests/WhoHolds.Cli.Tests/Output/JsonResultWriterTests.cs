@@ -15,7 +15,7 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var result = Result.Success(
             new[]
             {
-                new HolderProcess(10, DateTime.UtcNow, null, null, string.Empty, [], null, false),
+                new HolderProcess(10, DateTime.UtcNow, null, null, string.Empty, [], null,null, false),
             }
         );
 

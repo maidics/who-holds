@@ -71,7 +71,9 @@ internal sealed class RmProcessInfoTests() : NativeStructTestBase<RmProcessInfo>
     }
 
     [Test]
-    public void ToHolderProcessShouldMapCorrectly()
+    [Arguments(null)]
+    [Arguments("C:\\wh.exe")]
+    public void ToHolderProcessShouldMapCorrectly(string? path)
     {
         var processInfo = new RmProcessInfo(
             new RmUniqueProcess(),
@@ -83,13 +85,14 @@ internal sealed class RmProcessInfoTests() : NativeStructTestBase<RmProcessInfo>
             1
         );
 
-        var holder = processInfo.ToHolderProcess();
+        var holder = processInfo.ToHolderProcess(path);
         holder.ProcessId.ShouldBe((int)processInfo.Process.dwProcessId);
         holder.StartTime.ShouldBe(processInfo.Process.ProcessStartTime.ToDateTimeUtc());
         holder.ApplicationName.ShouldBe(processInfo.AppName);
         holder.ServiceShortName.ShouldBe(processInfo.ServiceShortName);
         holder.ApplicationType.ShouldBe(processInfo.ApplicationType.ToString());
         holder.ApplicationStatus.ShouldBe(["Running"]);
+        holder.ImagePath.ShouldBe(path);
         holder.SessionId.ShouldBe(processInfo.SessionId);
         holder.Restartable.ShouldBe(processInfo.IsRestartable);
     }

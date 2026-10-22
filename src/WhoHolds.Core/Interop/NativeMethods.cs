@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
+using Microsoft.Win32.SafeHandles;
 using WhoHolds.Core.Interop.Enums;
 using WhoHolds.Core.Interop.Structs;
 
@@ -20,6 +21,7 @@ internal static partial class NativeMethods
 {
     private const string _ntDll = "ntdll.dll";
     private const string _restartManager = "rstrtmgr.dll";
+    private const string _kernel32 = "kernel32.dll";
 
     /// <summary>
     /// Retrieves the specified system information from the kernel.
@@ -269,5 +271,84 @@ internal static partial class NativeMethods
         ref uint pnProcInfo,
         [In, Out] RmProcessInfo[]? rgAffectedApps,
         out RmRebootReason lpdwRebootReasons
+    );
+
+    /// <summary>
+    /// Opens an existing local process object.
+    /// </summary>
+    /// <param name="dwDesiredAccess">
+    /// Access rights requested on the process object, checked against its security descriptor.
+    /// Request only what the caller uses; a single denied right fails the whole call.
+    /// </param>
+    /// <param name="bInheritHandle">
+    /// Whether child processes created by the caller inherit the handle. Always <see langword="false"/> here.
+    /// </param>
+    /// <param name="dwProcessId">
+    /// Identifier of the process to open. Native type is <c>DWORD</c>; .NET exposes process ids as <see cref="int"/>.
+    /// </param>
+    /// <returns>
+    /// An open handle on success. On failure the handle is invalid (<c>NULL</c>, not <c>INVALID_HANDLE_VALUE</c>)
+    /// and the error is available through <see cref="Marshal.GetLastPInvokeError"/>.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// <c>ERROR_INVALID_PARAMETER</c>: the process does not exist or is the System Idle Process (0).
+    /// <c>ERROR_ACCESS_DENIED</c>: the process exists but the rights were refused (elevated, other user,
+    /// protected, System, CSRSS).
+    /// </para>
+    /// <para>
+    /// A held handle keeps the process object alive, so its id cannot be reused until the handle is closed.
+    /// </para>
+    /// </remarks>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess">
+    /// OpenProcess function (processthreadsapi.h)
+    /// </seealso>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights">
+    /// Process security and access rights
+    /// </seealso>
+    [LibraryImport(_kernel32, SetLastError = true)] // kernel32.dll reports errors through the last-error value
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    internal static partial SafeProcessHandle OpenProcess(
+        ProcessAccessRights dwDesiredAccess,
+        [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle,
+        uint dwProcessId
+    );
+
+    /// <summary>
+    /// Retrieves timing information for the specified process.
+    /// </summary>
+    /// <param name="hProcess">
+    /// Handle opened with <see cref="ProcessAccessRights.QueryLimitedInformation"/>
+    /// (or <see cref="ProcessAccessRights.QueryInformation"/>, which implies it).
+    /// </param>
+    /// <param name="lpCreationTime">Receives the creation time of the process (UTC).</param>
+    /// <param name="lpExitTime">Receives the exit time. Undefined while the process is still running.</param>
+    /// <param name="lpKernelTime">Receives the time spent executing in kernel mode.</param>
+    /// <param name="lpUserTime">Receives the time spent executing in user mode.</param>
+    /// <returns>
+    /// <see langword="true"/> on success; otherwise read <see cref="Marshal.GetLastPInvokeError"/>.
+    /// </returns>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes">
+    /// GetProcessTimes function (processthreadsapi.h)
+    /// </seealso>
+    [LibraryImport(_kernel32, SetLastError = true)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool GetProcessTimes(
+        SafeProcessHandle hProcess,
+        out FileTime lpCreationTime,
+        out FileTime lpExitTime,
+        out FileTime lpKernelTime,
+        out FileTime lpUserTime
+    );
+
+    [LibraryImport(_kernel32, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool QueryFullProcessImageNameW(
+        SafeProcessHandle hProcess,
+        uint dwFlags, // 0 = Win32 path (C:\...)
+        Span<char> lpExeName,
+        ref uint lpdwSize // in: buffer capacity in chars; out: chars written, excluding the terminator
     );
 }

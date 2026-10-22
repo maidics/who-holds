@@ -28,10 +28,20 @@ internal enum SystemErrorCode : uint
     ERROR_WRITE_FAULT = 29,
 
     /// <summary>
+    /// The parameter is incorrect.
+    /// </summary>
+    ERROR_INVALID_PARAMETER = 87,
+
+    /// <summary>
     /// Restart Manager could not obtain the Registry write mutex in the allotted time.
     /// A system restart is recommended because further use of the Restart Manager is likely to fail.
     /// </summary>
     ERROR_SEM_TIMEOUT = 121,
+
+    /// <summary>
+    /// The data area passed to a system call is too small.
+    /// </summary>
+    ERROR_INSUFFICIENT_BUFFER = 122,
 
     /// <summary>
     /// One or more arguments are not correct.
