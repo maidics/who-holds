@@ -4,12 +4,12 @@ namespace WhoHolds.Core.Tests.Architecture;
 
 internal sealed class InteropInternalTests
 {
-    private static readonly string _namespace = typeof(RestartManagerSession).Namespace!;
+    private static readonly string _namespace = typeof(Libraries).Namespace!;
 
     [Test]
     public void AllInteropTypesShouldBeInternal()
     {
-        var assembly = typeof(RestartManagerSession).Assembly;
+        var assembly = typeof(Libraries).Assembly;
 
         var publicTypes = assembly.GetExportedTypes().Where(IsInteropType);
         publicTypes.ShouldBeEmpty();

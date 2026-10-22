@@ -1,5 +1,5 @@
 ﻿using WhoHolds.Core.Common.Models;
-using WhoHolds.Core.Interop;
+using WhoHolds.Core.Interop.Services;
 using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core;

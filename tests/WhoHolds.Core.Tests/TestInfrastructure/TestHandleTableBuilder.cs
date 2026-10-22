@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using WhoHolds.Core.Interop;
-using WhoHolds.Core.Interop.Structs;
+using WhoHolds.Core.Interop.Common;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
