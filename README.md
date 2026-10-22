@@ -39,9 +39,9 @@ When run with JSON output, every command returns an object with the same shape:
 
 #### Value types by command
 
-| Command           | Value Type                                                            |
-|-------------------|-----------------------------------------------------------------------|
-| `wh <file-path> ` | [`HolderProcess[]`](src/WhoHolds.Core/Common/Models/HolderProcess.cs) |
+| Command           | Value Type                                                            | Note                                                                                                                         |
+|-------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| `wh <file-path> ` | [`HolderProcess[]`](src/WhoHolds.Core/Common/Models/HolderProcess.cs) | `null` value on HolderProcess.ImagePath means the path resolution failed. You may find an error message inside Result.Errors |
 
 **Example:**
 
