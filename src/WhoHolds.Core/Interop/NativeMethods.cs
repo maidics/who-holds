@@ -313,4 +313,70 @@ internal static partial class NativeMethods
         [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle,
         uint dwProcessId
     );
+
+    /// <summary>
+    /// Retrieves timing information for the specified process.
+    /// </summary>
+    /// <param name="hProcess">
+    /// Handle opened with <see cref="ProcessAccessRights.QueryLimitedInformation"/>
+    /// (or <see cref="ProcessAccessRights.QueryInformation"/>, which implies it).
+    /// </param>
+    /// <param name="lpCreationTime">Receives the creation time of the process (UTC).</param>
+    /// <param name="lpExitTime">Receives the exit time. Undefined while the process is still running.</param>
+    /// <param name="lpKernelTime">Receives the time spent executing in kernel mode.</param>
+    /// <param name="lpUserTime">Receives the time spent executing in user mode.</param>
+    /// <returns>
+    /// <see langword="true"/> on success; otherwise read <see cref="Marshal.GetLastPInvokeError"/>.
+    /// </returns>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes">
+    /// GetProcessTimes function (processthreadsapi.h)
+    /// </seealso>
+    [LibraryImport(_kernel32, SetLastError = true)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool GetProcessTimes(
+        SafeProcessHandle hProcess,
+        out FileTime lpCreationTime,
+        out FileTime lpExitTime,
+        out FileTime lpKernelTime,
+        out FileTime lpUserTime
+    );
+
+    /// <summary>
+    /// Retrieves information about the specified process.
+    /// </summary>
+    /// <param name="processHandle">
+    /// Handle to the target process. <see cref="ProcessAccessRights.QueryInformation"/> is required for
+    /// <c>ProcessHandleInformation</c>; the limited right is not enough.
+    /// </param>
+    /// <param name="processInformationClass">
+    /// Selects the structure written to <paramref name="processInformation"/>. As with
+    /// <see cref="NtQuerySystemInfo"/>, the kernel does not check that the buffer matches the class.
+    /// </param>
+    /// <param name="processInformation">Caller-allocated buffer that receives the data.</param>
+    /// <param name="processInformationLength">Capacity of the buffer in <b>bytes</b>.</param>
+    /// <param name="returnLength">
+    /// Bytes written, or bytes required on <see cref="NtStatus.InfoLengthMismatch"/>. The handle table can
+    /// grow between calls, so treat it as a hint.
+    /// </param>
+    /// <returns>
+    /// <see cref="NtStatus"/>. Expect <see cref="NtStatus.InfoLengthMismatch"/> (grow and retry),
+    /// <see cref="NtStatus.AccessDenied"/> (handle lacks the right) and <c>STATUS_PROCESS_IS_TERMINATING</c>
+    /// (process has exited).
+    /// </returns>
+    /// <remarks>
+    /// <b>Does not set the Win32 last-error value</b>, same as the other ntdll imports.
+    /// </remarks>
+    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntqueryinformationprocess">
+    /// NtQueryInformationProcess function (winternl.h)
+    /// </seealso>
+    [LibraryImport(_ntDll)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    internal static partial NtStatus NtQueryInformationProcess(
+        SafeProcessHandle processHandle,
+        int processInformationClass,
+        IntPtr processInformation,
+        int processInformationLength,
+        out uint returnLength
+    );
 }

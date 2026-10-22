@@ -26,5 +26,10 @@ internal sealed class OpenProcessTests()
         libraryImport.ShouldNotBeNull();
         libraryImport.LibraryName.ShouldBe("kernel32.dll");
         libraryImport.SetLastError.ShouldBeTrue();
+
+        var defaultDllImportSearchPaths =
+            _methodInfo.GetCustomAttribute<DefaultDllImportSearchPathsAttribute>();
+        defaultDllImportSearchPaths.ShouldNotBeNull();
+        defaultDllImportSearchPaths.Paths.ShouldBe(DllImportSearchPath.System32);
     }
 }
