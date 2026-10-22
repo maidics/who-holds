@@ -1,7 +1,18 @@
 ﻿name: CI
 
 on:
-  push:
+  push: # PR branches are covered by pull_request; tags trigger the release
+    branches: [main]
+    tags: ['**'] # path filters are not evaluated for tag pushes
+    paths-ignore:
+      - '.claude/**'
+      - '.docs/**'
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.editorconfig'
+      - 'renovate.json'
+  pull_request:
     paths-ignore:
       - '.claude/**'
       - '.docs/**'

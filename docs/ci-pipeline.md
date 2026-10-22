@@ -10,6 +10,7 @@ There's no conditional registration of services in the pipeline. The whole thing
 
 ## [`ci.yml`](../.github/workflows/ci.yml)
 
+- Runs on pull requests, pushes to `main` and tag pushes
 - Ignores non-relevant paths such as document changes and more
 - Cancels previous running workflows on push
 - Runs the latest Windows Server
@@ -20,6 +21,7 @@ There's no conditional registration of services in the pipeline. The whole thing
 2. Checkout
 3. .NET setup
 4. Runs [`WhoHolds.Pipeline`](../src/WhoHolds.Pipeline/WhoHolds.Pipeline.csproj) project
+5. Uploads the publish output as an artifact on pull requests
 
 ---
 
