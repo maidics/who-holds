@@ -342,41 +342,13 @@ internal static partial class NativeMethods
         out FileTime lpUserTime
     );
 
-    /// <summary>
-    /// Retrieves information about the specified process.
-    /// </summary>
-    /// <param name="processHandle">
-    /// Handle to the target process. <see cref="ProcessAccessRights.QueryInformation"/> is required for
-    /// <c>ProcessHandleInformation</c>; the limited right is not enough.
-    /// </param>
-    /// <param name="processInformationClass">
-    /// Selects the structure written to <paramref name="processInformation"/>. As with
-    /// <see cref="NtQuerySystemInfo"/>, the kernel does not check that the buffer matches the class.
-    /// </param>
-    /// <param name="processInformation">Caller-allocated buffer that receives the data.</param>
-    /// <param name="processInformationLength">Capacity of the buffer in <b>bytes</b>.</param>
-    /// <param name="returnLength">
-    /// Bytes written, or bytes required on <see cref="NtStatus.InfoLengthMismatch"/>. The handle table can
-    /// grow between calls, so treat it as a hint.
-    /// </param>
-    /// <returns>
-    /// <see cref="NtStatus"/>. Expect <see cref="NtStatus.InfoLengthMismatch"/> (grow and retry),
-    /// <see cref="NtStatus.AccessDenied"/> (handle lacks the right) and <c>STATUS_PROCESS_IS_TERMINATING</c>
-    /// (process has exited).
-    /// </returns>
-    /// <remarks>
-    /// <b>Does not set the Win32 last-error value</b>, same as the other ntdll imports.
-    /// </remarks>
-    /// <seealso href="https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntqueryinformationprocess">
-    /// NtQueryInformationProcess function (winternl.h)
-    /// </seealso>
-    [LibraryImport(_ntDll)]
+    [LibraryImport(_kernel32, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    internal static partial NtStatus NtQueryInformationProcess(
-        SafeProcessHandle processHandle,
-        int processInformationClass,
-        IntPtr processInformation,
-        int processInformationLength,
-        out uint returnLength
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool QueryFullProcessImageNameW(
+        SafeProcessHandle hProcess,
+        uint dwFlags, // 0 = Win32 path (C:\...)
+        Span<char> lpExeName,
+        ref uint lpdwSize // in: buffer capacity in chars; out: chars written, excluding the terminator
     );
 }
