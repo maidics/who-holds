@@ -13,6 +13,8 @@
 - P/Invoke `NtQueryInformationProcess` using the process handle reference to query its handles.
 - Keep entries that is of `File` type.
 
+// TODO: update this...................
+
 ## 3. Resolve each handle to a file path
 - Duplicate handles to own process: values from the process's handle table only makes sense to the process.
 - Call `GetFileType`, skip anything that is not `FILE_TYPE_DISK` (drop pipes and devices).

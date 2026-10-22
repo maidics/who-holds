@@ -24,6 +24,7 @@ public static class WhoHolds
         if (!getResult.Succeeded)
             return Result.Failure(getResult.Errors);
 
+        // TODO: test after this
         List<string> pathErrors = []; // TODO: add errors to result after rearchitecture
 
         var processes = getResult
