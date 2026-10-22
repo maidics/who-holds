@@ -7,7 +7,7 @@ using WhoHolds.Core.Interop.Structs;
 
 namespace WhoHolds.Core;
 
-internal static class ProcessPathResolver
+internal static class ProcessPathResolver // TODO: test this
 {
     public static Result<string> Resolve(RmProcessInfo holder)
     {
