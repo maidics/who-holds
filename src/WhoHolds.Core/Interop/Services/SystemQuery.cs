@@ -82,7 +82,7 @@ internal static class SystemQuery
 
         if (!Kernel32.QueryFullProcessImageNameW(process, 0, path, ref size))
             return Result.Failure(
-                $"Failed to query image path for {processId} process: {((SystemErrorCode)Marshal.GetLastPInvokeError()).ToString()}."
+                $"Failed to query image path for process {processId}: {((SystemErrorCode)Marshal.GetLastPInvokeError()).ToString()}."
             );
 
         return Result.Success<string>(path[..(int)size].ToString());

@@ -22,13 +22,13 @@ internal static class ProcessPathResolver // TODO: test this
             var errorCode = (SystemErrorCode)Marshal.GetLastPInvokeError();
 
             return Result.Failure(
-                $"{nameof(Kernel32.OpenProcess)} failed to open {holder.Process.dwProcessId} process: {errorCode}."
+                $"{nameof(Kernel32.OpenProcess)} failed to open process {holder.Process.dwProcessId}: {errorCode}."
             );
         }
 
         if (!Kernel32.GetProcessTimes(process, out var creationTime, out _, out _, out _))
             return Result.Failure(
-                $"Failed to get creation time of {holder.Process.dwProcessId} process: {holder.Process.dwProcessId}."
+                $"Failed to get creation time of process {holder.Process.dwProcessId}: {holder.Process.dwProcessId}."
             );
 
         if (creationTime.ToDateTimeUtc() != holder.Process.ProcessStartTime.ToDateTimeUtc())
