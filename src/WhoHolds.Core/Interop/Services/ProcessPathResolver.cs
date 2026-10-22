@@ -22,13 +22,13 @@ internal static class ProcessPathResolver // TODO: test this
             var errorCode = (SystemErrorCode)Marshal.GetLastPInvokeError();
 
             return Result.Failure(
-                $"{nameof(Kernel32.OpenProcess)} failed to open process {holder.Process.dwProcessId}: {errorCode}."
+                $"{nameof(Kernel32.OpenProcess)} ({Libraries.Kernel32}) failed for {holder.GetReadableAppAndServiceName()} (process {holder.Process.dwProcessId}): {errorCode}."
             );
         }
 
         if (!Kernel32.GetProcessTimes(process, out var creationTime, out _, out _, out _))
             return Result.Failure(
-                $"Failed to get creation time of process {holder.Process.dwProcessId}: {holder.Process.dwProcessId}."
+                $"{nameof(Kernel32.GetProcessTimes)} ({Libraries.Kernel32}) failed for {holder.GetReadableAppAndServiceName()} (process {holder.Process.dwProcessId}): {holder.Process.dwProcessId}."
             );
 
         if (creationTime.ToDateTimeUtc() != holder.Process.ProcessStartTime.ToDateTimeUtc())
@@ -36,6 +36,10 @@ internal static class ProcessPathResolver // TODO: test this
                 $"Process Id ({holder.Process.dwProcessId}) was reused, cannot resolve file path for process."
             );
 
-        return SystemQuery.QueryImagePath(process, (int)holder.Process.dwProcessId);
+        return SystemQuery.QueryImagePath(
+            process,
+            (int)holder.Process.dwProcessId,
+            holder.GetReadableAppAndServiceName()
+        );
     }
 }

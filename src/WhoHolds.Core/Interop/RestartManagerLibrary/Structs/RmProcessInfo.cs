@@ -55,6 +55,11 @@ internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
         );
     }
 
+    public string GetReadableAppAndServiceName() => // TODO: add tests
+        AppName is null && ServiceShortName is null
+            ? "unknown app/service"
+            : $"App: {AppName}, Service: {ServiceShortName}";
+
     private List<string> AppStatusToStrings()
     {
         if (AppStatus is RmAppStatus.StatusUnknown)
