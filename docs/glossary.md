@@ -54,3 +54,7 @@ A file copied to the process's memory to write to. It's a windows onto the file,
 A `.h` file in C and C++ is a header file declares what the library offers: functions, structs, constants, enums without implementation. A C program includes the header so the compiler knows how to call the function, and the linker connects the call to the DLL.
 
 .NET cannot read headers, so P/Invoke means rewriting the header declarations by hand in C#.
+
+## Image
+
+Windows' term for an executable (`.exe`, `.dll`) loaded into memory.
