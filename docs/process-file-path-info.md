@@ -5,7 +5,7 @@
   - Call `OpenProcess(...)` and compare start times
   - If differs return `null`
 - It makes sense to directly query this via `OpenProcess(...)` which allows `PROCESS_DUP_HANDLE` (_process_ handle right access):
-  - It copies a reference to a _process handle_ so we can query the process's handles.
+  - It copies a reference to a _process handle_ into the program's handle table so it be used to query the process's handles.
   - This is required because **handle values only mean something inside the process's own handle table**.
   - After this `GetFinalPathNameByHandle(myHandle)` works because there's a reference in the handle table.
 
