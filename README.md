@@ -31,11 +31,11 @@ wh.exe <file-path> [OPTIONS]
 
 When run with JSON output, every command returns an object with the same shape:
 
-| Field       | Type                  | Description                                                                         |
-|-------------|-----------------------|-------------------------------------------------------------------------------------|
-| `succeeded` | `boolean`             | `true` if the operation completed successfully, otherwise `false`.                  |
-| `value`     | *see below* \| `null` | The result of the operation. Always `null` when `succeeded` is `false`.             |
-| `errors`    | `string[]`            | Errors that occurred during the operation. Always empty when `succeeded` is `true`. |
+| Field       | Type                  | Description                                                                                                                                                                |
+|-------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `succeeded` | `boolean`             | `true` if the operation completed successfully, otherwise `false`.                                                                                                         |
+| `value`     | *see below* \| `null` | The result of the operation. Always `null` when `succeeded` is `false`.                                                                                                    |
+| `errors`    | `string[]`            | Errors that occurred during the operation. May contain non-fatal failures on success (e.g. image path resolution failure: reused process ID, access privilege error etc.). |
 
 #### Value types by command
 
@@ -50,16 +50,17 @@ When run with JSON output, every command returns an object with the same shape:
   "succeeded": true,
   "value": [
     {
-      "processId": 16364,
-      "startTime": "2026-09-23T06:49:40.240106Z",
-      "applicationName": "Microsoft Excel",
+      "processId": 17260,
+      "startTime": "2026-10-22T12:17:53.4362271Z",
+      "applicationName": "wh",
       "serviceShortName": null,
-      "applicationType": "MainWindow",
+      "applicationType": "Critical",
       "applicationStatus": [
         "Running"
       ],
+      "imagePath": "C:\\Users\\mmaidics\\Downloads\\who-holds-win-x64\\wh.exe",
       "sessionId": 1,
-      "restartable": true
+      "restartable": false
     }
   ],
   "errors": []

@@ -4,8 +4,7 @@ public readonly struct Result
 {
     public Result(bool succeeded, params string[] errors)
     {
-        if (succeeded && errors.Length > 0)
-            throw new ArgumentException($"Succeeded {nameof(Result)} cannot contain errors.");
+        // succeeded can contain errors such as: a failure when resolving file path to a holder process
 
         Succeeded = succeeded;
         Errors = errors;
@@ -14,9 +13,9 @@ public readonly struct Result
     public bool Succeeded { get; }
     public string[] Errors { get; }
 
-    public static Result Success() => new(true);
+    public static Result Success(params string[] errors) => new(true, errors);
 
-    public static Result<T> Success<T>(T value) => new(true, value);
+    public static Result<T> Success<T>(T value, params string[] errors) => new(true, value, errors);
 
     public static ResultFailure Failure(params string[] errors) => new(errors);
 
@@ -27,9 +26,6 @@ public readonly struct Result<T>
 {
     public Result(bool succeeded, T value, params string[] errors)
     {
-        if (succeeded && errors.Length > 0)
-            throw new ArgumentException($"Succeeded {nameof(Result)} cannot contain errors.");
-
         Succeeded = succeeded;
         Value = value;
         Errors = errors;

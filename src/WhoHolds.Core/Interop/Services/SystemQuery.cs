@@ -85,6 +85,6 @@ internal static class SystemQuery
                 $"Failed to query image path for {processId} process: {((SystemErrorCode)Marshal.GetLastPInvokeError()).ToString()}."
             );
 
-        return Result.Success(path[..(int)size].ToString());
+        return Result.Success<string>(path[..(int)size].ToString());
     }
 }
