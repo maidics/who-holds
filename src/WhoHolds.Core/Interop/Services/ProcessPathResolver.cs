@@ -8,7 +8,7 @@ using WhoHolds.Core.Interop.RestartManagerLibrary.Structs;
 
 namespace WhoHolds.Core.Interop.Services;
 
-internal static class ProcessPathResolver // TODO: test this
+internal static class ProcessPathResolver
 {
     private const int _maxPathChars = 32_767;
 

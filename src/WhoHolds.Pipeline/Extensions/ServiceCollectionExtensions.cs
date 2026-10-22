@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddCppBuildToolSettings(IConfiguration configuration) // TODO: test this
+        public IServiceCollection AddCppBuildToolSettings(IConfiguration configuration)
         {
             services
                 .AddOptions<CppBuildToolSettings>()
