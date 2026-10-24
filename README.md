@@ -21,11 +21,13 @@ wh.exe <file-path> [OPTIONS]
 
 ## Exit codes
 
-| Code | Description                         |
-|------|-------------------------------------|
-| 0    | Specified object is **not locked**. |
-| 1    | Specified object is **locked**.     |
-| 2    | Operation failed.                   |
+| Code | Description                          |
+|------|--------------------------------------|
+| 0    | Specified object has **no holders**. |
+| 1    | Specified object has **holders**.    |
+| 2    | Operation failed.                    |
+
+Holders are all processes that have the object open, regardless of the share mode they opened it with: a holder does not necessarily block deleting, moving or renaming the object.
 
 ## JSON Output
 
