@@ -21,4 +21,5 @@ internal static class Libraries
     internal const string Kernel32 = "kernel32.dll";
     internal const string NtDll = "ntdll.dll";
     internal const string RestartManager = "rstrtmgr.dll";
+    internal const string IpHlpApi = "iphlpapi.dll";
 }
