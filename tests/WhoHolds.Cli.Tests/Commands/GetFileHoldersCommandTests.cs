@@ -66,7 +66,7 @@ public sealed class GetFileHoldersCommandTests
     [Arguments("test.txt")]
     [Arguments("\\test.txt")]
     [Arguments("<>test.txt")]
-    //[Arguments("|test.txt")] // this returns ErrorCode.Locked: 1
+    //[Arguments("|test.txt")] // this returns ExitCodes.Held: 1
     public void ShouldReturnErrorForNonLegalFilePaths(string path)
     {
         var (exitCode, stdout, stderr) = Run(path);
@@ -89,7 +89,7 @@ public sealed class GetFileHoldersCommandTests
 
         var (exitCode, stdout, stderr) = Run(file);
 
-        exitCode.ShouldBe(ExitCodes.NotLocked);
+        exitCode.ShouldBe(ExitCodes.NotHeld);
         stdout
             .Trim() /* WriteLine inserts a line to the end of the string */
             .ShouldBe("No processes are holding the file.");
@@ -110,7 +110,7 @@ public sealed class GetFileHoldersCommandTests
 
         var (exitCode, stdout, stderr) = Run([file, .. jsonOutput]);
 
-        exitCode.ShouldBe(ExitCodes.Locked);
+        exitCode.ShouldBe(ExitCodes.Held);
         stderr.ShouldBeEmpty();
 
         using var doc = JsonDocument.Parse(stdout);

@@ -6,15 +6,15 @@ namespace WhoHolds.Cli.Tests.Output;
 public sealed class ResultExtensionTests
 {
     [Test]
-    public void ShouldReturnNotLockedForSucceededResultWithNoHolderProcesses()
+    public void ShouldReturnNotHeldForSucceededResultWithNoHolderProcesses()
     {
         var result = Result.Success<HolderProcess[]>([]);
 
-        result.GetExitCode().ShouldBe(ExitCodes.NotLocked);
+        result.GetExitCode().ShouldBe(ExitCodes.NotHeld);
     }
 
     [Test]
-    public void ShouldReturnLockedForSucceededResultWithHolderProcesses()
+    public void ShouldReturnHeldForSucceededResultWithHolderProcesses()
     {
         var holder = new HolderProcess(
             122,
@@ -30,7 +30,7 @@ public sealed class ResultExtensionTests
 
         var result = Result.Success<HolderProcess[]>([holder]);
 
-        result.GetExitCode().ShouldBe(ExitCodes.Locked);
+        result.GetExitCode().ShouldBe(ExitCodes.Held);
     }
 
     [Test]

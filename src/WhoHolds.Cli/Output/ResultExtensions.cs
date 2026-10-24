@@ -9,8 +9,8 @@ public static class ResultExtensions
         public int GetExitCode()
         {
             return !result.Succeeded ? ExitCodes.Error
-                : result.Value.Length > 0 ? ExitCodes.Locked
-                : ExitCodes.NotLocked;
+                : result.Value.Length > 0 ? ExitCodes.Held
+                : ExitCodes.NotHeld;
         }
     }
 }
