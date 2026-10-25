@@ -19,11 +19,8 @@ Filtering should be available via an option: `--protocol` (`tcp` | `udp`), `--ip
 ### 1. `GetExtendedTcpTable` & `GetExtendedUdpTable`
 
 #### Both functions:
-- Require a growing buffer mechanism:
-  - Modify NativeBuffer to fit `TcpTableClass` `& `UdpTableClass`:
-    - Use generic parameter?
-    - Maybe ownership of the `NativeBuffer` should be changed so it can only be created via factory methods (e.g. `QueryWithGrowingBuffer`):
-      - This way it will only hold what the query was pointing to
+- Pass 0 as size first =(on `ERROR_INSUFFICIENT_BUFFER` - 122)=> it returns the required `pdwSize`:
+  - Should use growing buffer with capped retry count (guard against something opening and closing sockets non-stop)
 - Have a 4 byte header (entry count)
 
 | Function | Table class | Value | What it returns |
@@ -46,6 +43,11 @@ ULONGLONG     OwningModuleInfo[16];  // opaque, for GetOwnerModuleFromTcpEntry
 Use `AddressFamily` to specify IP version:
 - IPv4: `AddressFamily.InterNetwork` (2)
 - IPv6: `AddressFamily.InterNetworkV6` (23)
+
+`PortHolderQueryOptions`
+- We need two enums: 
+  - `PortProtocol`: `Tcp`, `Udp`, `Both` (default)
+  - `IpVersion`: `IPv4`, `IPv6`, `Both` (default)
 
 Filter and group by PID (according to passed options):
 - Filter local ports (ports bound on this machine).
