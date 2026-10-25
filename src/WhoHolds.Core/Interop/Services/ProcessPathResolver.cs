@@ -16,7 +16,7 @@ internal static class ProcessPathResolver
     {
         using var process = Kernel32.OpenProcess(
             ProcessAccessRights.QueryInformation | ProcessAccessRights.DupHandle,
-            false,
+            false, // TODO: this will fail for ports; use PROCESS_QUERY_LIMITED_INFORMATION, 0x1000
             holder.Process.dwProcessId
         );
 
