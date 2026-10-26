@@ -18,16 +18,12 @@ internal sealed class NativeBuffer : IDisposable
     }
 
     public int Size { get; }
-    public int Used { get; } // returnLength for reference
 
-    public NativeBuffer(int size, int used)
+    public NativeBuffer(int size)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(size, 0);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(used, 0);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(used, size);
 
         Size = size;
-        Used = used;
         _pointer = Marshal.AllocHGlobal(size);
     }
 
@@ -48,6 +44,6 @@ internal sealed class NativeBuffer : IDisposable
         return $"{nameof(NativeBuffer)}(0x{_pointer:X}, {ByteFormat.Humanize(Size)})";
     }
 
-    public static unsafe implicit operator ReadOnlySpan<byte>(NativeBuffer buffer) =>
+    public static unsafe implicit operator Span<byte>(NativeBuffer buffer) =>
         new((byte*)buffer.Pointer, buffer.Size);
 }
