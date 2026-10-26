@@ -47,4 +47,7 @@ internal sealed class NativeBuffer : IDisposable
 
         return $"{nameof(NativeBuffer)}(0x{_pointer:X}, {ByteFormat.Humanize(Size)})";
     }
+
+    public static unsafe implicit operator ReadOnlySpan<byte>(NativeBuffer buffer) =>
+        new((byte*)buffer.Pointer, buffer.Size);
 }
