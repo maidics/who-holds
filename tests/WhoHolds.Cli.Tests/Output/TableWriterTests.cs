@@ -36,8 +36,8 @@ public sealed class TableWriterTests
     {
         Lines([])
             .ShouldBe([
-                "PID Process Start Application Service Application Type Statuses Restartable Path",
-                "--- ------------- ----------- ------- ---------------- -------- ----------- ----",
+                "PID Process Start Application Service Application Type Statuses Restartable Session Path",
+                "--- ------------- ----------- ------- ---------------- -------- ----------- ------- ----",
             ]);
     }
 
@@ -62,15 +62,16 @@ public sealed class TableWriterTests
             ApplicationType = "MainWindow",
             ApplicationStatus = ["Running", "Restarted"],
             ImagePath = @"C:\Windows\notepad.exe",
+            SessionId = 1,
             Restartable = true,
         };
 
         Lines([notepad, system])
             .ShouldBe([
-                " PID Process Start       Application Service Application Type Statuses           Restartable Path",
-                "---- ------------------- ----------- ------- ---------------- ------------------ ----------- ----------------------",
+                " PID Process Start       Application Service Application Type Statuses           Restartable Session Path",
+                "---- ------------------- ----------- ------- ---------------- ------------------ ----------- ------- ----------------------",
                 $"   4 {Local(_startTime)} System              Critical         Running            False",
-                $"1234 {Local(notepadStart)} Notepad     svc     MainWindow       Running, Restarted True        C:\\Windows\\notepad.exe",
+                $"1234 {Local(notepadStart)} Notepad     svc     MainWindow       Running, Restarted True              1 C:\\Windows\\notepad.exe",
             ]);
     }
 

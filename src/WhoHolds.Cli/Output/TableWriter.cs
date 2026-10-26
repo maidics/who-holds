@@ -16,9 +16,10 @@ public static class TableWriter
             "Application Type",
             "Statuses",
             "Restartable",
+            "Session",
             "Path",
         ];
-        bool[] rightAlign = [true, false, false, false, false, false, false, false];
+        bool[] rightAlign = [true, false, false, false, false, false, false, true, false];
 
         var rows = holders
             .OrderBy(h => h.ProcessId)
@@ -33,6 +34,7 @@ public static class TableWriter
                     h.ApplicationType,
                     string.Join(", ", h.ApplicationStatus),
                     h.Restartable.ToString(),
+                    h.SessionId?.ToString() ?? "",
                     h.ImagePath ?? "",
                 }
             )
