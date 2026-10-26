@@ -4,7 +4,6 @@ using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.RestartManagerLibrary;
 using WhoHolds.Core.Interop.RestartManagerLibrary.Constants;
 using WhoHolds.Core.Interop.RestartManagerLibrary.Enums;
-using WhoHolds.Core.Interop.RestartManagerLibrary.Exceptions;
 using WhoHolds.Core.Interop.RestartManagerLibrary.Structs;
 using WhoHolds.Core.Tests.TestInfrastructure;
 
@@ -65,10 +64,7 @@ internal sealed class RmGetListTests()
 
         var startCode = RestartManager.RmStartSession(out uint pSessionHandle, 0, buffer);
 
-        RestartManagerException.ThrowIfOperationFailed(
-            startCode,
-            nameof(RestartManager.RmStartSession)
-        );
+        ShouldBeTestExtensions.ShouldBe(startCode, SystemErrorCode.ERROR_SUCCESS);
 
         try
         {
@@ -104,10 +100,7 @@ internal sealed class RmGetListTests()
 
         var startCode = RestartManager.RmStartSession(out uint pSessionHandle, 0, buffer);
 
-        RestartManagerException.ThrowIfOperationFailed(
-            startCode,
-            nameof(RestartManager.RmStartSession)
-        );
+        ShouldBeTestExtensions.ShouldBe(startCode, SystemErrorCode.ERROR_SUCCESS);
 
         try
         {
