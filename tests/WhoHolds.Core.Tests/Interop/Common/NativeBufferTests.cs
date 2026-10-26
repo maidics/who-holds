@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Common;
-using WhoHolds.Core.Interop.NtDllLibrary.Structs;
 
 namespace WhoHolds.Core.Tests.Interop.Common;
 
@@ -11,15 +10,13 @@ internal sealed class NativeBufferTests
     [Arguments(0)]
     public void ShouldThrowIfSizeIsNotPositive(int size)
     {
-        Should.Throw<ArgumentOutOfRangeException>(() =>
-            new NativeBuffer(size, SystemClass.SystemBasicInformation)
-        );
+        Should.Throw<ArgumentOutOfRangeException>(() => new NativeBuffer(size));
     }
 
     [Test]
     public void DisposeShouldBeIdempotent()
     {
-        var buffer = new NativeBuffer(10, SystemClass.SystemBasicInformation);
+        var buffer = new NativeBuffer(10);
 
         buffer.Dispose();
         Should.NotThrow(buffer.Dispose);
@@ -30,8 +27,7 @@ internal sealed class NativeBufferTests
     public void ShouldProvideWritableMemoryForTheFullSize()
     {
         const int size = 4096;
-        var systemClass = SystemClass.SystemBasicInformation;
-        using var buffer = new NativeBuffer(size, systemClass);
+        using var buffer = new NativeBuffer(size);
 
         for (int i = 0; i < size; i++)
             Marshal.WriteByte(buffer.Pointer, i, (byte)(i % 251));
@@ -41,13 +37,12 @@ internal sealed class NativeBufferTests
 
         buffer.Pointer.ShouldNotBe(IntPtr.Zero);
         buffer.Size.ShouldBe(size);
-        buffer.SystemClass.ShouldBe(systemClass);
     }
 
     [Test]
     public void ShouldAllocateOnInstantiationAndReleaseOnDispose()
     {
-        var buffer = new NativeBuffer(10, SystemClass.SystemBasicInformation);
+        var buffer = new NativeBuffer(10);
 
         buffer.Size.ShouldBe(10);
         buffer.Pointer.ShouldNotBe(IntPtr.Zero);

@@ -2,27 +2,19 @@
 
 ```
 Interop/
-├── Libraries.cs                         # native library names: Libraries.Kernel32, Libraries.NtDll, Libraries.RestartManager
+├── Libraries.cs                         # native library names: Libraries.Kernel32, Libraries.RestartManager
 ├── Common/                              # interop concerns shared across libraries: INativeSized, FileTime, SystemErrorCode, NativeBuffer
 ├── Kernel32/
 │   ├── Enums/                           # structs, enums, constants, exceptions and delegates belonging to the library, grouped by kind
 │   │   └── ProcessAccessRights.cs
 │   └── Kernel32.OpenProcess.cs          # one P/Invoke declaration per file on the static partial Kernel32 class
-├── NtDll/
-│   ├── Delegates/
-│   ├── Enums/
-│   ├── Exceptions/
-│   ├── Structs/
-│   │   └── SystemHandleEntryEx.cs
-│   └── NtDll.NtQuerySystemInfo.cs
 ├── RestartManager/
 │   ├── Constants/
 │   ├── Enums/
-│   ├── Exceptions/
 │   ├── Structs/
 │   │   └── RmProcessInfo.cs
 │   └── RestartManager.RmStartSession.cs
-└── Services/                            # classes calling the declarations: RestartManagerSession, SystemQuery, ObjectTypes, ProcessPathResolver
+└── Services/                            # classes calling the declarations: RestartManagerSession, ProcessPathResolver
 
 WhoHolds.Core/
 ├── Interop/

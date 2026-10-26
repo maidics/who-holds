@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Names of the native libraries behind the raw P/Invoke declarations for the Windows API:
-/// <c>kernel32.dll</c>, <c>ntdll.dll</c>, <c>rstrtmgr.dll</c>.
+/// <c>kernel32.dll</c>, <c>rstrtmgr.dll</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -19,7 +19,6 @@
 internal static class Libraries
 {
     internal const string Kernel32 = "kernel32.dll";
-    internal const string NtDll = "ntdll.dll";
     internal const string RestartManager = "rstrtmgr.dll";
     internal const string IpHlpApi = "iphlpapi.dll";
 }

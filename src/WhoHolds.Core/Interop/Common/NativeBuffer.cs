@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.NtDllLibrary.Structs;
 using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Common;
@@ -9,13 +8,12 @@ internal sealed class NativeBuffer : IDisposable
 {
     private IntPtr _pointer;
 
-    public NativeBuffer(int size, SystemClass cls)
+    public NativeBuffer(int size)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(size, 0);
 
         Size = size;
         _pointer = Marshal.AllocHGlobal(size);
-        SystemClass = cls;
     }
 
     public IntPtr Pointer
@@ -28,7 +26,6 @@ internal sealed class NativeBuffer : IDisposable
     }
 
     public int Size { get; }
-    public SystemClass SystemClass { get; }
 
     public void Dispose()
     {
