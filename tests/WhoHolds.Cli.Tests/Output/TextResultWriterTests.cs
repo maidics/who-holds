@@ -67,13 +67,67 @@ public sealed class TextResultWriterTests
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
+        var expected = new StringWriter();
+        TableWriter.Write(expected, [first, second]);
+
         _writer.Write(Result.Success<HolderProcess[]>([first, second]), stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
         var text = stdout.ToString();
-        text.ShouldContain(first.ToString());
-        text.ShouldContain(second.ToString());
-        text.IndexOf(first.ToString()).ShouldBeLessThan(text.IndexOf(second.ToString()));
+        text.ShouldBe(expected.ToString());
+    }
+
+    [Test]
+    public void ShouldWriteEachHolderAndFailures()
+    {
+        var first = new HolderProcess(
+            99,
+            DateTime.UtcNow,
+            null,
+            null,
+            string.Empty,
+            [],
+            null,
+            null,
+            false
+        );
+        var second = new HolderProcess(
+            10,
+            DateTime.UtcNow,
+            null,
+            null,
+            string.Empty,
+            [],
+            null,
+            null,
+            false
+        );
+
+        var result = Result.Success<HolderProcess[]>(
+            [first, second],
+            "First error",
+            "Second error"
+        );
+
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+
+        var expectedStdout = new StringWriter();
+        TableWriter.Write(expectedStdout, [first, second]);
+
+        var expectedStderr = new StringWriter();
+        expectedStderr.WriteLine("Failures:");
+
+        foreach (var error in result.Errors)
+        {
+            expectedStderr.WriteLine($"\t- {error}");
+        }
+
+        _writer.Write(result, stdout, stderr);
+
+        stdout.ToString().ShouldBe(expectedStdout.ToString());
+
+        stderr.ToString().ShouldBe(expectedStderr.ToString());
     }
 }

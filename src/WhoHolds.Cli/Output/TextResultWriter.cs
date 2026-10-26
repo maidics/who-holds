@@ -22,16 +22,16 @@ public sealed class TextResultWriter : IResultWriter
             return;
         }
 
-        foreach (var holderProcess in result.Value)
-        {
-            stdout.WriteLine(holderProcess.ToString());
-        }
+        TableWriter.Write(stdout, result.Value);
 
-        stdout.WriteLine("Failures:");
-
-        foreach (var error in result.Errors)
+        if (result.Errors.Length > 0)
         {
-            stderr.WriteLine($"\t- {error}");
+            stderr.WriteLine("Failures:");
+
+            foreach (var error in result.Errors)
+            {
+                stderr.WriteLine($"\t- {error}");
+            }
         }
     }
 }
