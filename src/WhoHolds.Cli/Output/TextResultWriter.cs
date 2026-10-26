@@ -24,7 +24,7 @@ public sealed class TextResultWriter : IResultWriter
 
         TableWriter.Write(stdout, result.Value);
 
-        if (result.Errors.Length > 1) // TODO: should this be human readable? is this printed to the console by default?
+        if (result.Errors.Length > 0)
         {
             stdout.WriteLine("Failures:");
 

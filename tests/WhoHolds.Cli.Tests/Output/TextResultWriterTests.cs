@@ -113,21 +113,21 @@ public sealed class TextResultWriterTests
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        var expected = new StringWriter();
-        TableWriter.Write(expected, [first, second]);
+        var expectedStdout = new StringWriter();
+        TableWriter.Write(expectedStdout, [first, second]);
 
-        expected.WriteLine("Failures:");
+        var expectedStderr = new StringWriter();
+        expectedStderr.WriteLine("Failures:");
 
         foreach (var error in result.Errors)
         {
-            stderr.WriteLine($"\t- {error}");
+            expectedStderr.WriteLine($"\t- {error}");
         }
 
         _writer.Write(result, stdout, stderr);
 
-        stderr.ToString().ShouldBeEmpty();
+        stdout.ToString().ShouldBe(expectedStdout.ToString());
 
-        var text = stdout.ToString();
-        text.ShouldBe(expected.ToString());
+        stderr.ToString().ShouldBe(expectedStderr.ToString());
     }
 }
