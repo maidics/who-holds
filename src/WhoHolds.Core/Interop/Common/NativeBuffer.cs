@@ -8,14 +8,6 @@ internal sealed class NativeBuffer : IDisposable
 {
     private IntPtr _pointer;
 
-    public NativeBuffer(int size)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(size, 0);
-
-        Size = size;
-        _pointer = Marshal.AllocHGlobal(size);
-    }
-
     public IntPtr Pointer
     {
         get
@@ -26,6 +18,18 @@ internal sealed class NativeBuffer : IDisposable
     }
 
     public int Size { get; }
+    public int Used { get; } // returnLength for reference
+
+    public NativeBuffer(int size, int used)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(size, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(used, 0);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(used, size);
+
+        Size = size;
+        Used = used;
+        _pointer = Marshal.AllocHGlobal(size);
+    }
 
     public void Dispose()
     {
