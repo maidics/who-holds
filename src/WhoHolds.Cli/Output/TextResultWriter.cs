@@ -26,7 +26,7 @@ public sealed class TextResultWriter : IResultWriter
 
         if (result.Errors.Length > 0)
         {
-            stdout.WriteLine("Failures:");
+            stderr.WriteLine("Failures:");
 
             foreach (var error in result.Errors)
             {
