@@ -22,16 +22,16 @@ public sealed class TextResultWriter : IResultWriter
             return;
         }
 
-        foreach (var holderProcess in result.Value)
-        {
-            stdout.WriteLine(holderProcess.ToString());
-        }
+        TableWriter.Write(stdout, result.Value);
 
-        stdout.WriteLine("Failures:");
-
-        foreach (var error in result.Errors)
+        if (result.Errors.Length > 1) // TODO: should this be human readable? is this printed to the console by default?
         {
-            stderr.WriteLine($"\t- {error}");
+            stdout.WriteLine("Failures:");
+
+            foreach (var error in result.Errors)
+            {
+                stderr.WriteLine($"\t- {error}");
+            }
         }
     }
 }
