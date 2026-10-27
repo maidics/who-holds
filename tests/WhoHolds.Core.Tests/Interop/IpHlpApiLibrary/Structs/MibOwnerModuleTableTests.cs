@@ -38,7 +38,7 @@ public sealed class MibOwnerModuleTableTests
     {
         var buffer = CreateBuffer(0, TableLength(0));
 
-        MibOwnerModuleTable<MibTcp6RowOwnerModule>.FromBuffer(buffer).Entries.Length.ShouldBe(0);
+        MibOwnerModuleTable<MibTcp6RowOwnerModule>.FromBuffer(buffer).Entries.Count.ShouldBe(0);
     }
 
     [Test]
@@ -52,7 +52,7 @@ public sealed class MibOwnerModuleTableTests
 
         MibOwnerModuleTable<MibTcp6RowOwnerModule>
             .FromBuffer(buffer)
-            .Entries.Length.ShouldBe((int)count);
+            .Entries.Count.ShouldBe((int)count);
     }
 
     [Test]
@@ -74,7 +74,7 @@ public sealed class MibOwnerModuleTableTests
         var buffer = CreateBuffer(1, TableLength(1));
         buffer.AsSpan(4, 4).Fill(0xFF); // garbage in padding must not leak into the count
 
-        MibOwnerModuleTable<MibTcp6RowOwnerModule>.FromBuffer(buffer).Entries.Length.ShouldBe(1);
+        MibOwnerModuleTable<MibTcp6RowOwnerModule>.FromBuffer(buffer).Entries.Count.ShouldBe(1);
     }
 
     [Test]
