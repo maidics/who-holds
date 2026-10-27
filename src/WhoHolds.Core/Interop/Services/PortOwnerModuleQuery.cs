@@ -1,11 +1,64 @@
-﻿using WhoHolds.Core.Common.Models;
+﻿using System.Net.Sockets;
+using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.IpHlpApiLibrary;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Enums;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Services;
 
 internal static class PortOwnerModuleQuery
 {
+    public static Result<MibOwnerModuleTable<TRow>> Query<TRow>()
+        where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
+    {
+        var rowType = typeof(TRow);
+
+        var addressFamily =
+            rowType == typeof(MibTcpRowOwnerModule) || rowType == typeof(MibUdpRowOwnerModule)
+                ? AddressFamily.InterNetwork
+                : AddressFamily.InterNetworkV6;
+
+        var isTcp =
+            rowType == typeof(MibTcpRowOwnerModule) || rowType == typeof(MibTcp6RowOwnerModule);
+
+        QueryDelegate queryDelegate = isTcp
+            ? (buffer, ref size) =>
+                IpHlpApi.GetExtendedTcpTable(
+                    buffer,
+                    ref size,
+                    false,
+                    addressFamily,
+                    TcpTableClass.OwnerModuleAll,
+                    0
+                )
+            : (buffer, ref size) =>
+                IpHlpApi.GetExtendedUdpTable(
+                    buffer,
+                    ref size,
+                    false,
+                    addressFamily,
+                    UdpTableClass.OwnerModule,
+                    0
+                );
+
+        var queryResult = QueryWithGrowingBuffer(
+            queryDelegate,
+            isTcp ? nameof(IpHlpApi.GetExtendedTcpTable) : nameof(IpHlpApi.GetExtendedUdpTable)
+        );
+
+        if (!queryResult.Succeeded)
+            return new ResultFailure(queryResult.Errors);
+
+        var result = Result.Success(MibOwnerModuleTable<TRow>.FromBuffer(queryResult.Value));
+
+        queryResult.Value.Dispose();
+
+        return result;
+    }
+
     private static Result<NativeBuffer> QueryWithGrowingBuffer(
         QueryDelegate queryDelegate,
         string method
