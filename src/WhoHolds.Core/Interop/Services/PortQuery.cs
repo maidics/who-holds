@@ -12,11 +12,11 @@ internal static class PortInfoQuery
     )
     {
         SystemErrorCode? errorCode = null;
-        uint size = 1; // NativeBuffer throws on 0
+        uint size = 64 * 1024; // at least 64 KB
 
         for (int i = 0; i < 5; i++)
         {
-            var buffer = new NativeBuffer((int)(size * 1.25)); // 25% headroom
+            var buffer = new NativeBuffer((int)size);
 
             errorCode = queryDelegate.Invoke(buffer, ref size);
 
@@ -26,7 +26,10 @@ internal static class PortInfoQuery
             buffer.Dispose();
 
             if (errorCode is SystemErrorCode.ERROR_INSUFFICIENT_BUFFER)
+            {
+                size = (uint)Math.Ceiling(size * 1.25); // 25% headroom for the returned size
                 continue;
+            }
 
             return Result.Failure($"{method} query failed: {errorCode}.");
         }
