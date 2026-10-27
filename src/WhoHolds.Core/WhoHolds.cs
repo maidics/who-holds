@@ -6,7 +6,7 @@ namespace WhoHolds.Core;
 
 public static class WhoHolds
 {
-    public static Result<HolderProcess[]> File(string file)
+    public static Result<FileHolderProcess[]> File(string file)
     {
         var resolutionResult = PathUtils.ResolveFullPath(file);
 

@@ -21,7 +21,7 @@ public sealed class GetFileHoldersCommand : RootCommand
     };
 
     public GetFileHoldersCommand(TextWriter stdout, TextWriter stderr)
-        : base($"Shows which processes are holding a file.\n\n{HolderProcess.DescribeFields()}")
+        : base($"Shows which processes are holding a file.\n\n{FileHolderProcess.DescribeFields()}")
     {
         _filePath.AcceptLegalFilePathsOnly();
         Arguments.Add(_filePath);

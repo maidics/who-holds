@@ -4,7 +4,7 @@ namespace WhoHolds.Cli.Output;
 
 public sealed class TextResultWriter : IResultWriter
 {
-    public void Write(Result<HolderProcess[]> result, TextWriter stdout, TextWriter stderr)
+    public void Write(Result<FileHolderProcess[]> result, TextWriter stdout, TextWriter stderr)
     {
         if (!result.Succeeded)
         {

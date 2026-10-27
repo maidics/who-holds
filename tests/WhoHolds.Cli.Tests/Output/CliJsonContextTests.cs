@@ -15,11 +15,11 @@ public sealed class CliJsonContextTests
         attr.ShouldNotBeNull();
         attr.WriteIndented.ShouldBeTrue();
         attr.PropertyNamingPolicy.ShouldBe(JsonKnownNamingPolicy.CamelCase);
-        attr.Converters.ShouldBe([typeof(ResultJsonConverter<HolderProcess[]>)]);
+        attr.Converters.ShouldBe([typeof(ResultJsonConverter<FileHolderProcess[]>)]);
     }
 
     [Test]
-    [Arguments(typeof(Result<HolderProcess[]>))]
+    [Arguments(typeof(Result<FileHolderProcess[]>))]
     public void ShouldBeDecoratedWithJsonSerializable(Type type)
     {
         CliJsonContext.Default.GetTypeInfo(type).ShouldNotBeNull();

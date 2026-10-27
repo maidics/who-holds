@@ -8,7 +8,7 @@ public sealed class ResultExtensionTests
     [Test]
     public void ShouldReturnNotHeldForSucceededResultWithNoHolderProcesses()
     {
-        var result = Result.Success<HolderProcess[]>([]);
+        var result = Result.Success<FileHolderProcess[]>([]);
 
         result.GetExitCode().ShouldBe(ExitCodes.NotHeld);
     }
@@ -16,7 +16,7 @@ public sealed class ResultExtensionTests
     [Test]
     public void ShouldReturnHeldForSucceededResultWithHolderProcesses()
     {
-        var holder = new HolderProcess(
+        var holder = new FileHolderProcess(
             122,
             DateTime.UtcNow,
             null,
@@ -28,7 +28,7 @@ public sealed class ResultExtensionTests
             false
         );
 
-        var result = Result.Success<HolderProcess[]>([holder]);
+        var result = Result.Success<FileHolderProcess[]>([holder]);
 
         result.GetExitCode().ShouldBe(ExitCodes.Held);
     }
@@ -36,7 +36,7 @@ public sealed class ResultExtensionTests
     [Test]
     public void ShouldReturnErrorForFailedResult()
     {
-        var result = (Result<HolderProcess[]>)Result.Failure();
+        var result = (Result<FileHolderProcess[]>)Result.Failure();
         result.GetExitCode().ShouldBe(ExitCodes.Error);
     }
 }

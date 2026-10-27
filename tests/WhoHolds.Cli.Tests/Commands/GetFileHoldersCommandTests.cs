@@ -28,7 +28,7 @@ public sealed class GetFileHoldersCommandTests
     {
         var command = new GetFileHoldersCommand(TextWriter.Null, TextWriter.Null);
         command.Description.ShouldBe(
-            $"Shows which processes are holding a file.\n\n{HolderProcess.DescribeFields()}"
+            $"Shows which processes are holding a file.\n\n{FileHolderProcess.DescribeFields()}"
         );
     }
 
@@ -117,7 +117,9 @@ public sealed class GetFileHoldersCommandTests
         var v = doc.ShouldHaveResultedTo(true, JsonValueKind.Array);
         v.GetArrayLength().ShouldBe(1);
         v[0]
-            .GetProperty(JsonNamingPolicy.CamelCase.ConvertName(nameof(HolderProcess.ProcessId)))
+            .GetProperty(
+                JsonNamingPolicy.CamelCase.ConvertName(nameof(FileHolderProcess.ProcessId))
+            )
             .GetInt32()
             .ShouldBe(Environment.ProcessId);
     }

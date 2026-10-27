@@ -7,7 +7,7 @@ public sealed class TableWriterTests
 {
     private static readonly DateTime _startTime = new(2026, 10, 26, 9, 57, 38, DateTimeKind.Utc);
 
-    private static readonly HolderProcess _holder = new(
+    private static readonly FileHolderProcess _holder = new(
         1,
         _startTime,
         null,
@@ -19,14 +19,12 @@ public sealed class TableWriterTests
         false
     );
 
-    private static string[] Lines(HolderProcess[] holders)
+    private static string[] Lines(FileHolderProcess[] holders)
     {
         var output = new StringWriter();
         TableWriter.Write(output, holders);
 
-        return output
-            .ToString()
-            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        return output.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
     }
 
     private static string Local(DateTime utc) => utc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
@@ -110,8 +108,15 @@ public sealed class TableWriterTests
     public void ShouldNotWriteTrailingWhitespace()
     {
         var lines = Lines([
-            _holder with { ImagePath = null },
-            _holder with { ProcessId = 2, ImagePath = "path" },
+            _holder with
+            {
+                ImagePath = null,
+            },
+            _holder with
+            {
+                ProcessId = 2,
+                ImagePath = "path",
+            },
         ]);
 
         lines.ShouldAllBe(line => line == line.TrimEnd());

@@ -16,7 +16,7 @@ public sealed class TextResultWriterTests
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        var failure = new Result<HolderProcess[]>(false, [], "first error", "second error");
+        var failure = new Result<FileHolderProcess[]>(false, [], "first error", "second error");
 
         _writer.Write(failure, stdout, stderr);
 
@@ -31,7 +31,7 @@ public sealed class TextResultWriterTests
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        _writer.Write(Result.Success<HolderProcess[]>([]), stdout, stderr);
+        _writer.Write(Result.Success<FileHolderProcess[]>([]), stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -41,7 +41,7 @@ public sealed class TextResultWriterTests
     [Test]
     public void ShouldWriteEachHolder()
     {
-        var first = new HolderProcess(
+        var first = new FileHolderProcess(
             99,
             DateTime.UtcNow,
             null,
@@ -52,7 +52,7 @@ public sealed class TextResultWriterTests
             null,
             false
         );
-        var second = new HolderProcess(
+        var second = new FileHolderProcess(
             10,
             DateTime.UtcNow,
             null,
@@ -70,7 +70,7 @@ public sealed class TextResultWriterTests
         var expected = new StringWriter();
         TableWriter.Write(expected, [first, second]);
 
-        _writer.Write(Result.Success<HolderProcess[]>([first, second]), stdout, stderr);
+        _writer.Write(Result.Success<FileHolderProcess[]>([first, second]), stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -81,7 +81,7 @@ public sealed class TextResultWriterTests
     [Test]
     public void ShouldWriteEachHolderAndFailures()
     {
-        var first = new HolderProcess(
+        var first = new FileHolderProcess(
             99,
             DateTime.UtcNow,
             null,
@@ -92,7 +92,7 @@ public sealed class TextResultWriterTests
             null,
             false
         );
-        var second = new HolderProcess(
+        var second = new FileHolderProcess(
             10,
             DateTime.UtcNow,
             null,
@@ -104,7 +104,7 @@ public sealed class TextResultWriterTests
             false
         );
 
-        var result = Result.Success<HolderProcess[]>(
+        var result = Result.Success<FileHolderProcess[]>(
             [first, second],
             "First error",
             "Second error"

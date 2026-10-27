@@ -5,10 +5,10 @@ namespace WhoHolds.Cli.Output;
 
 public sealed class JsonResultWriter : IResultWriter
 {
-    public void Write(Result<HolderProcess[]> result, TextWriter stdout, TextWriter stderr)
+    public void Write(Result<FileHolderProcess[]> result, TextWriter stdout, TextWriter stderr)
     {
         stdout.WriteLine(
-            JsonSerializer.Serialize(result, CliJsonContext.Default.ResultHolderProcessArray)
+            JsonSerializer.Serialize(result, CliJsonContext.Default.ResultFileHolderProcessArray)
         );
     }
 }

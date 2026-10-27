@@ -1,6 +1,6 @@
 ﻿namespace WhoHolds.Core.Common.Models;
 
-public record HolderProcess(
+public record FileHolderProcess(
     int ProcessId, // .NET ProcessId is an int
     DateTime StartTime, // UTC time
     string? ApplicationName,
@@ -14,7 +14,7 @@ public record HolderProcess(
 {
     public static string DescribeFields()
     {
-        return $"Holder:"
+        return $"File Holder Process:"
             + $"\n\t- Process: holder process id"
             + $"\n\t- Start time: process start time"
             + $"\n\t- Application: holder application name (null if holder is not an application)"

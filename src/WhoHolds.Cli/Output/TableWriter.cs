@@ -5,7 +5,7 @@ namespace WhoHolds.Cli.Output;
 
 public static class TableWriter
 {
-    public static void Write(TextWriter writer, HolderProcess[] holders) // TODO: add testing
+    public static void Write(TextWriter writer, FileHolderProcess[] holders)
     {
         string[] headers =
         [
