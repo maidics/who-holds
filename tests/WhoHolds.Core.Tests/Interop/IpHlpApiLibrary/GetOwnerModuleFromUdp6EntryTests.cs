@@ -1,0 +1,48 @@
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
+using WhoHolds.Core.Interop;
+using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.IpHlpApiLibrary;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Enums;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
+using WhoHolds.Core.Tests.TestInfrastructure;
+
+namespace WhoHolds.Core.Tests.Interop.IpHlpApiLibrary;
+
+[InheritsTests]
+internal sealed class GetOwnerModuleFromUdp6EntryTests()
+    : NativeMethodTestBase(typeof(IpHlpApi), nameof(IpHlpApi.GetOwnerModuleFromUdp6Entry))
+{
+    [Test]
+    public override void ShouldBeDeclaredCorrectly()
+    {
+        var parameters = AssertMethodDeclaration(
+            typeof(SystemErrorCode),
+            [
+                typeof(MibUdp6RowOwnerModule).MakeByRefType(),
+                typeof(TcpipOwnerModuleInfoClass),
+                typeof(nint),
+                typeof(uint).MakeByRefType(),
+            ],
+            MethodAttributes.Static
+        );
+
+        parameters[0].IsIn.ShouldBe(true);
+        parameters[0].IsOut.ShouldBeFalse();
+
+        parameters[3].ParameterType.IsByRef.ShouldBeTrue();
+    }
+
+    [Test]
+    public override void ShouldBeDecoratedWithImportAttribute()
+    {
+        var libraryImport = _methodInfo.GetCustomAttribute<LibraryImportAttribute>();
+        libraryImport.ShouldNotBeNull();
+        libraryImport.LibraryName.ShouldBe(Libraries.IpHlpApi);
+
+        var defaultDllImportPaths =
+            _methodInfo.GetCustomAttribute<DefaultDllImportSearchPathsAttribute>();
+        defaultDllImportPaths.ShouldNotBeNull();
+        ShouldBeTestExtensions.ShouldBe(defaultDllImportPaths.Paths, DllImportSearchPath.System32);
+    }
+}
