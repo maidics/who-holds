@@ -4,7 +4,7 @@ using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Services;
 
-internal static class PortInfoQuery
+internal static class PortOwnerModuleQuery
 {
     private static Result<NativeBuffer> QueryWithGrowingBuffer(
         QueryDelegate queryDelegate,
