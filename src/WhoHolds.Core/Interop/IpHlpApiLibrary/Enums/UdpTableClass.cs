@@ -2,5 +2,5 @@
 
 internal enum UdpTableClass : uint
 {
-    OwnerPid = 1 // local endpoints with owning process ID
+    OwnerModule = 2 // local endpoints with owning process ID
 }

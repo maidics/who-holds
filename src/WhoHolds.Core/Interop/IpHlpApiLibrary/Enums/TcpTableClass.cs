@@ -2,5 +2,5 @@
 
 internal enum TcpTableClass : uint
 {
-    OwnerPidAll = 5 // listening and connected endpoints with owning process ID
+    OwnerModuleAll = 8 // listening and connected endpoints with owning process ID
 }
