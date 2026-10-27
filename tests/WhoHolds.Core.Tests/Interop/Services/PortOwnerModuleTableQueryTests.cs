@@ -7,7 +7,7 @@ using WhoHolds.Core.Tests.TestInfrastructure;
 
 namespace WhoHolds.Core.Tests.Interop.Services;
 
-internal sealed class PortOwnerModuleQueryTests
+internal sealed class PortOwnerModuleTableQueryTests
 {
     private static Socket BindOnLoopback(AddressFamily addressFamily, ProtocolType protocolType)
     {
@@ -40,7 +40,7 @@ internal sealed class PortOwnerModuleQueryTests
         using var socket = BindOnLoopback(AddressFamily.InterNetwork, ProtocolType.Tcp);
         var endPoint = (IPEndPoint)socket.LocalEndPoint!; // the actual port, not 0
 
-        var result = PortOwnerModuleQuery.Query<MibTcpRowOwnerModule>();
+        var result = PortOwnerModuleTableQuery.Query<MibTcpRowOwnerModule>();
         result.ShouldBeResultedTo(true);
 
         var entry = result
@@ -59,7 +59,7 @@ internal sealed class PortOwnerModuleQueryTests
         using var socket = BindOnLoopback(AddressFamily.InterNetworkV6, ProtocolType.Tcp);
         var endPoint = (IPEndPoint)socket.LocalEndPoint!; // the actual port, not 0
 
-        var result = PortOwnerModuleQuery.Query<MibTcp6RowOwnerModule>();
+        var result = PortOwnerModuleTableQuery.Query<MibTcp6RowOwnerModule>();
         result.ShouldBeResultedTo(true);
 
         var entry = result
@@ -78,7 +78,7 @@ internal sealed class PortOwnerModuleQueryTests
         using var socket = BindOnLoopback(AddressFamily.InterNetwork, ProtocolType.Udp);
         var endPoint = (IPEndPoint)socket.LocalEndPoint!; // the actual port, not 0
 
-        var result = PortOwnerModuleQuery.Query<MibUdpRowOwnerModule>();
+        var result = PortOwnerModuleTableQuery.Query<MibUdpRowOwnerModule>();
         result.ShouldBeResultedTo(true);
 
         var entry = result
@@ -96,7 +96,7 @@ internal sealed class PortOwnerModuleQueryTests
         using var socket = BindOnLoopback(AddressFamily.InterNetworkV6, ProtocolType.Udp);
         var endPoint = (IPEndPoint)socket.LocalEndPoint!; // the actual port, not 0
 
-        var result = PortOwnerModuleQuery.Query<MibUdp6RowOwnerModule>();
+        var result = PortOwnerModuleTableQuery.Query<MibUdp6RowOwnerModule>();
         result.ShouldBeResultedTo(true);
 
         var entry = result

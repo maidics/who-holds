@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 
-// marker interface for PortOwnerModuleQuery
+// marker interface for PortOwnerModuleTableQuery
 internal interface IPortRowOwnerModule
 {
     static abstract AddressFamily AddressFamily { get; }

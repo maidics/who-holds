@@ -9,7 +9,7 @@ using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Services;
 
-internal static class PortOwnerModuleQuery
+internal static class PortOwnerModuleTableQuery
 {
     public static Result<MibOwnerModuleTable<TRow>> Query<TRow>()
         where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
