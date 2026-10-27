@@ -4,15 +4,15 @@ using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 
-internal readonly ref struct MibOwnerModuleTable<TRow>
+internal readonly struct MibOwnerModuleTable<TRow>
     where TRow : unmanaged, INativeSized<TRow>
 {
     // header is 4 bytes with 4 bytes of padding
     private const int _entriesOffset = sizeof(ulong); // header contains entry count only - this applies to all ...RowOwnerModule structs
 
-    public readonly ReadOnlySpan<TRow> Entries;
+    public readonly IReadOnlyList<TRow> Entries;
 
-    private MibOwnerModuleTable(ReadOnlySpan<TRow> entries) => Entries = entries;
+    private MibOwnerModuleTable(IReadOnlyList<TRow> entries) => Entries = entries;
 
     public static MibOwnerModuleTable<TRow> FromBuffer(ReadOnlySpan<byte> buffer)
     {
@@ -31,7 +31,7 @@ internal readonly ref struct MibOwnerModuleTable<TRow>
             );
 
         return new MibOwnerModuleTable<TRow>(
-            MemoryMarshal.Cast<byte, TRow>(buffer[_entriesOffset..(int)needed])
+            MemoryMarshal.Cast<byte, TRow>(buffer[_entriesOffset..(int)needed]).ToArray()
         );
     }
 }
