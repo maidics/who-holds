@@ -3,11 +3,14 @@ using System.Net;
 using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.IpHlpApiLibrary.Enums;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct MibTcpRowOwnerModule : INativeSized<MibTcpRowOwnerModule>
+internal readonly struct MibTcpRowOwnerModule
+    : INativeSized<MibTcpRowOwnerModule>,
+        IPortRowOwnerModule
 {
     public readonly MibTcpState dwState;
     public readonly uint dwLocalAddr;

@@ -2,11 +2,14 @@
 using System.Net;
 using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Common;
+using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct MibUdpRowOwnerModule : INativeSized<MibUdpRowOwnerModule>
+internal readonly struct MibUdpRowOwnerModule
+    : INativeSized<MibUdpRowOwnerModule>,
+        IPortRowOwnerModule
 {
     public readonly uint dwLocalAddr;
     public readonly uint dwLocalPort;
