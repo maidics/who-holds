@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 using WhoHolds.Core.Common.Models;
 using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.Kernel32Library;
@@ -12,11 +11,12 @@ internal static class ProcessPathResolver
 {
     private const int _maxPathChars = 32_767;
 
+    // this is not used for ports since GetOwnerModuleFromTcpEntry & GetOwnerModuleFromUdpEntry returns path
     public static Result<string> Resolve(RmProcessInfo holder)
     {
         using var process = Kernel32.OpenProcess(
             ProcessAccessRights.QueryInformation | ProcessAccessRights.DupHandle,
-            false, // TODO: this will fail for ports; use PROCESS_QUERY_LIMITED_INFORMATION, 0x1000
+            false,
             holder.Process.dwProcessId
         );
 
