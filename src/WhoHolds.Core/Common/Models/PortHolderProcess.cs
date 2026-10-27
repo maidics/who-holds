@@ -10,18 +10,18 @@ public sealed record PortHolderProcess(
     int? RemotePort, // only for TCP; null for UDP
     int OwnerProcessId,
     DateTime? CreatedOn,
-    string Owner,
-    string OwnerDescription,
-    string OwnerPath
+    string? Owner,
+    string? OwnerDescription,
+    string? OwnerPath
 )
 {
     // TODO: do DescribeFields
 
     internal static PortHolderProcess FromPortRowOwnerModule(
         IPortRowOwnerModule portOwner,
-        string owner,
-        string ownerDescription,
-        string ownerPath
+        string? owner,
+        string? ownerDescription,
+        string? ownerPath
     )
     {
         return new PortHolderProcess(
