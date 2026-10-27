@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Binary;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.IpHlpApiLibrary.Enums;
@@ -12,6 +13,9 @@ internal readonly struct MibTcpRowOwnerModule
     : INativeSized<MibTcpRowOwnerModule>,
         IPortRowOwnerModule
 {
+    public static AddressFamily AddressFamily => AddressFamily.InterNetwork;
+    public static ProtocolType ProtocolType => ProtocolType.Tcp;
+
     public readonly MibTcpState dwState;
     public readonly uint dwLocalAddr;
     public readonly uint dwLocalPort;
@@ -22,9 +26,12 @@ internal readonly struct MibTcpRowOwnerModule
     public readonly OwningModuleInfoBuffer OwningModuleInfo;
 
     public ushort LocalPort => BinaryPrimitives.ReverseEndianness((ushort)dwLocalPort);
-    public ushort RemotePort => BinaryPrimitives.ReverseEndianness((ushort)dwRemotePort);
+    public ushort? RemotePort => BinaryPrimitives.ReverseEndianness((ushort)dwRemotePort);
+    public uint OwnerProcessId => dwOwningPid;
     public IPAddress LocalAddress => new(dwLocalAddr);
     public IPAddress RemoteAddress => new(dwRemoteAddr);
+    ushort? IPortRowOwnerModule.RemotePort => RemotePort;
+
     public DateTime? CreateTimestamp =>
         liCreateTimestamp == 0 ? null : DateTime.FromFileTimeUtc(liCreateTimestamp);
 

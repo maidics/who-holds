@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Binary;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.IpHlpApiLibrary.Enums;
@@ -12,6 +13,9 @@ internal readonly struct MibTcp6RowOwnerModule
     : INativeSized<MibTcp6RowOwnerModule>,
         IPortRowOwnerModule
 {
+    public static AddressFamily AddressFamily => AddressFamily.InterNetworkV6;
+    public static ProtocolType ProtocolType => ProtocolType.Tcp;
+
     public readonly IPv6AddressBuffer ucLocalAddr;
     public readonly uint dwLocalScopeId;
     public readonly uint dwLocalPort;
@@ -24,7 +28,8 @@ internal readonly struct MibTcp6RowOwnerModule
     public readonly OwningModuleInfoBuffer OwningModuleInfo;
 
     public ushort LocalPort => BinaryPrimitives.ReverseEndianness((ushort)dwLocalPort);
-    public ushort RemotePort => BinaryPrimitives.ReverseEndianness((ushort)dwRemotePort);
+    public ushort? RemotePort => BinaryPrimitives.ReverseEndianness((ushort)dwRemotePort);
+    public uint OwnerProcessId => dwOwningPid;
     public IPAddress LocalAddress => new(ucLocalAddr, dwLocalScopeId);
     public IPAddress RemoteAddress => new(ucRemoteAddr, dwRemoteScopeId);
     public DateTime? CreateTimestamp =>
