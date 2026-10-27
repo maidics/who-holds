@@ -14,15 +14,9 @@ internal static class PortOwnerModuleTableQuery
     public static Result<MibOwnerModuleTable<TRow>> Query<TRow>()
         where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
     {
-        var rowType = typeof(TRow);
+        var addressFamily = TRow.AddressFamily;
 
-        var addressFamily =
-            rowType == typeof(MibTcpRowOwnerModule) || rowType == typeof(MibUdpRowOwnerModule)
-                ? AddressFamily.InterNetwork
-                : AddressFamily.InterNetworkV6;
-
-        var isTcp =
-            rowType == typeof(MibTcpRowOwnerModule) || rowType == typeof(MibTcp6RowOwnerModule);
+        var isTcp = TRow.ProtocolType == ProtocolType.Tcp;
 
         QueryDelegate queryDelegate = isTcp
             ? (buffer, ref size) =>
@@ -49,14 +43,12 @@ internal static class PortOwnerModuleTableQuery
             isTcp ? nameof(IpHlpApi.GetExtendedTcpTable) : nameof(IpHlpApi.GetExtendedUdpTable)
         );
 
+        using var buffer = queryResult.Value;
+
         if (!queryResult.Succeeded)
             return new ResultFailure(queryResult.Errors);
 
-        var result = Result.Success(MibOwnerModuleTable<TRow>.FromBuffer(queryResult.Value));
-
-        queryResult.Value.Dispose();
-
-        return result;
+        return Result.Success(MibOwnerModuleTable<TRow>.FromBuffer(queryResult.Value));
     }
 
     private static Result<NativeBuffer> QueryWithGrowingBuffer(
