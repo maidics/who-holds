@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using WhoHolds.Cli.Output;
 using WhoHolds.Core.Common.Models;
@@ -18,12 +19,14 @@ public sealed class CliJsonContextTests
         attr.Converters.ShouldBe([
             typeof(ResultJsonConverter<FileHolderProcess[]>),
             typeof(ResultJsonConverter<PortHolderProcess[]>),
+            typeof(IPAddressJsonConverter),
         ]);
     }
 
     [Test]
     [Arguments(typeof(Result<FileHolderProcess[]>))]
     [Arguments(typeof(Result<PortHolderProcess[]>))]
+    [Arguments(typeof(IPAddress))]
     public void ShouldBeDecoratedWithJsonSerializable(Type type)
     {
         CliJsonContext.Default.GetTypeInfo(type).ShouldNotBeNull();
