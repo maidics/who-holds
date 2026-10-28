@@ -63,7 +63,9 @@ public sealed class GetPortHoldersCommandTests
         var command = new GetPortHoldersCommand(TextWriter.Null, TextWriter.Null);
 
         command.Name.ShouldBe("port");
-        command.Description.ShouldBe("Shows which processes are holding a port.");
+        command.Description.ShouldBe(
+            $"Shows which processes are holding a port.\n\n{PortHolderProcess.DescribeFields()}"
+        );
     }
 
     [Test]

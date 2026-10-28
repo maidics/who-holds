@@ -1,10 +1,11 @@
 ﻿using WhoHolds.Cli.Extensions;
 using WhoHolds.Cli.Output;
 using WhoHolds.Core.Common.Enums;
+using WhoHolds.Core.Common.Models;
 
 namespace WhoHolds.Cli.Commands;
 
-public sealed class GetPortHoldersCommand : Command // TODO: test this
+public sealed class GetPortHoldersCommand : Command
 {
     private readonly Argument<int?> _port = new("port")
     {
@@ -37,7 +38,10 @@ public sealed class GetPortHoldersCommand : Command // TODO: test this
     };
 
     public GetPortHoldersCommand(TextWriter stdout, TextWriter stderr)
-        : base("port", "Shows which processes are holding a port.") // TODO: add describe fields here - make it table format?
+        : base(
+            "port",
+            $"Shows which processes are holding a port.\n\n{PortHolderProcess.DescribeFields()}"
+        )
     {
         _protocol.AcceptDefinedEnumValuesOnly();
         _ipVersion.AcceptDefinedEnumValuesOnly();
