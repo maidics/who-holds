@@ -1,4 +1,5 @@
-﻿using WhoHolds.Core.Tests.TestInfrastructure;
+﻿using WhoHolds.Core.Common.Enums;
+using WhoHolds.Core.Tests.TestInfrastructure;
 using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Core.Tests;
@@ -72,5 +73,16 @@ internal sealed class WhoHoldsTests
         var process = processes[0];
         process.ProcessId.ShouldBe(Environment.ProcessId);
         process.ImagePath.ShouldNotBeNullOrWhiteSpace();
+    }
+
+    [Test] // RPC Endpoint Mapper always listens on port 135 and reports its service name as module path
+    public void PortMethodShouldNotResolveServiceNameAsPath()
+    {
+        var result = WhoHolds.Port(135, IpVersion.IPv4, PortProtocol.Tcp);
+        result.Succeeded.ShouldBeTrue();
+
+        result.Value.ShouldContain(h =>
+            h.Owner == "RpcEptMapper" && h.OwnerPath == "RpcEptMapper" && h.OwnerDescription == null
+        );
     }
 }
