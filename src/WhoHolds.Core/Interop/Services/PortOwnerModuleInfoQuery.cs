@@ -60,6 +60,8 @@ internal static class PortOwnerModuleInfoQuery
 
             if (errorCode is SystemErrorCode.ERROR_SUCCESS)
                 return Result.Success(buffer);
+
+            buffer.Dispose();
         }
 
         return Result.Failure(
