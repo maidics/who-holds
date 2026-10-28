@@ -3,7 +3,7 @@ using WhoHolds.Core.Common.Models;
 
 namespace WhoHolds.Cli.Commands;
 
-public sealed class GetFileHoldersCommand : RootCommand
+public sealed class GetFileHoldersRootCommand : RootCommand
 {
     private readonly Argument<string> _filePath = new("filePath")
     {
@@ -20,7 +20,7 @@ public sealed class GetFileHoldersCommand : RootCommand
         DefaultValueFactory = _ => OutputFormat.Text,
     };
 
-    public GetFileHoldersCommand(TextWriter stdout, TextWriter stderr)
+    public GetFileHoldersRootCommand(TextWriter stdout, TextWriter stderr)
         : base($"Shows which processes are holding a file.\n\n{FileHolderProcess.DescribeFields()}")
     {
         _filePath.AcceptLegalFilePathsOnly();
@@ -38,7 +38,7 @@ public sealed class GetFileHoldersCommand : RootCommand
 
                 var writer = IResultWriter.For(format);
 
-                writer.Write(result, stdout, stderr);
+                writer.WriteFileHolders(result, stdout, stderr);
 
                 return result.GetExitCode();
             }

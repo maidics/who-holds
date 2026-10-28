@@ -8,7 +8,7 @@ using WhoHolds.Tests.Shared;
 
 namespace WhoHolds.Cli.Tests.Commands;
 
-public sealed class GetFileHoldersCommandTests
+public sealed class GetFileHoldersRootCommandTests
 {
     [ClassDataSource<TestFileSystem>]
     public required TestFileSystem Testing { get; init; }
@@ -18,7 +18,7 @@ public sealed class GetFileHoldersCommandTests
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        int exitCode = new GetFileHoldersCommand(stdout, stderr).Parse(args).Invoke();
+        int exitCode = new GetFileHoldersRootCommand(stdout, stderr).Parse(args).Invoke();
 
         return (exitCode, stdout.ToString(), stderr.ToString());
     }
@@ -26,7 +26,7 @@ public sealed class GetFileHoldersCommandTests
     [Test]
     public void ShouldHaveCorrectDescription()
     {
-        var command = new GetFileHoldersCommand(TextWriter.Null, TextWriter.Null);
+        var command = new GetFileHoldersRootCommand(TextWriter.Null, TextWriter.Null);
         command.Description.ShouldBe(
             $"Shows which processes are holding a file.\n\n{FileHolderProcess.DescribeFields()}"
         );
@@ -35,7 +35,7 @@ public sealed class GetFileHoldersCommandTests
     [Test]
     public void ShouldHaveFilePathArgument()
     {
-        var command = new GetFileHoldersCommand(TextWriter.Null, TextWriter.Null);
+        var command = new GetFileHoldersRootCommand(TextWriter.Null, TextWriter.Null);
         command.Arguments.Count.ShouldBe(1);
 
         var arg = command.Arguments[0];
@@ -48,7 +48,7 @@ public sealed class GetFileHoldersCommandTests
     [Test]
     public void ShouldHaveOutputFormatOption()
     {
-        var command = new GetFileHoldersCommand(TextWriter.Null, TextWriter.Null);
+        var command = new GetFileHoldersRootCommand(TextWriter.Null, TextWriter.Null);
 
         var option = command.Options.FirstOrDefault(o => o.Name == "--format");
         option.ShouldNotBeNull();
