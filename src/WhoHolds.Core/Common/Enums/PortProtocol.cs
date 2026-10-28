@@ -2,7 +2,7 @@
 
 public enum PortProtocol
 {
-    Tcp,
-    Udp,
-    Both,
+    Both = 0,
+    Tcp = 1,
+    Udp = 2,
 }

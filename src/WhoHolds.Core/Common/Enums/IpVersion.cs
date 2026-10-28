@@ -2,7 +2,7 @@
 
 public enum IpVersion
 {
-    IPv4,
-    IPv6,
-    Both,
+    Both = 0,
+    IPv4 = 4,
+    IPv6 = 6,
 }
