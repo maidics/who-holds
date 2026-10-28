@@ -37,10 +37,20 @@ internal sealed class PortHolderCollector(int? port)
                 string? ownerPath = moduleInfoResult.Succeeded
                     ? moduleInfoResult.Value.modulePath
                     : null;
-                string? ownerDescription =
-                    moduleInfoResult.Succeeded && ownerPath is not null
-                        ? FileVersionInfo.GetVersionInfo(ownerPath).FileDescription
-                        : null;
+                string? ownerDescription = null;
+
+                // services hosted in svchost.exe report their service name (e.g. RpcEptMapper) as module path
+                if (ownerPath is not null && Path.IsPathFullyQualified(ownerPath))
+                {
+                    try
+                    {
+                        ownerDescription = FileVersionInfo.GetVersionInfo(ownerPath).FileDescription;
+                    }
+                    catch (Exception e)
+                    {
+                        _errors.Add($"Failed to read file description of {ownerPath}: {e.Message}");
+                    }
+                }
 
                 _holders.Add(
                     PortHolderProcess.FromPortRowOwnerModule(
