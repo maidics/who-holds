@@ -45,7 +45,7 @@ public static class TableWriter
         WriteTable(writer, headers, rightAlign, rows);
     }
 
-    public static void WritePortHolderTable(TextWriter writer, PortHolderProcess[] holders) // TODO: test this
+    public static void WritePortHolderTable(TextWriter writer, PortHolderProcess[] holders)
     {
         string[] headers =
         [
