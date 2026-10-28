@@ -43,10 +43,10 @@ internal static class PortOwnerModuleTableQuery
             isTcp ? nameof(IpHlpApi.GetExtendedTcpTable) : nameof(IpHlpApi.GetExtendedUdpTable)
         );
 
-        using var buffer = queryResult.Value;
-
         if (!queryResult.Succeeded)
             return new ResultFailure(queryResult.Errors);
+
+        using var buffer = queryResult.Value;
 
         return Result.Success(MibOwnerModuleTable<TRow>.FromBuffer(queryResult.Value));
     }
