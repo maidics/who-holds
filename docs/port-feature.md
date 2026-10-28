@@ -6,22 +6,21 @@ Combinations of list per port number:
 - UDP - IPv4
 - UDP - IPv6
 
-Filtering should be available via an option: `--protocol` (`tcp` | `udp`), `--ipversion`/`-ipv` (`4` | `6`)
-- Add an additional command for ports (`--port`/`-p`)
-  - `int.Parse`:
-    - If succeeds resolve port holders
-    - If fails => Try to resolve path:
-      - If fails the given parameter is invalid
-      - If succeeds continue resolving the holders for the path
+The [`port`](../src/WhoHolds.Cli/Commands/GetPortHoldersCommand.cs) subcommand takes an optional port argument (omit to list all ports) and filters via options: `--protocol`/`-p` (`tcp` | `udp` | `both`), `--ip-version`/`-ip`/`-ipv`/`--ipversion` (`4` | `6` | `both`). Usage is documented in the [README](../README.md#ports).
+
+[`WhoHolds.Port(port, ipVersion, portProtocol)`](../src/WhoHolds.Core/WhoHolds.cs) validates the port range (`IPEndPoint.MinPort`-`IPEndPoint.MaxPort`) and queries one table per selected combination. Two enums select the combinations:
+- [`PortProtocol`](../src/WhoHolds.Core/Common/Enums/PortProtocol.cs): `Tcp`, `Udp`, `Both` (default)
+- [`IpVersion`](../src/WhoHolds.Core/Common/Enums/IpVersion.cs): `IPv4`, `IPv6`, `Both` (default)
 
 ## Resolving holders
 
+[`PortHolderCollector`](../src/WhoHolds.Core/Interop/Services/PortHolderCollector.cs) collects the rows of each table, keeps the ones whose local port matches and resolves their owner module. The result fails only if every table query failed; otherwise failures are reported in `Result.Errors`.
+
 ### 1. `GetExtendedTcpTable` & `GetExtendedUdpTable`
 
-#### Both functions:
-- Pass 0 as size first =(on `ERROR_INSUFFICIENT_BUFFER` - 122)=> it returns the required `pdwSize`:
-  - Should use growing buffer with capped retry count (guard against something opening and closing sockets non-stop)
-- Have a 4 byte header (entry count)
+[`PortOwnerModuleTableQuery`](../src/WhoHolds.Core/Interop/Services/PortOwnerModuleTableQuery.cs):
+- Starts with a 64 KB buffer and grows it on `ERROR_INSUFFICIENT_BUFFER` (122) to the returned `pdwSize` + 25% headroom, capped at 5 attempts (guards against something opening and closing sockets non-stop).
+- The table header is the entry count (4 bytes) padded to 8 bytes; rows follow it.
 
 | Function | Table class | Value | What it returns |
 | - | - | - | - |
@@ -36,36 +35,32 @@ DWORD         dwLocalPort;
 DWORD         dwRemoteAddr;
 DWORD         dwRemotePort;
 DWORD         dwOwningPid;
-LARGE_INTEGER liCreateTimestamp;     // when the socket was created; confirm whether PID was reused or not
+LARGE_INTEGER liCreateTimestamp;     // when the socket was created; 0 if unknown
 ULONGLONG     OwningModuleInfo[16];  // opaque, for GetOwnerModuleFromTcpEntry
 ```
 
-Use `AddressFamily` to specify IP version:
+`AddressFamily` specifies the IP version:
 - IPv4: `AddressFamily.InterNetwork` (2)
 - IPv6: `AddressFamily.InterNetworkV6` (23)
 
-`PortHolderQueryOptions`
-- We need two enums: 
-  - `PortProtocol`: `Tcp`, `Udp`, `Both` (default)
-  - `IpVersion`: `IPv4`, `IPv6`, `Both` (default)
-
-Filter and group by PID (according to passed options):
-- Filter local ports (ports bound on this machine).
-- Drop rows that belong to no one. Windows reports idle ports with 0 PID (System Idle Process).
-- Collect ports via PID, because one process can own multiple (e.g. owns the IPv4 and IPv6 port as well).
+Each row maps to one [`PortHolderProcess`](../src/WhoHolds.Core/Common/Models/PortHolderProcess.cs): rows are not grouped by PID, so a process owning both the IPv4 and IPv6 socket is listed twice.
 
 ### 2. `GetOwnerModuleFromTcpEntry` & `GetOwnerModuleFromUdpEntry`
 
-Returns information on who owns the socket:
+[`PortOwnerModuleInfoQuery`](../src/WhoHolds.Core/Interop/Services/PortOwnerModuleInfoQuery.cs) queries `TCPIP_OWNER_MODULE_BASIC_INFO` (sized on `ERROR_INSUFFICIENT_BUFFER`, one retry) to get information on who owns the socket:
 
 | Owner | Module name | Module path |
 | - | - | - |
 | A normal program | The executable's file name (e.g. node.exe). | The full executable path (e.g. `C:\Program Files\nodejs\node.exe`). |
-| A service inside a shared `svchost.exe` | The service short name (e.g. `Dnscache`). | This may be the path to `svchost.exe` - test this. |
+| A service inside a shared `svchost.exe` | The service short name (e.g. `Dnscache`). | The service short name as well (e.g. `RpcEptMapper`), not a path. |
 
 This returns technical names (unlike `Restart Manager`):
-- Program names: resolve via `FileVersionInfo.GetVersionInfo(path).FileDescription`.
-- Service names: resolve via `GetServiceDisplayNameW` (Service Control Manager).
-- This may fail for processes that you're not allowed to inspect.
-- Treat errors as name unknown.
-- Special case: PID 4 - report as System with no start time, do not call the process lookup at all - this will fail for admin users as well.
+- Program names: resolved via `FileVersionInfo.GetVersionInfo(path).FileDescription` into `OwnerDescription`, only when the module path is fully qualified.
+- Failures (e.g. processes that you're not allowed to inspect) are reported in `Result.Errors` and the owner fields stay `null`.
+
+## Not implemented
+
+- Dropping rows owned by PID 0 (System Idle Process).
+- Grouping rows by PID.
+- Service display names via `GetServiceDisplayNameW` (Service Control Manager).
+- Special casing PID 4 (System) to skip the owner module lookup.

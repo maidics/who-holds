@@ -7,10 +7,10 @@ Publish action is done in CI via `PublishModule`, check: [`ci-pipeline.md`](ci-p
 <!-- Note for AI agents: assume these are available -->
 
 - .NET SDK specified in [`global.json`](../global.json)
-- Visual Studio **Desktop development with C++** workload (verify availability with [`verify-cpp-build-tools.ps1`](../scripts/verify-cpp-build-tools.ps1) script)
+- Visual Studio **Desktop development with C++** workload (in CI it is verified by `CppBuildToolRequirement` on tag push)
 
 ## Build
 
-- Use the [`publish.ps1`](../scripts/publish.ps1) script
-- Output must be a single file (`wh.exe`) in [`publish`](../artifacts/publish) folder
+- Use the [`publish.ps1`](../scripts/publish.ps1) script (run it from the `scripts` folder, it uses paths relative to it)
+- Output must be a single file (`wh.exe`) in the `artifacts/publish` folder (git ignored)
 - Targets: win-x64
