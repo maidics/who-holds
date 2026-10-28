@@ -23,7 +23,7 @@ public sealed class JsonResultWriter : IResultWriter
     )
     {
         stdout.WriteLine(
-            JsonSerializer.Serialize(result, CliJsonContext.Default.PortHolderProcessArray)
+            JsonSerializer.Serialize(result, CliJsonContext.Default.ResultPortHolderProcessArray)
         );
     }
 }
