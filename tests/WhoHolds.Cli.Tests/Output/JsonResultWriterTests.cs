@@ -32,7 +32,7 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        _writer.Write(result, stdout, stderr);
+        _writer.WriteFileHolders(result, stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -53,7 +53,7 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        _writer.Write(Result.Success<FileHolderProcess[]>([]), stdout, stderr);
+        _writer.WriteFileHolders(Result.Success<FileHolderProcess[]>([]), stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -70,7 +70,7 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
 
         var result = (Result<FileHolderProcess[]>)Result.Failure("test");
 
-        _writer.Write(result, stdout, stderr);
+        _writer.WriteFileHolders(result, stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 

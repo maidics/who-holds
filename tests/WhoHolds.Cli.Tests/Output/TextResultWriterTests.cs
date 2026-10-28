@@ -18,7 +18,7 @@ public sealed class TextResultWriterTests
 
         var failure = new Result<FileHolderProcess[]>(false, [], "first error", "second error");
 
-        _writer.Write(failure, stdout, stderr);
+        _writer.WriteFileHolders(failure, stdout, stderr);
 
         stdout.ToString().ShouldBeEmpty();
 
@@ -31,7 +31,7 @@ public sealed class TextResultWriterTests
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        _writer.Write(Result.Success<FileHolderProcess[]>([]), stdout, stderr);
+        _writer.WriteFileHolders(Result.Success<FileHolderProcess[]>([]), stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -68,9 +68,13 @@ public sealed class TextResultWriterTests
         var stderr = new StringWriter();
 
         var expected = new StringWriter();
-        TableWriter.Write(expected, [first, second]);
+        TableWriter.WriteFileHolderTable(expected, [first, second]);
 
-        _writer.Write(Result.Success<FileHolderProcess[]>([first, second]), stdout, stderr);
+        _writer.WriteFileHolders(
+            Result.Success<FileHolderProcess[]>([first, second]),
+            stdout,
+            stderr
+        );
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -114,7 +118,7 @@ public sealed class TextResultWriterTests
         var stderr = new StringWriter();
 
         var expectedStdout = new StringWriter();
-        TableWriter.Write(expectedStdout, [first, second]);
+        TableWriter.WriteFileHolderTable(expectedStdout, [first, second]);
 
         var expectedStderr = new StringWriter();
         expectedStderr.WriteLine("Failures:");
@@ -124,7 +128,7 @@ public sealed class TextResultWriterTests
             expectedStderr.WriteLine($"\t- {error}");
         }
 
-        _writer.Write(result, stdout, stderr);
+        _writer.WriteFileHolders(result, stdout, stderr);
 
         stdout.ToString().ShouldBe(expectedStdout.ToString());
 

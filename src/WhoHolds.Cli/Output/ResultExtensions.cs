@@ -4,7 +4,7 @@ namespace WhoHolds.Cli.Output;
 
 public static class ResultExtensions
 {
-    extension(Result<FileHolderProcess[]> result)
+    extension<T>(Result<T[]> result)
     {
         public int GetExitCode()
         {

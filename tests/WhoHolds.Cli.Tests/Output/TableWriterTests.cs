@@ -22,7 +22,7 @@ public sealed class TableWriterTests
     private static string[] Lines(FileHolderProcess[] holders)
     {
         var output = new StringWriter();
-        TableWriter.Write(output, holders);
+        TableWriter.WriteFileHolderTable(output, holders);
 
         return output.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
     }
