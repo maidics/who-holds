@@ -12,7 +12,7 @@ WhoHolds.Core/
 
 Interop/
 ├── Libraries.cs                         # native library names: Libraries.Kernel32, Libraries.RestartManager, Libraries.IpHlpApi
-├── Common/                              # interop concerns shared across libraries: INativeSized, FileTime, SystemErrorCode, NativeBuffer
+├── Common/                              # interop concerns shared across libraries: FileTime, SystemErrorCode, NativeBuffer
 ├── Kernel32Library/
 │   ├── Enums/                           # structs, enums, constants and interfaces belonging to the library, grouped by kind
 │   │   └── ProcessAccessRights.cs

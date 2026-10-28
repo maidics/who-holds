@@ -8,9 +8,7 @@ using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct MibUdp6RowOwnerModule
-    : INativeSized<MibUdp6RowOwnerModule>,
-        IPortRowOwnerModule
+internal readonly struct MibUdp6RowOwnerModule : IPortRowOwnerModule
 {
     public static AddressFamily AddressFamily => AddressFamily.InterNetworkV6;
     public static ProtocolType ProtocolType => ProtocolType.Udp;
@@ -35,6 +33,4 @@ internal readonly struct MibUdp6RowOwnerModule
     public bool SpecificPortBind => (dwFlags & 1) != 0;
     public DateTime? CreateTimestamp =>
         liCreateTimestamp == 0 ? null : DateTime.FromFileTimeUtc(liCreateTimestamp);
-
-    public static int Size => Marshal.SizeOf<MibUdp6RowOwnerModule>();
 }

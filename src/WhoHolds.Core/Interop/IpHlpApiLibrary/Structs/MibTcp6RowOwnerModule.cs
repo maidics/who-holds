@@ -9,9 +9,7 @@ using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct MibTcp6RowOwnerModule
-    : INativeSized<MibTcp6RowOwnerModule>,
-        IPortRowOwnerModule
+internal readonly struct MibTcp6RowOwnerModule : IPortRowOwnerModule
 {
     public static AddressFamily AddressFamily => AddressFamily.InterNetworkV6;
     public static ProtocolType ProtocolType => ProtocolType.Tcp;
@@ -34,6 +32,4 @@ internal readonly struct MibTcp6RowOwnerModule
     public IPAddress RemoteAddress => new(ucRemoteAddr, dwRemoteScopeId);
     public DateTime? CreateTimestamp =>
         liCreateTimestamp == 0 ? null : DateTime.FromFileTimeUtc(liCreateTimestamp);
-
-    public static int Size => Marshal.SizeOf<MibTcp6RowOwnerModule>();
 }

@@ -1,12 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.Common;
 
 namespace WhoHolds.Core.Tests.TestInfrastructure;
 
 internal abstract class NativeStructTestBase<TStruct>(int expectedSize)
-    where TStruct : unmanaged, INativeSized<TStruct>
+    where TStruct : unmanaged
 {
     [Test]
     public void ShouldHaveSequentialLayout()
@@ -19,7 +18,7 @@ internal abstract class NativeStructTestBase<TStruct>(int expectedSize)
     [Test]
     public void ShouldHaveCorrectSize()
     {
-        TStruct.Size.ShouldBe(expectedSize);
+        Marshal.SizeOf<TStruct>().ShouldBe(expectedSize);
     }
 
     protected static void AssertInlineArrayAttributeAndArrayType(int length, Type arrayType)

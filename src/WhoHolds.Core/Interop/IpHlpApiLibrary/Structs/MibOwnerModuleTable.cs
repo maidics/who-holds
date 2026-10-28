@@ -1,11 +1,11 @@
-﻿using System.Runtime.InteropServices;
-using WhoHolds.Core.Interop.Common;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 
 internal readonly struct MibOwnerModuleTable<TRow>
-    where TRow : unmanaged, INativeSized<TRow>
+    where TRow : unmanaged
 {
     // header is 4 bytes with 4 bytes of padding
     private const int _entriesOffset = sizeof(ulong); // header contains entry count only - this applies to all ...RowOwnerModule structs
@@ -22,7 +22,7 @@ internal readonly struct MibOwnerModuleTable<TRow>
             );
 
         uint count = MemoryMarshal.Read<uint>(buffer);
-        long needed = _entriesOffset + count * TRow.Size;
+        long needed = _entriesOffset + count * Unsafe.SizeOf<TRow>();
 
         if (needed > buffer.Length)
             throw new InvalidDataException(

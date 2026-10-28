@@ -1,12 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using WhoHolds.Core.Common.Models;
-using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.RestartManagerLibrary.Enums;
 
 namespace WhoHolds.Core.Interop.RestartManagerLibrary.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
+internal readonly struct RmProcessInfo
 {
     public readonly RmUniqueProcess Process;
     public readonly AppNameBuffer strAppName;
@@ -37,8 +36,6 @@ internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
             ), // not only terminator: use buffer without terminator
         };
     }
-
-    public static int Size => Marshal.SizeOf<RmProcessInfo>();
 
     public FileHolderProcess ToHolderProcess(string? imagePath)
     {
