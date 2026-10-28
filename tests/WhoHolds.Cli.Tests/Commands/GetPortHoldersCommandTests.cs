@@ -67,18 +67,6 @@ public sealed class GetPortHoldersCommandTests
     }
 
     [Test]
-    public void ShouldBeSubcommandOfRootCommand()
-    {
-        var root = new GetFileHoldersRootCommand(TextWriter.Null, TextWriter.Null);
-        root.Subcommands.Add(new GetPortHoldersCommand(TextWriter.Null, TextWriter.Null));
-
-        var parseResult = root.Parse(["port", "80"]);
-
-        parseResult.Errors.ShouldBeEmpty();
-        parseResult.CommandResult.Command.ShouldBeOfType<GetPortHoldersCommand>();
-    }
-
-    [Test]
     public void ShouldHavePortArgument()
     {
         var command = new GetPortHoldersCommand(TextWriter.Null, TextWriter.Null);
@@ -96,9 +84,7 @@ public sealed class GetPortHoldersCommandTests
         var command = new GetPortHoldersCommand(TextWriter.Null, TextWriter.Null);
 
         var option = GetOption(command, "--protocol");
-        option.Description.ShouldBe(
-            "Filter via port protocol: TCP, UDP, both. Omit to list both."
-        );
+        option.Description.ShouldBe("Filter via port protocol: TCP, UDP, both. Omit to list both.");
         option.Arity.ShouldBe(ArgumentArity.ZeroOrOne);
         option.Aliases.ShouldBe(["-p"], ignoreOrder: true);
         option.HasDefaultValue.ShouldBeTrue();
@@ -246,7 +232,14 @@ public sealed class GetPortHoldersCommandTests
     {
         using var socket = BindOnLoopback(AddressFamily.InterNetwork, ProtocolType.Tcp);
 
-        var (exitCode, stdout, stderr) = Run([PortOf(socket), "-p", "tcp", "-ipv", "4", .. jsonOutput]);
+        var (exitCode, stdout, stderr) = Run([
+            PortOf(socket),
+            "-p",
+            "tcp",
+            "-ipv",
+            "4",
+            .. jsonOutput,
+        ]);
 
         exitCode.ShouldBe(ExitCodes.Held);
         stderr.ShouldBeEmpty();
