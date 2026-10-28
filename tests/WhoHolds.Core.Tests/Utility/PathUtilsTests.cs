@@ -28,8 +28,6 @@ internal sealed class PathUtilsTests
         result.ShouldBeResultedTo(false, "File not found.");
     }
 
-    // UnauthorizedAccessException is left out due to security reasons: TODO: implement it in november
-
     [Test]
     [Arguments("")]
     [Arguments("file\0.txt")]

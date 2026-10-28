@@ -3,7 +3,6 @@ using WhoHolds.Core.Utility;
 
 namespace WhoHolds.Core.Interop.Common;
 
-// TODO: this can leak for caught exceptions
 internal sealed class NativeBuffer : IDisposable
 {
     private IntPtr _pointer;
