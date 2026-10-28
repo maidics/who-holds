@@ -1,4 +1,4 @@
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
@@ -177,6 +177,18 @@ public sealed class GetPortHoldersCommandTests
             parseResult.Errors.ShouldBeEmpty();
             parseResult.GetValue<IpVersion>("--ip-version").ShouldBe(expected);
         }
+    }
+
+    [Test]
+    [Arguments("--protocol", "3")]
+    [Arguments("-p", "7")]
+    [Arguments("--ip-version", "5")]
+    [Arguments("-ipv", "1")]
+    public void ShouldHaveParseErrorForUndefinedEnumValue(string option, string value)
+    {
+        var command = new GetPortHoldersCommand(TextWriter.Null, TextWriter.Null);
+
+        command.Parse([option, value]).Errors.ShouldNotBeEmpty();
     }
 
     [Test]
