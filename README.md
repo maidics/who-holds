@@ -5,8 +5,6 @@ WhoHolds is a command-line tool for Windows that shows which processes are holdi
 - **Platform:** Windows x64
 - **No dependencies:** built with **.NET Native AOT**, _it runs as a single executable with no .NET runtime required_.
 
-> **Note:** WhoHolds is a work in progress. More features are planned.
-
 ## Usage
 
 ### Files
