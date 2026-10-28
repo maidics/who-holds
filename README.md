@@ -31,6 +31,8 @@ Lists the processes owning TCP and UDP sockets bound to the given local port (0-
 | --ip-version | -ip, -ipv, --ipversion     | 4 (ipv4), 6 (ipv6), both | both    | [`IpVersion`](src/WhoHolds.Core/Common/Enums/IpVersion.cs)        | No       | Filters by IP version.      |
 | --format     | -f                         | text, json              | text    | [`OutputFormat`](src/WhoHolds.Cli/Output/OutputFormat.cs)         | No       | Sets the output format.     |
 
+> Note: aborting tests or the root command can lead to orphaned Restart Manager sessions.
+
 **Examples:**
 
 ```

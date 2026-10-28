@@ -12,7 +12,7 @@ namespace WhoHolds.Core.Interop.Services;
 internal static class PortOwnerModuleTableQuery
 {
     public static Result<MibOwnerModuleTable<TRow>> Query<TRow>()
-        where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
+        where TRow : unmanaged, IPortRowOwnerModule
     {
         var addressFamily = TRow.AddressFamily;
 

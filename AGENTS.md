@@ -33,7 +33,7 @@ Use the specified SDK version in [`global.json`](global.json). Solution uses cen
 |--------------------------------|-------------------------------------|---------------------------------------------------------------|--------------|
 | Architecture                   | High-level application architecture | [`architecture.md`](./docs/architecture.md)                        | Yes |
 | Publish                        | Publishing / Native AOT target      | [`publish.md`](./docs/publish.md)                             | Yes |
-| WhoHolds.Cli project structure | Cli project structure               | [`core-project-structure.md`](docs/core-project-structure.md) | Yes |
+| WhoHolds.Core project structure | Core project structure             | [`core-project-structure.md`](docs/core-project-structure.md) | Yes |
 | Testing | Testing with TUnit    | [`TUnit Skill`](.claude/skills/tunit/SKILL.md)                | No |
 
 ## Commands

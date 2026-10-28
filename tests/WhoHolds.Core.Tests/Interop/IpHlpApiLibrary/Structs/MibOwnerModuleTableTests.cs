@@ -7,7 +7,7 @@ public sealed class MibOwnerModuleTableTests
 {
     private const int _entriesOffset = 8;
 
-    private static readonly int _rowSize = MibTcp6RowOwnerModule.Size;
+    private static readonly int _rowSize = Marshal.SizeOf<MibTcp6RowOwnerModule>();
 
     private static int TableLength(int rows) => _entriesOffset + rows * _rowSize;
 

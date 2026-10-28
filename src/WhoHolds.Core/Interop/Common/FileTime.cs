@@ -3,7 +3,7 @@
 namespace WhoHolds.Core.Interop.Common;
 
 [StructLayout(LayoutKind.Sequential)]
-internal readonly struct FileTime : INativeSized<FileTime>
+internal readonly struct FileTime
 {
     public readonly uint dwLowDateTime; // lower 32 bits
     public readonly uint dwHighDateTime; // upper 32 bits
@@ -13,8 +13,6 @@ internal readonly struct FileTime : INativeSized<FileTime>
         var ticks = ((long)dwHighDateTime << 32) | dwLowDateTime;
         return DateTime.FromFileTimeUtc(ticks);
     }
-
-    public static int Size => Marshal.SizeOf<FileTime>();
 
     // test constructor
     internal FileTime(uint lowDateTime, uint highDateTime)

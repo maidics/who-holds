@@ -1,6 +1,6 @@
 ﻿# Glossary
 
-Term used throughout this project.
+Terms used throughout this project.
 
 ## P/Invoke - Platform Invoke
 
@@ -10,12 +10,12 @@ The .NET mechanism for calling functions in native (unmanaged) DLLs. Declared vi
 ## Interop - Interoperability
 
 Code that allows managed (.NET) code to call unmanaged (native) code. In .NET, this lives under
-the `System.Runtime.InteropServices` namespace and is implemented via [P/Invoke](#pinvoke-platform-invoke).
+the `System.Runtime.InteropServices` namespace and is implemented via [P/Invoke](#pinvoke---platform-invoke).
 
 ## Handle
 
 An opaque reference number the OS gives a process to refer to a kernel object (a file, window,
-process, mutex, etc.). Treated as opaque - the value of it is not interpreted, it is only passed be to the OS in subsequent calls.
+process, mutex, etc.). Treated as opaque - the value of it is not interpreted, it is only passed back to the OS in subsequent calls.
 
 ## Marshalling
 
@@ -42,7 +42,7 @@ An NT native API function (`ntdll.dll`) that retrieves various kinds of system-w
 
 ## Mapped file
 
-A file copied to the process's memory to write to. It's a windows onto the file, not a copy of it. OS writes the dirty pages to disk periodically. Benefits:
+A file mapped into the process's address space to read or write it as memory. It's a window onto the file, not a copy of it. OS writes the dirty pages to disk periodically. Benefits:
 - Reduces I/O bursts,
 - Disks write whole blocks: many small writes are done under one write,
 - Some writes never need to happen: a temp file that's created, written and deleted within seconds may never touch the disk at all,
@@ -51,7 +51,7 @@ A file copied to the process's memory to write to. It's a windows onto the file,
 
 ## C header file (`.h`)
 
-A `.h` file in C and C++ is a header file declares what the library offers: functions, structs, constants, enums without implementation. A C program includes the header so the compiler knows how to call the function, and the linker connects the call to the DLL.
+A `.h` file in C and C++ is a header file that declares what the library offers: functions, structs, constants, enums without implementation. A C program includes the header so the compiler knows how to call the function, and the linker connects the call to the DLL.
 
 .NET cannot read headers, so P/Invoke means rewriting the header declarations by hand in C#.
 

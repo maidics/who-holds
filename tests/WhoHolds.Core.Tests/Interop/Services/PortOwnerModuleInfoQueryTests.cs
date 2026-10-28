@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 using WhoHolds.Core.Interop.IpHlpApiLibrary.Structs;
 using WhoHolds.Core.Interop.Services;
@@ -41,7 +40,7 @@ internal sealed class PortOwnerModuleInfoQueryTests
     [GenerateGenericTest(typeof(MibUdpRowOwnerModule))]
     [GenerateGenericTest(typeof(MibUdp6RowOwnerModule))]
     public void ShouldResolveOwnProcessAsOwnerModule<TRow>()
-        where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
+        where TRow : unmanaged, IPortRowOwnerModule
     {
         using var socket = BindOnLoopback(TRow.AddressFamily, TRow.ProtocolType);
         var endPoint = (IPEndPoint)socket.LocalEndPoint!;
@@ -69,7 +68,7 @@ internal sealed class PortOwnerModuleInfoQueryTests
     [GenerateGenericTest(typeof(MibUdpRowOwnerModule))]
     [GenerateGenericTest(typeof(MibUdp6RowOwnerModule))]
     public void ShouldFailForEntryWithoutOwner<TRow>()
-        where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
+        where TRow : unmanaged, IPortRowOwnerModule
     {
         var result = PortOwnerModuleInfoQuery.Query(default(TRow)); // PID 0: no owner to resolve
 

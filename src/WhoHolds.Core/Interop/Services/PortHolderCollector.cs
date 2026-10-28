@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using WhoHolds.Core.Common.Models;
-using WhoHolds.Core.Interop.Common;
 using WhoHolds.Core.Interop.IpHlpApiLibrary.Interfaces;
 
 namespace WhoHolds.Core.Interop.Services;
@@ -12,7 +11,7 @@ internal sealed class PortHolderCollector(int? port)
     private bool _anySucceeded;
 
     public void Collect<TRow>()
-        where TRow : unmanaged, INativeSized<TRow>, IPortRowOwnerModule
+        where TRow : unmanaged, IPortRowOwnerModule
     {
         var result = PortOwnerModuleTableQuery.Query<TRow>();
 
