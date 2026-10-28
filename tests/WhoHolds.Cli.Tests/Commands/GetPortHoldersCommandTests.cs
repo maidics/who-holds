@@ -184,6 +184,8 @@ public sealed class GetPortHoldersCommandTests
     [Arguments("-p", "7")]
     [Arguments("--ip-version", "5")]
     [Arguments("-ipv", "1")]
+    [Arguments("--format", "2")]
+    [Arguments("-f", "5")]
     public void ShouldHaveParseErrorForUndefinedEnumValue(string option, string value)
     {
         var command = new GetPortHoldersCommand(TextWriter.Null, TextWriter.Null);

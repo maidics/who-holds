@@ -1,4 +1,5 @@
-﻿using WhoHolds.Cli.Output;
+﻿using WhoHolds.Cli.Extensions;
+using WhoHolds.Cli.Output;
 using WhoHolds.Core.Common.Models;
 
 namespace WhoHolds.Cli.Commands;
@@ -24,6 +25,7 @@ public sealed class GetFileHoldersRootCommand : RootCommand
         : base($"Shows which processes are holding a file.\n\n{FileHolderProcess.DescribeFields()}")
     {
         _filePath.AcceptLegalFilePathsOnly();
+        _format.AcceptDefinedEnumValuesOnly();
         Arguments.Add(_filePath);
         Options.Add(_format);
 

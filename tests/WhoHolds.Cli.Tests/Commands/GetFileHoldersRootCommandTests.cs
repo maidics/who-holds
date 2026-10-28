@@ -61,6 +61,17 @@ public sealed class GetFileHoldersRootCommandTests
     }
 
     [Test]
+    [Arguments("--format", "2")]
+    [Arguments("-f", "5")]
+    public void ShouldHaveParseErrorForUndefinedOutputFormat(string option, string value)
+    {
+        var file = Testing.CreateTestFile();
+        var command = new GetFileHoldersRootCommand(TextWriter.Null, TextWriter.Null);
+
+        command.Parse([file, option, value]).Errors.ShouldNotBeEmpty();
+    }
+
+    [Test]
     [Arguments("")]
     [Arguments("test")]
     [Arguments("test.txt")]

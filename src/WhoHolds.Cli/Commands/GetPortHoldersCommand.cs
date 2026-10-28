@@ -41,6 +41,7 @@ public sealed class GetPortHoldersCommand : Command // TODO: test this
     {
         _protocol.AcceptDefinedEnumValuesOnly();
         _ipVersion.AcceptDefinedEnumValuesOnly();
+        _format.AcceptDefinedEnumValuesOnly();
 
         Arguments.Add(_port);
         Options.Add(_protocol);
