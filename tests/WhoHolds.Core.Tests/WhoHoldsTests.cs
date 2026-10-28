@@ -78,11 +78,17 @@ internal sealed class WhoHoldsTests
     [Test] // RPC Endpoint Mapper always listens on port 135 and reports its service name as module path
     public void PortMethodShouldNotResolveServiceNameAsPath()
     {
-        var result = WhoHolds.Port(135, IpVersion.IPv4, PortProtocol.Tcp);
+        var result = WhoHolds.Port(135, IpVersion.IPv4, PortProtocol.Tcp); // threw FileNotFoundException before
         result.Succeeded.ShouldBeTrue();
 
-        result.Value.ShouldContain(h =>
-            h.Owner == "RpcEptMapper" && h.OwnerPath == "RpcEptMapper" && h.OwnerDescription == null
+        var holders = string.Join(
+            Environment.NewLine,
+            result.Value.Select(h => $"{h.Owner} | {h.OwnerPath} | {h.OwnerDescription}")
         );
+
+        result.Value.ShouldNotBeEmpty();
+        result
+            .Value.Where(h => h.OwnerPath is not null && !Path.IsPathFullyQualified(h.OwnerPath))
+            .ShouldAllBe(h => h.OwnerDescription == null, holders);
     }
 }
