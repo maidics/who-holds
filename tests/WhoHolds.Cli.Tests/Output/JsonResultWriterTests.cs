@@ -15,14 +15,24 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var result = Result.Success(
             new[]
             {
-                new HolderProcess(10, DateTime.UtcNow, null, null, string.Empty, [], null,null, false),
+                new FileHolderProcess(
+                    10,
+                    DateTime.UtcNow,
+                    null,
+                    null,
+                    string.Empty,
+                    [],
+                    null,
+                    null,
+                    false
+                ),
             }
         );
 
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        _writer.Write(result, stdout, stderr);
+        _writer.WriteFileHolders(result, stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -30,7 +40,9 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var v = doc.ShouldHaveResultedTo(true, JsonValueKind.Array);
         v.GetArrayLength().ShouldBe(1);
         v[0]
-            .GetProperty(JsonNamingPolicy.CamelCase.ConvertName(nameof(HolderProcess.ProcessId)))
+            .GetProperty(
+                JsonNamingPolicy.CamelCase.ConvertName(nameof(FileHolderProcess.ProcessId))
+            )
             .GetInt32()
             .ShouldBe(result.Value[0].ProcessId);
     }
@@ -41,7 +53,7 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        _writer.Write(Result.Success<HolderProcess[]>([]), stdout, stderr);
+        _writer.WriteFileHolders(Result.Success<FileHolderProcess[]>([]), stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 
@@ -56,9 +68,9 @@ public sealed class JsonResultWriterTests // this also covers: ResultJsonConvert
         var stdout = new StringWriter();
         var stderr = new StringWriter();
 
-        var result = (Result<HolderProcess[]>)Result.Failure("test");
+        var result = (Result<FileHolderProcess[]>)Result.Failure("test");
 
-        _writer.Write(result, stdout, stderr);
+        _writer.WriteFileHolders(result, stdout, stderr);
 
         stderr.ToString().ShouldBeEmpty();
 

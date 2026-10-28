@@ -40,9 +40,9 @@ internal readonly struct RmProcessInfo : INativeSized<RmProcessInfo>
 
     public static int Size => Marshal.SizeOf<RmProcessInfo>();
 
-    public HolderProcess ToHolderProcess(string? imagePath)
+    public FileHolderProcess ToHolderProcess(string? imagePath)
     {
-        return new HolderProcess(
+        return new FileHolderProcess(
             (int)Process.dwProcessId,
             Process.ProcessStartTime.ToDateTimeUtc(),
             AppName,

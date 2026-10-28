@@ -4,7 +4,31 @@ namespace WhoHolds.Cli.Output;
 
 public sealed class TextResultWriter : IResultWriter
 {
-    public void Write(Result<HolderProcess[]> result, TextWriter stdout, TextWriter stderr)
+    public void WriteFileHolders(
+        Result<FileHolderProcess[]> result,
+        TextWriter stdout,
+        TextWriter stderr
+    )
+    {
+        Write(result, stdout, stderr, "file", TableWriter.WriteFileHolderTable);
+    }
+
+    public void WritePortHolders(
+        Result<PortHolderProcess[]> result,
+        TextWriter stdout,
+        TextWriter stderr
+    )
+    {
+        Write(result, stdout, stderr, "port", TableWriter.WritePortHolderTable);
+    }
+
+    private void Write<T>(
+        Result<T[]> result,
+        TextWriter stdout,
+        TextWriter stderr,
+        string heldObjectName,
+        Action<TextWriter, T[]> writerAction
+    )
     {
         if (!result.Succeeded)
         {
@@ -18,11 +42,11 @@ public sealed class TextResultWriter : IResultWriter
 
         if (result.Value.Length == 0)
         {
-            stdout.WriteLine("No processes are holding the file.");
+            stdout.WriteLine($"No processes are holding the {heldObjectName}.");
             return;
         }
 
-        TableWriter.Write(stdout, result.Value);
+        writerAction.Invoke(stdout, result.Value);
 
         if (result.Errors.Length > 0)
         {
